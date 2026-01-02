@@ -109,7 +109,9 @@ fun setupLaserAttacks(app: ECS) {
                     }
 
                     // monitor the bullet, move it towards the target, and apply damage when close
+                    var tickCount = 0
                     val pelletHandle = interval(0, 1) {
+                        tickCount++
                         if (!bullet.isValid) {
                             it.close()
                             return@interval
@@ -141,7 +143,7 @@ fun setupLaserAttacks(app: ECS) {
                             return@interval
                         }
                         // remove after 5 seconds if not hit
-                        if (it.tickCount > 100) { // 5 seconds at 20 ticks/sec
+                        if (tickCount > 100) { // 5 seconds at 20 ticks/sec
                             bullet.remove()
                             it.close()
                         }
