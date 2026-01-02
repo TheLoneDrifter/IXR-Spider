@@ -123,19 +123,25 @@ fun setupLaserAttacks(app: ECS) {
                         val speed = 4.0 / 20.0 // 4.0 blocks per second
                         val newPos = currentPos.add(direction.multiply(speed))
                         bullet.teleport(newPos.toLocation(bullet.world))
-                        // check if close to target for damage
-                        val distanceToTarget = newPos.distance(targetPos)
-                        if (distanceToTarget < 1.0) {
-                            // hit: apply damage and remove
+                        // check for entities within 1.5 blocks to damage
+                        val nearbyEntities = bullet.world.getNearbyEntities(bullet.location, 1.5, 1.5, 1.5)
+                        val validTargets = nearbyEntities.filterIsInstance<LivingEntity>().filter { entity ->
+                            !(entity is org.bukkit.entity.Player) && entity.uniqueId != owner.ownerUUID && !entity.isDead
+                        }
+                        if (validTargets.isNotEmpty()) {
+                            // hit: apply damage to all nearby entities and remove
                             bullet.remove()
                             it.close()
 
                             try {
                                 val actualOwner = org.bukkit.Bukkit.getServer().getPlayer(owner.ownerUUID)
-                                if (actualOwner != null) {
-                                    ownerTarget.damage(damagePerTick, actualOwner)
-                                } else {
-                                    ownerTarget.damage(damagePerTick)
+                                for (target in validTargets) {
+                                    val damage = if (target == ownerTarget) 5.0 else 1.5
+                                    target.damage(damage, actualOwner ?: bullet)
+                                    // If the target is a mob, make it attack the owner
+                                    if (target is org.bukkit.entity.Mob && actualOwner != null) {
+                                        target.setTarget(actualOwner)
+                                    }
                                 }
                             } catch (e: Exception) {
                                 // ignore

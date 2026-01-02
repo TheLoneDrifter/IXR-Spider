@@ -44,8 +44,8 @@ fun setupSpider(app: ECS) {
             if (damager is org.bukkit.entity.Player) {
                 val spider = RenderEntityTracker.getSpider(damaged)
                 if (spider != null) {
-                    spider.damage(event.damage)
-                    event.isCancelled = true // prevent damaging the rendered entity
+                    // Players cannot damage the spider, just cancel the event
+                    event.isCancelled = true
                 }
             }
         }
