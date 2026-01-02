@@ -6,6 +6,13 @@ import com.voltaccept.spideranimation.utilities.ecs.ECS
 import com.voltaccept.spideranimation.utilities.ecs.ECSEntity
 import com.voltaccept.spideranimation.utilities.events.interval
 import org.bukkit.entity.LivingEntity
+import org.bukkit.event.Listener
+import org.bukkit.event.EventHandler
+import org.bukkit.event.entity.EntityDamageByEntityEvent
+import org.bukkit.event.entity.EntityDeathEvent
+import java.util.UUID
+import com.voltaccept.spideranimation.utilities.events.addEventListener
+import org.bukkit.entity.Projectile
 import org.bukkit.util.Vector
 import org.bukkit.entity.Snowball
 import org.bukkit.Location
@@ -15,6 +22,43 @@ class LaserAttack(var target: LivingEntity, var intervalHandle: java.io.Closeabl
 fun setupLaserAttacks(app: ECS) {
     val attackRange = 16.0
     val damagePerTick = 4.0 // wooden sword base damage
+
+    // map owner UUID -> target entity
+    val ownerTargets = mutableMapOf<UUID, LivingEntity>()
+
+    // register listeners to track what entity a player last damaged
+    addEventListener(object : Listener {
+        @EventHandler
+        fun onDamage(event: EntityDamageByEntityEvent) {
+            val damager = event.damager
+            val victim = event.entity
+            // if a player damaged an entity, record that as their target
+            if (damager is org.bukkit.entity.Player && victim is LivingEntity) {
+                ownerTargets[damager.uniqueId] = victim
+                return
+            }
+
+            // if an entity (or projectile shot by an entity) damaged a player, record attacker as player's target
+            if (victim is org.bukkit.entity.Player) {
+                // resolve shooter if projectile
+                val actualDamager = when (damager) {
+                    is Projectile -> (damager.shooter as? LivingEntity)
+                    is LivingEntity -> damager
+                    else -> null
+                }
+                if (actualDamager != null) {
+                    ownerTargets[victim.uniqueId] = actualDamager
+                }
+            }
+        }
+
+        @EventHandler
+        fun onDeath(event: EntityDeathEvent) {
+            val dead = event.entity
+            // remove any mappings pointing to this dead entity
+            ownerTargets.entries.removeIf { !it.value.isValid || it.value == dead }
+        }
+    })
 
     app.onTick {
         // start attacks for spiders without an attacker component
@@ -33,6 +77,12 @@ fun setupLaserAttacks(app: ECS) {
                 .filter { it.location.distanceSquared(spider.location()) <= attackRange * attackRange }
 
             val nearest = candidates.minByOrNull { it.location.distanceSquared(spider.location()) } ?: continue
+
+            // only attack if the owner is actively targeting this entity
+            val ownerUUID = owner.ownerUUID
+            val ownerTarget = ownerTargets[ownerUUID]
+            if (ownerTarget == null || !ownerTarget.isValid) continue
+            if (ownerTarget != nearest) continue
 
             // start attacking this target by firing redstone pellets (snowballs)
             lateinit var handle: java.io.Closeable
@@ -72,9 +122,49 @@ fun setupLaserAttacks(app: ECS) {
 
                 // apply damage immediately (pellet represents an accurate hit)
                 try {
-                    nearest.damage(damagePerTick)
+                    // Try to call NMS to apply a custom damage source named "ixr:spider_pellet".
+                    // Reflection is used to avoid hardcoding server package versions.
+                    try {
+                        val serverPackage = org.bukkit.Bukkit.getServer()::class.java.getPackage().name
+                        val craftLivingClass = Class.forName("$serverPackage.entity.CraftLivingEntity")
+                        val getHandle = craftLivingClass.getMethod("getHandle")
+                        val nmsNearest = getHandle.invoke(nearest)
+
+                        val dmgClass = Class.forName("net.minecraft.world.damagesource.DamageSource")
+                        val dmgCtor = try {
+                            dmgClass.getConstructor(String::class.java)
+                        } catch (_: NoSuchMethodException) {
+                            null
+                        }
+
+                        val dmgInstance = if (dmgCtor != null) {
+                            dmgCtor.newInstance("ixr:spider_pellet")
+                        } else {
+                            // fallback: try a static factory method if constructor not available
+                            val ofMethod = dmgClass.methods.firstOrNull { m -> m.parameterCount == 1 && m.parameterTypes[0] == String::class.java }
+                            if (ofMethod != null) ofMethod.invoke(null, "ixr:spider_pellet") else null
+                        }
+
+                        if (dmgInstance != null) {
+                            // call hurt(DamageSource, float)
+                            val hurtMethod = nmsNearest.javaClass.methods.firstOrNull { m ->
+                                m.name == "hurt" && m.parameterCount == 2
+                            }
+                            if (hurtMethod != null) {
+                                hurtMethod.invoke(nmsNearest, dmgInstance, damagePerTick.toFloat())
+                            } else {
+                                // last resort: use Bukkit API
+                                nearest.damage(damagePerTick)
+                            }
+                        } else {
+                            nearest.damage(damagePerTick)
+                        }
+                    } catch (e: Exception) {
+                        // reflection failed for some reason; fall back to Bukkit damage
+                        nearest.damage(damagePerTick)
+                    }
                 } catch (e: Exception) {
-                    // ignore
+                    // final safety: ignore any unexpected errors
                 }
             }
 
