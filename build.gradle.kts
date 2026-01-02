@@ -4,7 +4,7 @@ plugins {
     id("xyz.jpenilla.run-paper") version "2.3.1"
 }
 
-group = "com.heledron"
+group = "com.voltaccept"
 version = "4.0-SNAPSHOT"
 
 repositories {

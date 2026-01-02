@@ -1,9 +1,10 @@
-name: spider-animation
-version: '4.0-SNAPSHOT'
-main: com.heledron.spideranimation.SpiderAnimationPlugin
+﻿name: spider-animation
+version: '5.0.0'
+main: com.voltaccept.spideranimation.SpiderAnimationPlugin
 api-version: '1.21'
 
 commands:
   pets:
-    description: Manage your pet spider
-    usage: /pets spider
+    description: Manage your pets
+    usage: /pets
+
