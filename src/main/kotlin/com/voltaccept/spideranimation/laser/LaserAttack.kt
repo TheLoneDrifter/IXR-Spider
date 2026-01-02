@@ -94,17 +94,30 @@ fun setupLaserAttacks(app: ECS) {
                     // play shoot sound
                     spider.world.playSound(eyePos, "entity.arrow.shoot", 1.0f, 1.0f)
 
+                    // spawn invisible snowball for projectile behavior
+                    val snowball = spider.world.spawn(eyePos, Snowball::class.java) { sb ->
+                        sb.velocity = dir.multiply(speed)
+                        sb.setVisible(false) // make invisible
+                    }
+
                     // create pellet visual at eye position
                     val pelletVisual = LaserPoint(spider.world, eyePos.toVector(), true)
                     val pelletEntity = app.spawn(pelletVisual)
 
-                    // move pellet towards target
+                    // move pellet towards target, updating direction each tick for homing
                     val pelletHandle = interval(0, 1) {
+                        if (!snowball.isValid) {
+                            pelletEntity.remove()
+                            it.close()
+                            return@interval
+                        }
                         val currentPos = pelletEntity.query<LaserPoint>()?.position ?: return@interval
-                        val distanceToTarget = currentPos.distance(targetPos)
+                        val updatedTargetPos = ownerTarget.location.toVector().add(org.bukkit.util.Vector(0.0, ownerTarget.height / 2.0, 0.0))
+                        val distanceToTarget = currentPos.distance(updatedTargetPos)
                         if (distanceToTarget < 0.5) {
                             // hit: apply damage and remove pellet
                             pelletEntity.remove()
+                            snowball.remove()
                             it.close()
 
                             try {
@@ -120,8 +133,9 @@ fun setupLaserAttacks(app: ECS) {
                             return@interval
                         }
 
-                        // move towards target
-                        val moveVec = dir.clone().multiply(speed / 20.0) // per tick movement
+                        // update direction towards moving target
+                        val updatedDir = updatedTargetPos.subtract(currentPos).normalize()
+                        val moveVec = updatedDir.multiply(speed)
                         pelletEntity.query<LaserPoint>()?.position?.add(moveVec)
                     }
                     
