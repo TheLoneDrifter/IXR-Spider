@@ -14,8 +14,10 @@ import java.util.UUID
 import com.voltaccept.spideranimation.utilities.events.addEventListener
 import org.bukkit.entity.Projectile
 import org.bukkit.util.Vector
-import org.bukkit.entity.Snowball
-import org.bukkit.Location
+import org.bukkit.entity.ShulkerBullet
+import org.bukkit.entity.BlockDisplay
+import org.bukkit.util.Transformation
+import org.bukkit.Material
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 
@@ -23,7 +25,7 @@ class LaserAttack(var target: LivingEntity, var intervalHandle: java.io.Closeabl
 
 fun setupLaserAttacks(app: ECS) {
     val attackRange = 16.0
-    val damagePerTick = 4.0 // wooden sword base damage
+    val damagePerTick = 5.0 // stone sword base damage
 
     // map owner UUID -> target entity
     val ownerTargets = mutableMapOf<UUID, LivingEntity>()
@@ -96,39 +98,48 @@ fun setupLaserAttacks(app: ECS) {
                     // play shoot sound
                     spider.world.playSound(eyePos, "entity.arrow.shoot", 1.0f, 1.0f)
 
-                    // spawn invisible snowball for projectile behavior
-                    val snowball = spider.world.spawn(eyePos, Snowball::class.java) { sb ->
-                        sb.velocity = dir.multiply(speed)
-                        // Use NMS to make the snowball completely invisible
+                    // spawn shulker bullet that homes like shulker projectiles
+                    val bullet = spider.world.spawn(eyePos, ShulkerBullet::class.java) { sb ->
+                        sb.target = ownerTarget
+                        // make invisible
                         try {
-                            val craftClass = Class.forName("org.bukkit.craftbukkit.entity.CraftSnowball")
+                            val craftClass = Class.forName("org.bukkit.craftbukkit.entity.CraftShulkerBullet")
                             val getHandle = craftClass.getMethod("getHandle")
                             val nmsEntity = getHandle.invoke(sb)
                             val setInvisible = nmsEntity.javaClass.getMethod("setInvisible", Boolean::class.java)
                             setInvisible.invoke(nmsEntity, true)
                         } catch (e: Exception) {
-                            // If NMS fails, snowball remains visible
+                            // If NMS fails, bullet remains visible
                         }
                     }
 
-                    // create pellet visual at eye position
-                    val pelletVisual = LaserPoint(spider.world, eyePos.toVector(), true)
-                    val pelletEntity = app.spawn(pelletVisual)
+                    // create small redstone block display as passenger
+                    val display = spider.world.spawn(eyePos, BlockDisplay::class.java) { bd ->
+                        bd.block = Material.REDSTONE_BLOCK.createBlockData()
+                        bd.transformation = Transformation(
+                            org.joml.Vector3f(),
+                            org.joml.Quaternionf(),
+                            org.joml.Vector3f(0.125f, 0.125f, 0.125f),
+                            org.joml.Quaternionf()
+                        )
+                    }
+                    bullet.addPassenger(display)
 
-                    // move pellet towards target, updating direction each tick for homing
+                    // monitor the bullet and apply damage when close
                     val pelletHandle = interval(0, 1) {
-                        if (!snowball.isValid) {
-                            pelletEntity.remove()
+                        if (!bullet.isValid) {
+                            if (display.isValid) display.remove()
                             it.close()
                             return@interval
                         }
-                        val currentPos = pelletEntity.query<LaserPoint>()?.position ?: return@interval
-                        val updatedTargetPos = ownerTarget.location.toVector().add(org.bukkit.util.Vector(0.0, ownerTarget.height / 2.0, 0.0))
-                        val distanceToTarget = currentPos.distance(updatedTargetPos)
+                        // check if close to target for damage
+                        val currentPos = bullet.location.toVector()
+                        val targetPos = ownerTarget.location.toVector().add(org.bukkit.util.Vector(0.0, ownerTarget.height / 2.0, 0.0))
+                        val distanceToTarget = currentPos.distance(targetPos)
                         if (distanceToTarget < 0.5) {
-                            // hit: apply damage and remove pellet
-                            pelletEntity.remove()
-                            snowball.remove()
+                            // hit: apply damage and remove
+                            if (display.isValid) display.remove()
+                            bullet.remove()
                             it.close()
 
                             try {
@@ -143,11 +154,6 @@ fun setupLaserAttacks(app: ECS) {
                             }
                             return@interval
                         }
-
-                        // update direction towards moving target
-                        val updatedDir = updatedTargetPos.subtract(currentPos).normalize()
-                        val moveVec = updatedDir.multiply(speed)
-                        pelletEntity.query<LaserPoint>()?.position?.add(moveVec)
                     }
                     
                 } catch (e: Exception) {
