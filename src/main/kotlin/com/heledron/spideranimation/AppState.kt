@@ -29,7 +29,7 @@ object AppState {
     fun createSpider(location: Location, owner: Player? = null): ECSEntity {
         val spiderOptions = if (owner != null) {
             hexBot(4, 1.0).apply { 
-                setAbsoluteScale(0.25) 
+                setAbsoluteScale(0.5) 
             }
         } else {
             options

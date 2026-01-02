@@ -32,7 +32,7 @@ class PetBehaviour {
         // Teleport if too far
         if (distance > teleportDistance) {
             val teleportLocation = ownerLocation.clone()
-            teleportLocation.y += spider.bodyPlan.scale * 2.0
+            teleportLocation.y += spider.gait.stationary.bodyHeight
             spider.position.copy(teleportLocation.toVector())
             spider.velocity.zero()
             return
