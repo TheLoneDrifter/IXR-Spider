@@ -16,6 +16,8 @@ import org.bukkit.entity.Projectile
 import org.bukkit.util.Vector
 import org.bukkit.entity.Snowball
 import org.bukkit.Location
+import org.bukkit.potion.PotionEffect
+import org.bukkit.potion.PotionEffectType
 
 class LaserAttack(var target: LivingEntity, var intervalHandle: java.io.Closeable?, var laserEntity: ECSEntity?)
 
@@ -97,7 +99,7 @@ fun setupLaserAttacks(app: ECS) {
                     // spawn invisible snowball for projectile behavior
                     val snowball = spider.world.spawn(eyePos, Snowball::class.java) { sb ->
                         sb.velocity = dir.multiply(speed)
-                        sb.addPotionEffect(org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.INVISIBILITY, Int.MAX_VALUE, 1, false, false))
+                        sb.addPotionEffect(PotionEffect(PotionEffectType.INVISIBILITY, Int.MAX_VALUE, 1, false, false))
                     }
 
                     // create pellet visual at eye position
