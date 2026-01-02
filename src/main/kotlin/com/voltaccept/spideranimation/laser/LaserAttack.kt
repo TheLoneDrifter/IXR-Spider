@@ -87,9 +87,9 @@ fun setupLaserAttacks(app: ECS) {
                 // spawn invisible pellet: create a moving redstone-block visual towards target
                 try {
                     val eyePos = spider.location().add(0.0, spider.gait.stationary.bodyHeight, 0.0)
-                    val targetPos = ownerTarget.location.toVector()
+                    val targetPos = ownerTarget.location.toVector().add(0.0, ownerTarget.height / 2.0, 0.0)
                     val dir = targetPos.subtract(eyePos.toVector()).normalize()
-                    val speed = 1.6 // same as snowball
+                    val speed = 4.0 // faster speed for better animation
 
                     // play shoot sound
                     spider.world.playSound(eyePos, "entity.arrow.shoot", 1.0f, 1.0f)
@@ -107,51 +107,12 @@ fun setupLaserAttacks(app: ECS) {
                             pelletEntity.remove()
                             it.close()
 
-                            // apply damage with custom type
+                            // apply damage using default type with owner as damager for proper death message attribution
+                            // Note: Custom damage type with specific death message requires datapack registration
                             try {
-                                // Try to call NMS to apply a custom damage source named "ixr:spider_pellet".
-                                // Reflection is used to avoid hardcoding server package versions.
-                                try {
-                                    val serverPackage = org.bukkit.Bukkit.getServer()::class.java.getPackage().name
-                                    val craftLivingClass = Class.forName("$serverPackage.entity.CraftLivingEntity")
-                                    val getHandle = craftLivingClass.getMethod("getHandle")
-                                    val nmsTarget = getHandle.invoke(ownerTarget)
-
-                                    val dmgClass = Class.forName("net.minecraft.world.damagesource.DamageSource")
-                                    val dmgCtor = try {
-                                        dmgClass.getConstructor(String::class.java)
-                                    } catch (_: NoSuchMethodException) {
-                                        null
-                                    }
-
-                                    val dmgInstance = if (dmgCtor != null) {
-                                        dmgCtor.newInstance("ixr:spider_pellet")
-                                    } else {
-                                        // fallback: try a static factory method if constructor not available
-                                        val ofMethod = dmgClass.methods.firstOrNull { m -> m.parameterCount == 1 && m.parameterTypes[0] == String::class.java }
-                                        if (ofMethod != null) ofMethod.invoke(null, "ixr:spider_pellet") else null
-                                    }
-
-                                    if (dmgInstance != null) {
-                                        // call hurt(DamageSource, float)
-                                        val hurtMethod = nmsTarget.javaClass.methods.firstOrNull { m ->
-                                            m.name == "hurt" && m.parameterCount == 2
-                                        }
-                                        if (hurtMethod != null) {
-                                            hurtMethod.invoke(nmsTarget, dmgInstance, damagePerTick.toFloat())
-                                        } else {
-                                            // last resort: use Bukkit API
-                                            ownerTarget.damage(damagePerTick)
-                                        }
-                                    } else {
-                                        ownerTarget.damage(damagePerTick)
-                                    }
-                                } catch (e: Exception) {
-                                    // reflection failed for some reason; fall back to Bukkit damage
-                                    ownerTarget.damage(damagePerTick)
-                                }
+                                ownerTarget.damage(damagePerTick, owner)
                             } catch (e: Exception) {
-                                // final safety: ignore any unexpected errors
+                                // ignore
                             }
                             return@interval
                         }

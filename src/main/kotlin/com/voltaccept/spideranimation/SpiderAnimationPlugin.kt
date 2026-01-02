@@ -15,7 +15,11 @@ import com.voltaccept.spideranimation.utilities.events.onSpawnEntity
 import com.voltaccept.spideranimation.utilities.events.onTick
 import com.voltaccept.spideranimation.utilities.setupCoreUtils
 import com.voltaccept.spideranimation.utilities.shutdownCoreUtils
-import org.bukkit.plugin.java.JavaPlugin
+import org.bukkit.damage.DamageType
+import org.bukkit.damage.DamageScaling
+import org.bukkit.damage.DamageEffects
+import org.bukkit.damage.DeathMessageType
+import org.bukkit.NamespacedKey
 
 @Suppress("unused")
 class SpiderAnimationPlugin : JavaPlugin() {
@@ -36,6 +40,10 @@ class SpiderAnimationPlugin : JavaPlugin() {
         logger.info("Enabling Spider Animation plugin")
 
         setupCoreUtils()
+
+        // Register custom damage type for spider pellets
+        val damageType = DamageType("ixr:spider_pellet", DamageScaling.NEVER, 0.0f, DamageEffects.HURT, DeathMessageType.DEFAULT)
+        server.damageTypeRegistry.register(NamespacedKey("ixr", "spider_pellet"), damageType)
 
         setupCommands(this)
         setupItems()
