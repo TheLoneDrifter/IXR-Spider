@@ -14,7 +14,7 @@ import java.util.UUID
 import com.voltaccept.spideranimation.utilities.events.addEventListener
 import org.bukkit.entity.Projectile
 import org.bukkit.util.Vector
-import org.bukkit.entity.EyeOfEnder
+import org.bukkit.entity.EnderSignal
 import org.bukkit.entity.BlockDisplay
 import org.bukkit.util.Transformation
 import org.bukkit.Material
@@ -99,8 +99,8 @@ fun setupLaserAttacks(app: ECS) {
                     spider.world.playSound(eyePos, "entity.arrow.shoot", 1.0f, 1.0f)
 
                     // spawn eye of ender that displays as redstone block and chases the target
-                    val bullet = spider.world.spawn(eyePos, EyeOfEnder::class.java) { sb ->
-                        sb.target = ownerTarget.location.toVector()
+                    val bullet = spider.world.spawn<EnderSignal>(eyePos, EnderSignal::class.java) { sb ->
+                        sb.target = ownerTarget.location
                         sb.item = org.bukkit.inventory.ItemStack(org.bukkit.Material.REDSTONE_BLOCK)
                     }
 
@@ -111,7 +111,7 @@ fun setupLaserAttacks(app: ECS) {
                             return@interval
                         }
                         // update target to chase the moving enemy
-                        bullet.target = ownerTarget.location.toVector()
+                        bullet.target = ownerTarget.location
                         // check if close to target for damage
                         val currentPos = bullet.location.toVector()
                         val targetPos = ownerTarget.location.toVector().add(org.bukkit.util.Vector(0.0, ownerTarget.height / 2.0, 0.0))
