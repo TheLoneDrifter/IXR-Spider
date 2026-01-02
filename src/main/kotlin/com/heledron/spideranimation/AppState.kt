@@ -46,8 +46,8 @@ object AppState {
         )
         
         if (owner != null) {
-            entity.add(PetSpiderOwner(owner.uniqueId))
-            entity.add(PetBehaviour())
+            entity.addComponent(PetSpiderOwner(owner.uniqueId))
+            entity.addComponent(PetBehaviour())
             PetSpiderManager.setSpider(owner, entity)
         }
         

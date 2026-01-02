@@ -11,12 +11,12 @@ object PetSpiderManager {
     
     fun hasSpider(player: Player): Boolean {
         val entity = playerSpiders[player.uniqueId]
-        return entity != null && !entity.isRemoved()
+        return entity != null && !entity.scheduledForRemoval
     }
     
     fun getSpider(player: Player): ECSEntity? {
         val entity = playerSpiders[player.uniqueId]
-        if (entity != null && entity.isRemoved()) {
+        if (entity != null && entity.scheduledForRemoval) {
             playerSpiders.remove(player.uniqueId)
             return null
         }
