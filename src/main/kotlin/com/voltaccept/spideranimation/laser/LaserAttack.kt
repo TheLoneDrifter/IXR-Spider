@@ -14,7 +14,6 @@ import java.util.UUID
 import com.voltaccept.spideranimation.utilities.events.addEventListener
 import org.bukkit.entity.Projectile
 import org.bukkit.util.Vector
-import org.bukkit.entity.EnderSignal
 import org.bukkit.entity.BlockDisplay
 import org.bukkit.util.Transformation
 import org.bukkit.Material
@@ -98,34 +97,32 @@ fun setupLaserAttacks(app: ECS) {
                     // play shoot sound
                     spider.world.playSound(eyePos, "entity.arrow.shoot", 1.0f, 1.0f)
 
-                    // spawn eye of ender that displays as redstone block and chases the target
-                    val bullet = spider.world.spawn<EnderSignal>(eyePos, EnderSignal::class.java) { sb ->
-                        try {
-                            val setTargetMethod = sb.javaClass.getMethod("setTarget", org.bukkit.Location::class.java)
-                            setTargetMethod.invoke(sb, ownerTarget.location)
-                        } catch (e: Exception) {
-                            // ignore
-                        }
-                        sb.setItem(org.bukkit.inventory.ItemStack(org.bukkit.Material.REDSTONE_BLOCK))
+                    // spawn block display that moves towards the target
+                    val bullet = spider.world.spawn<BlockDisplay>(eyePos, BlockDisplay::class.java) { bd ->
+                        bd.block = org.bukkit.Material.REDSTONE_BLOCK.createBlockData()
+                        bd.transformation = org.bukkit.util.Transformation(
+                            org.joml.Vector3f(),
+                            org.joml.Quaternionf(),
+                            org.joml.Vector3f(0.125f, 0.125f, 0.125f),
+                            org.joml.Quaternionf()
+                        )
                     }
 
-                    // monitor the bullet, update its target, and apply damage when close
+                    // monitor the bullet, move it towards the target, and apply damage when close
                     val pelletHandle = interval(0, 1) {
                         if (!bullet.isValid) {
                             it.close()
                             return@interval
                         }
-                        // update target to chase the moving enemy
-                        try {
-                            val setTargetMethod = bullet.javaClass.getMethod("setTarget", org.bukkit.Location::class.java)
-                            setTargetMethod.invoke(bullet, ownerTarget.location)
-                        } catch (e: Exception) {
-                            // ignore
-                        }
-                        // check if close to target for damage
+                        // move towards the target at 2.0 blocks per second
                         val currentPos = bullet.location.toVector()
                         val targetPos = ownerTarget.location.toVector().add(org.bukkit.util.Vector(0.0, ownerTarget.height / 2.0, 0.0))
-                        val distanceToTarget = currentPos.distance(targetPos)
+                        val direction = targetPos.subtract(currentPos).normalize()
+                        val speed = 2.0 / 20.0 // 2.0 blocks per second
+                        val newPos = currentPos.add(direction.multiply(speed))
+                        bullet.teleport(newPos.toLocation(bullet.world))
+                        // check if close to target for damage
+                        val distanceToTarget = newPos.distance(targetPos)
                         if (distanceToTarget < 0.5) {
                             // hit: apply damage and remove
                             bullet.remove()
