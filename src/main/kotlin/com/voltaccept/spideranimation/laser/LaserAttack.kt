@@ -107,10 +107,8 @@ fun setupLaserAttacks(app: ECS) {
                             pelletEntity.remove()
                             it.close()
 
-                            // apply damage using default type with owner as damager for proper death message attribution
-                            // Note: Custom damage type with specific death message requires datapack registration
                             try {
-                                val actualOwner = spider.world.server.getPlayer(owner.ownerUUID)
+                                val actualOwner = org.bukkit.Bukkit.getServer().getPlayer(owner.ownerUUID)
                                 if (actualOwner != null) {
                                     ownerTarget.damage(damagePerTick, actualOwner)
                                 } else {
