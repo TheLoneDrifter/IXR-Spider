@@ -19,7 +19,7 @@ import org.bukkit.damage.DamageType
 import org.bukkit.damage.DamageScaling
 import org.bukkit.damage.DamageEffects
 import org.bukkit.damage.DeathMessageType
-import org.bukkit.NamespacedKey
+import org.bukkit.plugin.java.JavaPlugin
 
 @Suppress("unused")
 class SpiderAnimationPlugin : JavaPlugin() {
@@ -31,19 +31,24 @@ class SpiderAnimationPlugin : JavaPlugin() {
     }
 
     override fun onDisable() {
-        logger.info("Disabling Spider Animation plugin")
+        this.logger.info("Disabling Spider Animation plugin")
         PetSpiderManager.cleanup()
-        shutdownCoreUtils()
+        this.shutdownCoreUtils()
     }
 
     override fun onEnable() {
-        logger.info("Enabling Spider Animation plugin")
+        this.logger.info("Enabling Spider Animation plugin")
 
-        setupCoreUtils()
+        this.setupCoreUtils()
 
         // Register custom damage type for spider pellets
-        val damageType = DamageType("ixr:spider_pellet", DamageScaling.NEVER, 0.0f, DamageEffects.HURT, DeathMessageType.DEFAULT)
-        server.damageTypeRegistry.register(NamespacedKey("ixr", "spider_pellet"), damageType)
+        val damageType = DamageType.builder(NamespacedKey("ixr", "spider_pellet"))
+            .scaling(DamageScaling.NEVER)
+            .exhaustion(0.0f)
+            .effects(DamageEffects.HURT)
+            .deathMessageType(DeathMessageType.DEFAULT)
+            .build()
+        this.server.damageTypeRegistry.register(NamespacedKey("ixr", "spider_pellet"), damageType)
 
         setupCommands(this)
         setupItems()
@@ -53,9 +58,9 @@ class SpiderAnimationPlugin : JavaPlugin() {
         setupLaserPointer(ecs)
         setupLaserAttacks(ecs)
         
-        server.pluginManager.registerEvents(PetSpiderMenuListener(), this)
-        server.pluginManager.registerEvents(PetSpiderPlayerListener(), this)
-        server.pluginManager.registerEvents(PetMainMenuListener(), this)
+        this.server.pluginManager.registerEvents(PetSpiderMenuListener(), this)
+        this.server.pluginManager.registerEvents(PetSpiderPlayerListener(), this)
+        this.server.pluginManager.registerEvents(PetMainMenuListener(), this)
 
         ecs.start()
         onTick {

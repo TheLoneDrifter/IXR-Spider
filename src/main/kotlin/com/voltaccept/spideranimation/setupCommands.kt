@@ -13,7 +13,7 @@ fun setupCommands(plugin: SpiderAnimationPlugin) {
         setExecutor { sender, _, _, _ ->
             val player = sender as? Player
             if (player == null) {
-                sender.sendMessage("Â§cThis command can only be used by players!")
+                sender.sendMessage("§cThis command can only be used by players!")
                 return@setExecutor true
             }
 
@@ -24,7 +24,7 @@ fun setupCommands(plugin: SpiderAnimationPlugin) {
 
         setTabCompleter { _, _, _, _ ->
             // No subcommands to suggest
-            return@setTabCompleter emptyList()
+            return@setTabCompleter emptyList<String>()
         }
     }
 }

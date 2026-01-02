@@ -87,7 +87,7 @@ fun setupLaserAttacks(app: ECS) {
                 // spawn invisible pellet: create a moving redstone-block visual towards target
                 try {
                     val eyePos = spider.location().add(0.0, spider.gait.stationary.bodyHeight, 0.0)
-                    val targetPos = ownerTarget.location.toVector().add(0.0, ownerTarget.height / 2.0, 0.0)
+                    val targetPos = ownerTarget.location.toVector().add(org.bukkit.util.Vector(0.0, ownerTarget.height / 2.0, 0.0))
                     val dir = targetPos.subtract(eyePos.toVector()).normalize()
                     val speed = 4.0 // faster speed for better animation
 
@@ -110,7 +110,12 @@ fun setupLaserAttacks(app: ECS) {
                             // apply damage using default type with owner as damager for proper death message attribution
                             // Note: Custom damage type with specific death message requires datapack registration
                             try {
-                                ownerTarget.damage(damagePerTick, owner)
+                                val actualOwner = spider.world.server.getPlayer(owner.ownerUUID)
+                                if (actualOwner != null) {
+                                    ownerTarget.damage(damagePerTick, actualOwner)
+                                } else {
+                                    ownerTarget.damage(damagePerTick)
+                                }
                             } catch (e: Exception) {
                                 // ignore
                             }
