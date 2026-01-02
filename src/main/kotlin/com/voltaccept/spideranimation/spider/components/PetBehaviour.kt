@@ -47,7 +47,7 @@ class PetBehaviour {
         val maxSpeed = if (attack != null || isSprinting) sprintSpeed else walkSpeed
         // Calculate speed based on distance to follow target, capped at max speed
         val distanceFactor = maxSpeed / 20.0 // reach max speed at 20 blocks distance
-        val moveSpeed = min(maxSpeed, distanceToFollow * distanceFactor)
+        val moveSpeed = if (distanceToFollow > 1.0) min(maxSpeed, distanceToFollow * distanceFactor) else distanceToFollow * maxSpeed
         // Scale speed by spider health (keep a minimum so it can still approach)
         val healthFactor = (spider.health / spider.maxHealth).coerceIn(0.2, 1.0)
         val adjustedMoveSpeed = moveSpeed * healthFactor
