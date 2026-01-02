@@ -7,11 +7,13 @@ import com.heledron.spideranimation.spider.components.Mountable
 import com.heledron.spideranimation.spider.components.PointDetector
 import com.heledron.spideranimation.spider.components.SoundsAndParticles
 import com.heledron.spideranimation.spider.components.TridentHitDetector
+import com.heledron.spideranimation.spider.components.PetBehaviour
 import com.heledron.spideranimation.spider.presets.hexBot
 import com.heledron.spideranimation.spider.components.rendering.SpiderRenderer
 import com.heledron.spideranimation.utilities.ecs.ECS
 import com.heledron.spideranimation.utilities.ecs.ECSEntity
 import org.bukkit.Location
+import org.bukkit.entity.Player
 
 object AppState {
     var options = hexBot(4, 1.0)
@@ -24,17 +26,32 @@ object AppState {
 
     var target: Location? = null
 
-    fun createSpider(location: Location): ECSEntity {
-        location.y += options.walkGait.stationary.bodyHeight
-        return ecs.spawn(
-            SpiderBody.fromLocation(location, options.bodyPlan, walkGait = options.walkGait, gallopGait = options.gallopGait),
+    fun createSpider(location: Location, owner: Player? = null): ECSEntity {
+        val spiderOptions = if (owner != null) {
+            // Clone and scale to 50% for pet spiders
+            options.clone().apply { scale(0.5) }
+        } else {
+            options
+        }
+        
+        location.y += spiderOptions.walkGait.stationary.bodyHeight
+        val entity = ecs.spawn(
+            SpiderBody.fromLocation(location, spiderOptions.bodyPlan, walkGait = spiderOptions.walkGait, gallopGait = spiderOptions.gallopGait),
             TridentHitDetector(),
-            Cloak(options.cloak),
-            SoundsAndParticles(options.sound),
+            Cloak(spiderOptions.cloak),
+            SoundsAndParticles(spiderOptions.sound),
             Mountable(),
             PointDetector(),
             SpiderRenderer(),
         )
+        
+        if (owner != null) {
+            entity.add(PetSpiderOwner(owner.uniqueId))
+            entity.add(PetBehaviour())
+            PetSpiderManager.setSpider(owner, entity)
+        }
+        
+        return entity
     }
 
     fun createChainVisualizer(location: Location): ECSEntity {
@@ -59,3 +76,5 @@ object AppState {
 class MiscellaneousOptions {
     var showLaser = true
 }
+
+data class PetSpiderOwner(val ownerUUID: java.util.UUID)

@@ -15,14 +15,23 @@ class SpiderOptions {
 
     var sound = SoundOptions()
 
-//    fun scale(scale: Double) {
-//        walkGait.scale(scale)
-//        gallopGait.scale(scale)
-//        bodyPlan.scale(scale)
-//    }
+    fun clone(): SpiderOptions {
+        val cloned = SpiderOptions()
+        cloned.bodyPlan = this.bodyPlan
+        cloned.walkGait = this.walkGait
+        cloned.gallopGait = this.gallopGait
+        cloned.cloak = this.cloak
+        cloned.debug = this.debug
+        cloned.sound = this.sound
+        return cloned
+    }
+
+    fun scale(scale: Double) {
+        walkGait.scale(scale)
+        gallopGait.scale(scale)
+        bodyPlan.scale(scale)
+    }
 }
-
-
 
 class SoundOptions {
     var step = SoundPlayer(
@@ -31,7 +40,6 @@ class SoundOptions {
         pitch = 1.0f
     )
 }
-
 
 class SoundPlayer(
     val sound: Sound,

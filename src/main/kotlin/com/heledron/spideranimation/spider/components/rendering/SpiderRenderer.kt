@@ -91,6 +91,3 @@ private object SpiderParticleRenderer {
         }
     }
 }
-
-
-

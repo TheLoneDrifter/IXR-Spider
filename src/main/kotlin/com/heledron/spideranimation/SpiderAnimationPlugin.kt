@@ -7,6 +7,8 @@ import com.heledron.spideranimation.spider.components.body.SpiderBody
 import com.heledron.spideranimation.spider.components.rendering.SpiderRenderer
 import com.heledron.spideranimation.spider.setupSpider
 import com.heledron.spideranimation.laser.setupLaserPointer
+import com.heledron.spideranimation.spider.components.PetBehaviour
+import com.heledron.spideranimation.spider.components.setupPetBehaviour
 import com.heledron.spideranimation.utilities.ecs.ECSEntity
 import com.heledron.spideranimation.utilities.events.onSpawnEntity
 import com.heledron.spideranimation.utilities.events.onTick
@@ -25,6 +27,7 @@ class SpiderAnimationPlugin : JavaPlugin() {
 
     override fun onDisable() {
         logger.info("Disabling Spider Animation plugin")
+        PetSpiderManager.cleanup()
         shutdownCoreUtils()
     }
 
@@ -36,8 +39,11 @@ class SpiderAnimationPlugin : JavaPlugin() {
         setupCommands(this)
         setupItems()
         setupSpider(ecs)
+        setupPetBehaviour(ecs)
         setupChainVisualizer(ecs)
         setupLaserPointer(ecs)
+        
+        server.pluginManager.registerEvents(PetSpiderMenuListener(), this)
 
         ecs.start()
         onTick {

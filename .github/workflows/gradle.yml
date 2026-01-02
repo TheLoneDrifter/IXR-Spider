@@ -1,0 +1,56 @@
+name: CI - Gradle Build
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: gradle
+
+      - name: Cache Gradle wrapper
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties', '**/build.gradle.kts') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-wrapper-
+
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+
+      - name: Ensure Gradle available (wrapper or install via SDKMAN)
+        run: |
+          if [ -f "gradle/wrapper/gradle-wrapper.jar" ]; then
+            echo "Gradle wrapper present; using ./gradlew"
+          else
+            echo "Gradle wrapper JAR missing — installing Gradle via SDKMAN"
+            curl -s "https://get.sdkman.io" | bash
+            source "$HOME/.sdkman/bin/sdkman-init.sh"
+            sdk install gradle 8.8
+          fi
+
+      - name: Build (shadowJar)
+        run: |
+          if [ -x "./gradlew" ]; then
+            ./gradlew clean shadowJar --no-daemon
+          else
+            gradle clean shadowJar --no-daemon
+          fi
+
+      - name: Upload shadow JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: spider-shadow
+          path: build/libs/*.jar
