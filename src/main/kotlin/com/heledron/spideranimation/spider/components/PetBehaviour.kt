@@ -9,15 +9,14 @@ import org.bukkit.util.Vector
 import kotlin.math.min
 
 class PetBehaviour {
-    private val followDistance = 5.0
+    private val followDistance = 3.0
     private val teleportDistance = 20.0
-    private val moveSpeed = 0.15
+    private val walkSpeed = 0.13 // Close to player walk speed (0.1)
+    private val sprintSpeed = 0.25 // Close to player sprint speed (0.28)
     
     fun update(ecs: ECS, entity: ECSEntity) {
         val ownerComponent = entity.query<PetSpiderOwner>() ?: return
         val spider = entity.query<SpiderBody>() ?: return
-        
-        spider.gallop = true
         
         val owner = Bukkit.getPlayer(ownerComponent.ownerUUID) ?: return
         if (!owner.isOnline) return
@@ -36,9 +35,12 @@ class PetBehaviour {
             teleportLocation.y += spider.bodyPlan.scale * 2.0
             spider.position.copy(teleportLocation.toVector())
             spider.velocity.zero()
-            spider.isWalking = true
             return
         }
+        
+        val isSprinting = owner.isSprinting
+        val moveSpeed = if (isSprinting) sprintSpeed else walkSpeed
+        spider.gallop = isSprinting
         
         // Follow if beyond follow distance
         if (distance > followDistance) {

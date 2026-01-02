@@ -28,8 +28,9 @@ object AppState {
 
     fun createSpider(location: Location, owner: Player? = null): ECSEntity {
         val spiderOptions = if (owner != null) {
-            // Clone and scale to 50% for pet spiders
-            options.clone().apply { scale(0.5) }
+            hexBot(4, 1.0).apply { 
+                setAbsoluteScale(0.25) 
+            }
         } else {
             options
         }
@@ -48,12 +49,9 @@ object AppState {
         if (owner != null) {
             entity.addComponent(PetSpiderOwner(owner.uniqueId))
             entity.addComponent(PetBehaviour())
+            val spider = entity.query<SpiderBody>()
+            spider?.gallop = true
             PetSpiderManager.setSpider(owner, entity)
-            
-            val spiderBody = entity.query<SpiderBody>()
-            if (spiderBody != null) {
-                spiderBody.gallop = true
-            }
         }
         
         return entity

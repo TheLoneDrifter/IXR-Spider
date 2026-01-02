@@ -26,6 +26,12 @@ class SpiderOptions {
         return cloned
     }
 
+    fun setAbsoluteScale(targetScale: Double) {
+        val currentScale = bodyPlan.scale
+        val scaleMultiplier = targetScale / currentScale
+        scale(scaleMultiplier)
+    }
+
     fun scale(scale: Double) {
         walkGait.scale(scale)
         gallopGait.scale(scale)
