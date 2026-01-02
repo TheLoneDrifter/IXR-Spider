@@ -49,6 +49,11 @@ object AppState {
             entity.addComponent(PetSpiderOwner(owner.uniqueId))
             entity.addComponent(PetBehaviour())
             PetSpiderManager.setSpider(owner, entity)
+            
+            val spiderBody = entity.query<SpiderBody>()
+            if (spiderBody != null) {
+                spiderBody.gallop = true
+            }
         }
         
         return entity

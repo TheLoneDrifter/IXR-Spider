@@ -17,6 +17,8 @@ class PetBehaviour {
         val ownerComponent = entity.query<PetSpiderOwner>() ?: return
         val spider = entity.query<SpiderBody>() ?: return
         
+        spider.gallop = true
+        
         val owner = Bukkit.getPlayer(ownerComponent.ownerUUID) ?: return
         if (!owner.isOnline) return
         
@@ -34,6 +36,7 @@ class PetBehaviour {
             teleportLocation.y += spider.bodyPlan.scale * 2.0
             spider.position.copy(teleportLocation.toVector())
             spider.velocity.zero()
+            spider.isWalking = true
             return
         }
         
@@ -68,7 +71,7 @@ class PetBehaviour {
             val yaw = Math.atan2(direction.z, direction.x).toFloat() - Math.PI.toFloat() / 2
             spider.orientation.rotationYXZ(yaw, 0f, 0f)
         } else {
-            spider.isWalking = false
+            spider.isWalking = true
         }
     }
 }
