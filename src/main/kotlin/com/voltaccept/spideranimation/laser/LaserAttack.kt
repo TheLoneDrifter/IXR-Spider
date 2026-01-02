@@ -50,7 +50,6 @@ fun setupLaserAttacks(app: ECS) {
                     val snowball = spider.world.spawn(eyePos, Snowball::class.java) { sb ->
                         val dir = nearest.location.toVector().subtract(eyePos.toVector()).normalize()
                         sb.velocity = dir.multiply(1.6)
-                        sb.isCritical = false
                     }
 
                     // create a small redstone-block visual for the pellet using LaserPoint

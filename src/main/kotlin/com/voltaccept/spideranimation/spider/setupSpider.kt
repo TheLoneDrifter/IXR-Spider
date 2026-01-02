@@ -9,6 +9,7 @@ import com.voltaccept.spideranimation.utilities.ecs.ECSEntity
 import com.voltaccept.spideranimation.utilities.rendering.RenderEntityTracker
 import com.voltaccept.spideranimation.utilities.events.onInteractEntity
 import org.bukkit.Material
+import org.bukkit.GameMode
 import org.bukkit.inventory.EquipmentSlot
 
 
@@ -68,7 +69,7 @@ fun setupFeeding(app: ECS) {
 
         if (healed > 0.0) {
             // consume one redstone (unless creative)
-            if (!player.isCreative) {
+            if (player.gameMode != GameMode.CREATIVE) {
                 val amt = item.amount - 1
                 if (amt <= 0) player.inventory.setItemInMainHand(null) else item.amount = amt
             }
