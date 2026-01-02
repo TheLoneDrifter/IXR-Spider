@@ -44,6 +44,7 @@ class SpiderAnimationPlugin : JavaPlugin() {
         setupLaserPointer(ecs)
         
         server.pluginManager.registerEvents(PetSpiderMenuListener(), this)
+        server.pluginManager.registerEvents(PetSpiderPlayerListener(), this)
 
         ecs.start()
         onTick {

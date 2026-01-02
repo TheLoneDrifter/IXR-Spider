@@ -108,3 +108,15 @@ class PetSpiderMenuListener : Listener {
         PetSpiderMenu.handleClick(event)
     }
 }
+
+class PetSpiderPlayerListener : Listener {
+    @EventHandler
+    fun onPlayerQuit(event: org.bukkit.event.player.PlayerQuitEvent) {
+        PetSpiderManager.removeSpider(event.player)
+    }
+
+    @EventHandler
+    fun onPlayerKick(event: org.bukkit.event.player.PlayerKickEvent) {
+        PetSpiderManager.removeSpider(event.player)
+    }
+}
