@@ -43,9 +43,11 @@ jobs:
 
       - name: Build (shadowJar)
         run: |
-          if [ -x "./gradlew" ]; then
+          if [ -f "gradle/wrapper/gradle-wrapper.jar" ]; then
+            chmod +x ./gradlew || true
             ./gradlew clean shadowJar --no-daemon
           else
+            echo "Using system Gradle (installed via SDKMAN or runner)"
             gradle clean shadowJar --no-daemon
           fi
 
