@@ -100,8 +100,8 @@ fun setupLaserAttacks(app: ECS) {
 
                     // spawn eye of ender that displays as redstone block and chases the target
                     val bullet = spider.world.spawn<EnderSignal>(eyePos, EnderSignal::class.java) { sb ->
-                        sb.target = ownerTarget.location
-                        sb.item = org.bukkit.inventory.ItemStack(org.bukkit.Material.REDSTONE_BLOCK)
+                        sb.setTarget(ownerTarget.location)
+                        sb.setItem(org.bukkit.inventory.ItemStack(org.bukkit.Material.REDSTONE_BLOCK))
                     }
 
                     // monitor the bullet, update its target, and apply damage when close
@@ -111,7 +111,7 @@ fun setupLaserAttacks(app: ECS) {
                             return@interval
                         }
                         // update target to chase the moving enemy
-                        bullet.target = ownerTarget.location
+                        bullet.setTarget(ownerTarget.location)
                         // check if close to target for damage
                         val currentPos = bullet.location.toVector()
                         val targetPos = ownerTarget.location.toVector().add(org.bukkit.util.Vector(0.0, ownerTarget.height / 2.0, 0.0))
