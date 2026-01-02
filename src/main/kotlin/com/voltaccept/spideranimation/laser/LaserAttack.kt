@@ -99,7 +99,16 @@ fun setupLaserAttacks(app: ECS) {
                     // spawn invisible snowball for projectile behavior
                     val snowball = spider.world.spawn(eyePos, Snowball::class.java) { sb ->
                         sb.velocity = dir.multiply(speed)
-                        sb.addPotionEffect(PotionEffect(PotionEffectType.INVISIBILITY, Int.MAX_VALUE, 1, false, false))
+                        // Use NMS to make the snowball completely invisible
+                        try {
+                            val craftClass = Class.forName("org.bukkit.craftbukkit.entity.CraftSnowball")
+                            val getHandle = craftClass.getMethod("getHandle")
+                            val nmsEntity = getHandle.invoke(sb)
+                            val setInvisible = nmsEntity.javaClass.getMethod("setInvisible", Boolean::class.java)
+                            setInvisible.invoke(nmsEntity, true)
+                        } catch (e: Exception) {
+                            // If NMS fails, snowball remains visible
+                        }
                     }
 
                     // create pellet visual at eye position
