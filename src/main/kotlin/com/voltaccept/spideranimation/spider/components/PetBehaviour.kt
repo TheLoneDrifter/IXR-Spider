@@ -4,6 +4,7 @@ import com.voltaccept.spideranimation.PetSpiderOwner
 import com.voltaccept.spideranimation.spider.components.body.SpiderBody
 import com.voltaccept.spideranimation.utilities.ecs.ECS
 import com.voltaccept.spideranimation.utilities.ecs.ECSEntity
+import com.voltaccept.spideranimation.laser.LaserAttack
 import org.bukkit.Bukkit
 import org.bukkit.util.Vector
 import kotlin.math.min
@@ -32,10 +33,14 @@ class PetBehaviour {
         // Check if same world
         if (ownerLocation.world != spiderLocation.world) return
         
-        val distance = ownerLocation.distance(spiderLocation)
+        val attack = entity.query<LaserAttack>()
+        val followLocation = if (attack != null && attack.target.isValid) attack.target.location else ownerLocation
         
-        // Teleport if too far
-        if (distance > teleportDistance) {
+        val distanceToOwner = ownerLocation.distance(spiderLocation)
+        val distanceToFollow = followLocation.distance(spiderLocation)
+        
+        // Teleport if too far from owner
+        if (distanceToOwner > teleportDistance) {
             val teleportLocation = ownerLocation.clone()
             teleportLocation.y += spider.gait.stationary.bodyHeight
             spider.position.copy(teleportLocation.toVector())
@@ -58,8 +63,8 @@ class PetBehaviour {
             lastMoveTime = now
             s
         } else {
-            if (distance <= followDistance) {
-                // reached the owner â€” reset stored peak speed
+            if (distanceToFollow <= followDistance) {
+                // reached the follow target â€” reset stored peak speed
                 lastTopSpeed = walkSpeed * 0.8
                 lastMoveTime = 0L
             }
@@ -72,8 +77,8 @@ class PetBehaviour {
         spider.gallop = isSprinting
         
         // Follow if beyond follow distance
-        if (distance > followDistance) {
-            val direction = ownerLocation.toVector()
+        if (distanceToFollow > followDistance) {
+            val direction = followLocation.toVector()
                 .subtract(spiderLocation.toVector())
                 .normalize()
             
@@ -98,7 +103,7 @@ class PetBehaviour {
             
             spider.isWalking = true
             
-            // Face the owner
+            // Face the follow target
             val yaw = Math.atan2(direction.z, direction.x).toFloat() - Math.PI.toFloat() / 2
             spider.orientation.rotationYXZ(yaw, 0f, 0f)
         } else {

@@ -11,6 +11,10 @@ import com.voltaccept.spideranimation.utilities.events.onInteractEntity
 import org.bukkit.Material
 import org.bukkit.GameMode
 import org.bukkit.inventory.EquipmentSlot
+import org.bukkit.event.Listener
+import org.bukkit.event.EventHandler
+import org.bukkit.event.entity.EntityDamageByEntityEvent
+import com.voltaccept.spideranimation.utilities.events.addEventListener
 
 
 fun setupSpider(app: ECS) {
@@ -30,6 +34,22 @@ fun setupSpider(app: ECS) {
     setupTridentHitDetector(app)
     setupRenderer(app)
     setupFeeding(app)
+
+    // Add damage listener for player attacks on spider
+    addEventListener(object : Listener {
+        @EventHandler
+        fun onDamage(event: EntityDamageByEntityEvent) {
+            val damaged = event.entity
+            val damager = event.damager
+            if (damager is org.bukkit.entity.Player) {
+                val spider = RenderEntityTracker.getSpider(damaged)
+                if (spider != null) {
+                    spider.damage(event.damage)
+                    event.isCancelled = true // prevent damaging the rendered entity
+                }
+            }
+        }
+    })
 }
 
 fun setupFeeding(app: ECS) {
@@ -41,16 +61,10 @@ fun setupFeeding(app: ECS) {
         val clicked = event.rightClicked
 
         // Find which spider (if any) this entity belongs to via RenderEntityTracker
-        val hit = RenderEntityTracker.getAll().firstOrNull { it.second == clicked } ?: return@onInteractEntity
-        val key = hit.first
-        val spiderInstance = when (key) {
-            is Pair<*, *> -> key.first as? SpiderBody
-            is SpiderBody -> key as SpiderBody
-            else -> null
-        } ?: return@onInteractEntity
+        val spider = RenderEntityTracker.getSpider(clicked) ?: return@onInteractEntity
 
         // find the ECS entity that owns this SpiderBody
-        val ownerEntry = app.query<ECSEntity, SpiderBody>().firstOrNull { it.second === spiderInstance } ?: return@onInteractEntity
+        val ownerEntry = app.query<ECSEntity, SpiderBody>().firstOrNull { it.second === spider } ?: return@onInteractEntity
         val ownerEntity = ownerEntry.first
         val ownerComponent = ownerEntity.query<com.voltaccept.spideranimation.PetSpiderOwner>() ?: return@onInteractEntity
 
@@ -62,7 +76,6 @@ fun setupFeeding(app: ECS) {
 
         // heal amount per redstone
         val healAmount = 4.0
-        val spider = spiderInstance
         val before = spider.health
         spider.heal(healAmount)
         val healed = spider.health - before

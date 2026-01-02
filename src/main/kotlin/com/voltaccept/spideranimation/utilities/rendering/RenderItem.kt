@@ -7,6 +7,7 @@ import com.voltaccept.spideranimation.utilities.custom_entities.attach
 import com.voltaccept.spideranimation.utilities.custom_entities.detach
 import com.voltaccept.spideranimation.utilities.events.onTickEnd
 import com.voltaccept.spideranimation.utilities.onPluginShutdown
+import com.voltaccept.spideranimation.spider.components.body.SpiderBody
 import org.bukkit.Location
 import org.bukkit.entity.Entity
 import kotlin.collections.iterator
@@ -103,6 +104,8 @@ object RenderEntityTracker {
     fun getAll(): List<Pair<Any, Entity>> {
         return rendered.toList()
     }
+
+    fun getSpider(entity: Entity): SpiderBody? = rendered.entries.firstOrNull { it.value == entity }?.key as? SpiderBody
 
     fun <T : Entity>put(handle: Any, entity: T): T {
         @Suppress("UNCHECKED_CAST")

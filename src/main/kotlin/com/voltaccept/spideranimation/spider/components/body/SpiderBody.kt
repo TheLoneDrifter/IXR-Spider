@@ -57,6 +57,7 @@ class SpiderBody(
     // health
     var maxHealth: Double = 20.0
     var health: Double = maxHealth
+    var deathTime: Long = 0L
 
     fun heal(amount: Double) {
         health = (health + amount).coerceAtMost(maxHealth)
@@ -238,7 +239,15 @@ class SpiderBody(
             onGround = true
 
             val didHit = collision.offset.length() > (gait.gravityAcceleration * 2) * (1 - gait.airDragCoefficient)
-            if (didHit) ecs.emit(SpiderBodyHitGroundEvent(spider = this))
+            if (didHit) {
+                ecs.emit(SpiderBodyHitGroundEvent(spider = this))
+                // Apply fall damage
+                val fallSpeed = -velocity.y
+                if (fallSpeed > 5.0) {
+                    val damageAmount = (fallSpeed - 5.0) * 0.5
+                    damage(damageAmount)
+                }
+            }
 
             position.y = collision.position.y
             if (velocity.y < 0) velocity.y *= -gait.bounceFactor
@@ -252,6 +261,14 @@ class SpiderBody(
         for (leg in updateOrder) leg.update()
 
         updatePreferredAngles()
+
+        // Death check
+        if (health <= 0) {
+            if (deathTime == 0L) {
+                deathTime = System.currentTimeMillis()
+            }
+            preferredPitch = (Math.PI / 2).toFloat() // flip over like a dead spider
+        }
     }
 
     private fun legsInPolygonalOrder(): List<Int> {
@@ -358,6 +375,10 @@ fun setupSpiderBody(app: ECS) {
     app.onTick {
         for ((entity, spider) in app.query<ECSEntity, SpiderBody>()) {
             spider.update(app, entity)
+            // Remove dead spider after 2 seconds
+            if (spider.health <= 0 && spider.deathTime > 0 && System.currentTimeMillis() - spider.deathTime > 2000) {
+                entity.remove()
+            }
         }
     }
 }
