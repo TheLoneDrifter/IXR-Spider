@@ -69,106 +69,104 @@ fun setupLaserAttacks(app: ECS) {
             // skip if already attacking
             if (entity.query<LaserAttack>() != null) continue
 
-            // find nearest living target in world within range excluding owner
-            val candidates = spider.world.entities.filterIsInstance<LivingEntity>()
-                .filter { it != owner && it != null && it.isValid }
-                .filter { it.location.world == spider.world }
-                .mapNotNull { it as? LivingEntity }
-                .filter { it.location.distanceSquared(spider.location()) <= attackRange * attackRange }
-
-            val nearest = candidates.minByOrNull { it.location.distanceSquared(spider.location()) } ?: continue
-
             // only attack if the owner is actively targeting this entity
             val ownerUUID = owner.ownerUUID
             val ownerTarget = ownerTargets[ownerUUID]
-            if (ownerTarget == null || !ownerTarget.isValid) continue
-            if (ownerTarget != nearest) continue
+            if (ownerTarget == null || !ownerTarget.isValid || ownerTarget.location.distanceSquared(spider.location()) > attackRange * attackRange) continue
 
-            // start attacking this target by firing redstone pellets (snowballs)
+            // start attacking this target by firing invisible redstone pellets
             lateinit var handle: java.io.Closeable
             handle = interval(0, 20) {
                 // if target is dead or invalid or out of range, stop
-                if (!nearest.isValid || nearest.health <= 0.0 || nearest.location.distanceSquared(spider.location()) > attackRange * attackRange) {
+                if (!ownerTarget.isValid || ownerTarget.health <= 0.0 || ownerTarget.location.distanceSquared(spider.location()) > attackRange * attackRange) {
                     entity.removeComponent<LaserAttack>()
                     handle.close()
                     return@interval
                 }
 
-                // spawn a snowball pellet from spider eye towards target for visuals
+                // spawn invisible pellet: create a moving redstone-block visual towards target
                 try {
                     val eyePos = spider.location().add(0.0, spider.gait.stationary.bodyHeight, 0.0)
-                    val snowball = spider.world.spawn(eyePos, Snowball::class.java) { sb ->
-                        val dir = nearest.location.toVector().subtract(eyePos.toVector()).normalize()
-                        sb.velocity = dir.multiply(1.6)
-                    }
+                    val targetPos = ownerTarget.location.toVector()
+                    val dir = targetPos.subtract(eyePos.toVector()).normalize()
+                    val speed = 1.6 // same as snowball
 
-                    // create a small redstone-block visual for the pellet using LaserPoint
-                    val pelletVisual = LaserPoint(spider.world, snowball.location.toVector(), true)
+                    // play shoot sound
+                    spider.world.playSound(eyePos, "entity.arrow.shoot", 1.0f, 1.0f)
+
+                    // create pellet visual at eye position
+                    val pelletVisual = LaserPoint(spider.world, eyePos.toVector(), true)
                     val pelletEntity = app.spawn(pelletVisual)
 
-                    // update visual every tick until snowball is gone
+                    // move pellet towards target
                     val pelletHandle = interval(0, 1) {
-                        if (!snowball.isValid) {
+                        val currentPos = pelletEntity.query<LaserPoint>()?.position ?: return@interval
+                        val distanceToTarget = currentPos.distance(targetPos)
+                        if (distanceToTarget < 0.5) {
+                            // hit: apply damage and remove pellet
                             pelletEntity.remove()
                             it.close()
+
+                            // apply damage with custom type
+                            try {
+                                // Try to call NMS to apply a custom damage source named "ixr:spider_pellet".
+                                // Reflection is used to avoid hardcoding server package versions.
+                                try {
+                                    val serverPackage = org.bukkit.Bukkit.getServer()::class.java.getPackage().name
+                                    val craftLivingClass = Class.forName("$serverPackage.entity.CraftLivingEntity")
+                                    val getHandle = craftLivingClass.getMethod("getHandle")
+                                    val nmsTarget = getHandle.invoke(ownerTarget)
+
+                                    val dmgClass = Class.forName("net.minecraft.world.damagesource.DamageSource")
+                                    val dmgCtor = try {
+                                        dmgClass.getConstructor(String::class.java)
+                                    } catch (_: NoSuchMethodException) {
+                                        null
+                                    }
+
+                                    val dmgInstance = if (dmgCtor != null) {
+                                        dmgCtor.newInstance("ixr:spider_pellet")
+                                    } else {
+                                        // fallback: try a static factory method if constructor not available
+                                        val ofMethod = dmgClass.methods.firstOrNull { m -> m.parameterCount == 1 && m.parameterTypes[0] == String::class.java }
+                                        if (ofMethod != null) ofMethod.invoke(null, "ixr:spider_pellet") else null
+                                    }
+
+                                    if (dmgInstance != null) {
+                                        // call hurt(DamageSource, float)
+                                        val hurtMethod = nmsTarget.javaClass.methods.firstOrNull { m ->
+                                            m.name == "hurt" && m.parameterCount == 2
+                                        }
+                                        if (hurtMethod != null) {
+                                            hurtMethod.invoke(nmsTarget, dmgInstance, damagePerTick.toFloat())
+                                        } else {
+                                            // last resort: use Bukkit API
+                                            ownerTarget.damage(damagePerTick)
+                                        }
+                                    } else {
+                                        ownerTarget.damage(damagePerTick)
+                                    }
+                                } catch (e: Exception) {
+                                    // reflection failed for some reason; fall back to Bukkit damage
+                                    ownerTarget.damage(damagePerTick)
+                                }
+                            } catch (e: Exception) {
+                                // final safety: ignore any unexpected errors
+                            }
                             return@interval
                         }
-                        pelletEntity.query<LaserPoint>()?.position = snowball.location.toVector()
+
+                        // move towards target
+                        val moveVec = dir.clone().multiply(speed / 20.0) // per tick movement
+                        pelletEntity.query<LaserPoint>()?.position?.add(moveVec)
                     }
                     
                 } catch (e: Exception) {
                     // ignore spawn errors
                 }
-
-                // apply damage immediately (pellet represents an accurate hit)
-                try {
-                    // Try to call NMS to apply a custom damage source named "ixr:spider_pellet".
-                    // Reflection is used to avoid hardcoding server package versions.
-                    try {
-                        val serverPackage = org.bukkit.Bukkit.getServer()::class.java.getPackage().name
-                        val craftLivingClass = Class.forName("$serverPackage.entity.CraftLivingEntity")
-                        val getHandle = craftLivingClass.getMethod("getHandle")
-                        val nmsNearest = getHandle.invoke(nearest)
-
-                        val dmgClass = Class.forName("net.minecraft.world.damagesource.DamageSource")
-                        val dmgCtor = try {
-                            dmgClass.getConstructor(String::class.java)
-                        } catch (_: NoSuchMethodException) {
-                            null
-                        }
-
-                        val dmgInstance = if (dmgCtor != null) {
-                            dmgCtor.newInstance("ixr:spider_pellet")
-                        } else {
-                            // fallback: try a static factory method if constructor not available
-                            val ofMethod = dmgClass.methods.firstOrNull { m -> m.parameterCount == 1 && m.parameterTypes[0] == String::class.java }
-                            if (ofMethod != null) ofMethod.invoke(null, "ixr:spider_pellet") else null
-                        }
-
-                        if (dmgInstance != null) {
-                            // call hurt(DamageSource, float)
-                            val hurtMethod = nmsNearest.javaClass.methods.firstOrNull { m ->
-                                m.name == "hurt" && m.parameterCount == 2
-                            }
-                            if (hurtMethod != null) {
-                                hurtMethod.invoke(nmsNearest, dmgInstance, damagePerTick.toFloat())
-                            } else {
-                                // last resort: use Bukkit API
-                                nearest.damage(damagePerTick)
-                            }
-                        } else {
-                            nearest.damage(damagePerTick)
-                        }
-                    } catch (e: Exception) {
-                        // reflection failed for some reason; fall back to Bukkit damage
-                        nearest.damage(damagePerTick)
-                    }
-                } catch (e: Exception) {
-                    // final safety: ignore any unexpected errors
-                }
             }
 
-            entity.addComponent(LaserAttack(nearest, handle, null))
+            entity.addComponent(LaserAttack(ownerTarget, handle, null))
         }
     }
 }
