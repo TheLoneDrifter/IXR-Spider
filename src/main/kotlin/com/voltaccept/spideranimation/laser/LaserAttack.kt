@@ -114,16 +114,16 @@ fun setupLaserAttacks(app: ECS) {
                             it.close()
                             return@interval
                         }
-                        // move towards the target at 2.0 blocks per second
+                        // move towards the target at 4.0 blocks per second
                         val currentPos = bullet.location.toVector()
                         val targetPos = ownerTarget.location.toVector().add(org.bukkit.util.Vector(0.0, ownerTarget.height / 2.0, 0.0))
                         val direction = targetPos.subtract(currentPos).normalize()
-                        val speed = 2.0 / 20.0 // 2.0 blocks per second
+                        val speed = 4.0 / 20.0 // 4.0 blocks per second
                         val newPos = currentPos.add(direction.multiply(speed))
                         bullet.teleport(newPos.toLocation(bullet.world))
                         // check if close to target for damage
                         val distanceToTarget = newPos.distance(targetPos)
-                        if (distanceToTarget < 0.5) {
+                        if (distanceToTarget < 1.0) {
                             // hit: apply damage and remove
                             bullet.remove()
                             it.close()
@@ -139,6 +139,11 @@ fun setupLaserAttacks(app: ECS) {
                                 // ignore
                             }
                             return@interval
+                        }
+                        // remove after 5 seconds if not hit
+                        if (it.tickCount > 100) { // 5 seconds at 20 ticks/sec
+                            bullet.remove()
+                            it.close()
                         }
                     }
                     
