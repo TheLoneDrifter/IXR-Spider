@@ -20,8 +20,8 @@ object PetMainMenu {
 
         val spiderItem = ItemStack(Material.SPIDER_EYE).apply {
             val meta = itemMeta!!
-            meta.setDisplayName("§a§lSP1D3.R")
-            meta.lore = listOf("§7Open SP1D3.R menu")
+            meta.setDisplayName("§a§lSP1D.3R")
+            meta.lore = listOf("§7Open SP1D.3R menu")
             itemMeta = meta
         }
 
@@ -32,7 +32,7 @@ object PetMainMenu {
             if (body != null) {
                 ItemStack(Material.REDSTONE).apply {
                     val meta = itemMeta!!
-                    meta.setDisplayName("§c§lSP1D3.R's Health")
+                    meta.setDisplayName("§c§lSP1D.3R's Health")
                     meta.lore = listOf("§7${body.health.toInt()} / ${body.maxHealth.toInt()} HP")
                     itemMeta = meta
                 }
@@ -40,7 +40,7 @@ object PetMainMenu {
                 // spider registered but no body component yet
                 ItemStack(Material.GRAY_DYE).apply {
                     val meta = itemMeta!!
-                    meta.setDisplayName("§7§lSP1D3.R's Health")
+                    meta.setDisplayName("§7§lSP1D.3R's Health")
                     meta.lore = listOf("§7Activated but not initialized")
                     itemMeta = meta
                 }
@@ -48,8 +48,8 @@ object PetMainMenu {
         } else {
             ItemStack(Material.GRAY_DYE).apply {
                 val meta = itemMeta!!
-                meta.setDisplayName("§7§lNo SP1D3.R Active")
-                meta.lore = listOf("§7You don't have an active SP1D3.R.")
+                meta.setDisplayName("§7§lNo SP1D.3R Active")
+                meta.lore = listOf("§7You don't have an active SP1D.3R.")
                 itemMeta = meta
             }
         }

@@ -10,7 +10,7 @@ import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 
 object PetSpiderMenu {
-    private const val MENU_TITLE = "§6§lPets Menu - SP1D3.R"
+    private const val MENU_TITLE = "§6§lPets Menu - SP1D.3R"
     private const val SPAWN_SLOT = 3
     private const val DESPAWN_SLOT = 5
     private const val BACK_SLOT = 8
@@ -24,19 +24,19 @@ object PetSpiderMenu {
         val spawnItem = if (!hasSpider) {
             ItemStack(Material.SPIDER_EYE).apply {
                 val meta = itemMeta!!
-                meta.setDisplayName("§a§lActivate SP1D3.R")
+                meta.setDisplayName("§a§lActivate SP1D.3R")
                 meta.lore = listOf(
-                    "§7Click to activate your SP1D3.R!",
-                    "§7Your SP1D3.R will follow you around."
+                    "§7Click to activate your SP1D.3R!",
+                    "§7Your SP1D.3R will follow you around."
                 )
                 itemMeta = meta
             }
         } else {
             ItemStack(Material.BARRIER).apply {
                 val meta = itemMeta!!
-                meta.setDisplayName("§c§lSP1D3.R Already Active")
+                meta.setDisplayName("§c§lSP1D.3R Already Active")
                 meta.lore = listOf(
-                    "§7You already have an active SP1D3.R.",
+                    "§7You already have an active SP1D.3R.",
                     "§7Deactivate it first to activate a new one."
                 )
                 itemMeta = meta
@@ -47,18 +47,18 @@ object PetSpiderMenu {
         val despawnItem = if (hasSpider) {
             ItemStack(Material.COBWEB).apply {
                 val meta = itemMeta!!
-                meta.setDisplayName("§c§lDeactivate SP1D3.R")
+                meta.setDisplayName("§c§lDeactivate SP1D.3R")
                 meta.lore = listOf(
-                    "§7Click to deactivate your SP1D3.R."
+                    "§7Click to deactivate your SP1D.3R."
                 )
                 itemMeta = meta
             }
         } else {
             ItemStack(Material.GRAY_DYE).apply {
                 val meta = itemMeta!!
-                meta.setDisplayName("§7§lNo SP1D3.R Active")
+                meta.setDisplayName("§7§lNo SP1D.3R Active")
                 meta.lore = listOf(
-                    "§7You don't have an active SP1D3.R.",
+                    "§7You don't have an active SP1D.3R.",
                     "§7Use /pets to activate a new one."
                 )
                 itemMeta = meta
@@ -91,19 +91,19 @@ object PetSpiderMenu {
                     val location = player.location.clone()
                     location.y += 1.0
                     AppState.createSpider(location, player)
-                    player.sendMessage("§a§lSP1D3.R activated! §7It will follow you around.")
+                    player.sendMessage("§a§lSP1D.3R activated! §7It will follow you around.")
                     player.closeInventory()
                 } else {
-                    player.sendMessage("§c§lSP1D3.R is already active! §7Deactivate it first.")
+                    player.sendMessage("§c§lSP1D.3R is already active! §7Deactivate it first.")
                 }
             }
             DESPAWN_SLOT -> {
                 if (PetSpiderManager.hasSpider(player)) {
                     PetSpiderManager.removeSpider(player)
-                    player.sendMessage("§c§lSP1D3.R deactivated!")
+                    player.sendMessage("§c§lSP1D.3R deactivated!")
                     player.closeInventory()
                 } else {
-                    player.sendMessage("§7You don't have an active SP1D3.R.")
+                    player.sendMessage("§7You don't have an active SP1D.3R.")
                 }
             }
             BACK_SLOT -> {

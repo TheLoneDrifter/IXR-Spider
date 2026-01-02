@@ -12,13 +12,8 @@ import kotlin.math.min
 class PetBehaviour {
     private val followDistance = 3.0
     private val teleportDistance = 20.0
-    private val walkSpeed = 0.13 // Close to player walk speed (0.1)
-    private val sprintSpeed = 0.25 // Close to player sprint speed (0.28)
-    // Remember last used move speed so the spider can continue moving when player stops
-    // Remember last movement-period top speed so the spider can continue moving
-    // at the peak speed from the last time the player was moving.
-    private var lastTopSpeed: Double = walkSpeed * 0.8
-    private var lastMoveTime: Long = 0L
+    private val walkSpeed = 3.75 / 20.0 // 3.75 blocks per second max walking
+    private val sprintSpeed = 4.0 / 20.0 // 4.0 blocks per second max sprinting
     
     fun update(ecs: ECS, entity: ECSEntity) {
         val ownerComponent = entity.query<PetSpiderOwner>() ?: return
@@ -45,31 +40,14 @@ class PetBehaviour {
             teleportLocation.y += spider.gait.stationary.bodyHeight
             spider.position.copy(teleportLocation.toVector())
             spider.velocity.zero()
-            // reset remembered speed after teleport
-            lastTopSpeed = walkSpeed * 0.8
-            lastMoveTime = 0L
             return
         }
         
         val isSprinting = owner.isSprinting
-        // Prefer using the owner's current velocity to set spider speed at 80% of player's movement.
-        // If the player has essentially zero velocity, continue using the last non-zero speed
-        // until the spider reaches the player.
-        val ownerSpeed = owner.velocity.length()
-        val now = System.currentTimeMillis()
-        val moveSpeed: Double = if (ownerSpeed > 0.01) {
-            val s = ownerSpeed * 0.8
-            if (s > lastTopSpeed) lastTopSpeed = s
-            lastMoveTime = now
-            s
-        } else {
-            if (distanceToFollow <= followDistance) {
-                // reached the follow target â€” reset stored peak speed
-                lastTopSpeed = walkSpeed * 0.8
-                lastMoveTime = 0L
-            }
-            lastTopSpeed
-        }
+        val maxSpeed = if (attack != null || isSprinting) sprintSpeed else walkSpeed
+        // Calculate speed based on distance to follow target, capped at max speed
+        val distanceFactor = maxSpeed / 20.0 // reach max speed at 20 blocks distance
+        val moveSpeed = min(maxSpeed, distanceToFollow * distanceFactor)
         // Scale speed by spider health (keep a minimum so it can still approach)
         val healthFactor = (spider.health / spider.maxHealth).coerceIn(0.2, 1.0)
         val adjustedMoveSpeed = moveSpeed * healthFactor

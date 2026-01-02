@@ -14,7 +14,7 @@ import java.util.UUID
 import com.voltaccept.spideranimation.utilities.events.addEventListener
 import org.bukkit.entity.Projectile
 import org.bukkit.util.Vector
-import org.bukkit.entity.ShulkerBullet
+import org.bukkit.entity.EyeOfEnder
 import org.bukkit.entity.BlockDisplay
 import org.bukkit.util.Transformation
 import org.bukkit.Material
@@ -98,47 +98,26 @@ fun setupLaserAttacks(app: ECS) {
                     // play shoot sound
                     spider.world.playSound(eyePos, "entity.arrow.shoot", 1.0f, 1.0f)
 
-                    // spawn shulker bullet that homes like shulker projectiles
-                    val bullet = spider.world.spawn(eyePos, ShulkerBullet::class.java) { sb ->
-                        sb.target = ownerTarget
-                        // make invisible
-                        try {
-                            val craftClass = Class.forName("org.bukkit.craftbukkit.entity.CraftShulkerBullet")
-                            val getHandle = craftClass.getMethod("getHandle")
-                            val nmsEntity = getHandle.invoke(sb)
-                            val setInvisible = nmsEntity.javaClass.getMethod("setInvisible", Boolean::class.java)
-                            setInvisible.invoke(nmsEntity, true)
-                        } catch (e: Exception) {
-                            // If NMS fails, bullet remains visible
-                        }
+                    // spawn eye of ender that displays as redstone block and chases the target
+                    val bullet = spider.world.spawn(eyePos, EyeOfEnder::class.java) { sb ->
+                        sb.target = ownerTarget.location.toVector()
+                        sb.item = org.bukkit.inventory.ItemStack(org.bukkit.Material.REDSTONE_BLOCK)
                     }
 
-                    // create small redstone block display as passenger
-                    val display = spider.world.spawn(eyePos, BlockDisplay::class.java) { bd ->
-                        bd.block = Material.REDSTONE_BLOCK.createBlockData()
-                        bd.transformation = Transformation(
-                            org.joml.Vector3f(),
-                            org.joml.Quaternionf(),
-                            org.joml.Vector3f(0.125f, 0.125f, 0.125f),
-                            org.joml.Quaternionf()
-                        )
-                    }
-                    bullet.addPassenger(display)
-
-                    // monitor the bullet and apply damage when close
+                    // monitor the bullet, update its target, and apply damage when close
                     val pelletHandle = interval(0, 1) {
                         if (!bullet.isValid) {
-                            if (display.isValid) display.remove()
                             it.close()
                             return@interval
                         }
+                        // update target to chase the moving enemy
+                        bullet.target = ownerTarget.location.toVector()
                         // check if close to target for damage
                         val currentPos = bullet.location.toVector()
                         val targetPos = ownerTarget.location.toVector().add(org.bukkit.util.Vector(0.0, ownerTarget.height / 2.0, 0.0))
                         val distanceToTarget = currentPos.distance(targetPos)
                         if (distanceToTarget < 0.5) {
                             // hit: apply damage and remove
-                            if (display.isValid) display.remove()
                             bullet.remove()
                             it.close()
 
