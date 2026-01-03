@@ -65,7 +65,6 @@ fun setupSpider(app: ECS) {
                             // Play hurt sound
                             spider.world.playSound(spider.location(), org.bukkit.Sound.ENTITY_IRON_GOLEM_HURT, 1.0f, 1.0f)
                         }
-                        event.isCancelled = true // prevent damaging the rendered entity
                     } else {
                         // Apply damage and make spider flee from the damager (if not the owner)
                         val oldHealth = spider.health
@@ -78,7 +77,6 @@ fun setupSpider(app: ECS) {
                             // Play hurt sound
                             spider.world.playSound(spider.location(), org.bukkit.Sound.ENTITY_IRON_GOLEM_HURT, 1.0f, 1.0f)
                         }
-                        event.isCancelled = true // prevent damaging the rendered entity
                     }
                 }
             }
