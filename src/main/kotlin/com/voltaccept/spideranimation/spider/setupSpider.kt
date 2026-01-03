@@ -118,10 +118,10 @@ fun setupFeeding(app: ECS) {
             // consume one redstone
             val amt = item.amount - 1
             if (amt <= 0) player.inventory.setItemInMainHand(null) else item.amount = amt
-            player.sendMessage("§aYou fed your spider and healed ${healed} health.")
+            player.sendMessage("§aYou fed your SP1D.3R and healed ${healed} health.")
             player.world.playSound(player.location, org.bukkit.Sound.ENTITY_ITEM_PICKUP, 1.0f, 1.0f)
         } else {
-            player.sendMessage("§7Your spider is already at full health.")
+            player.sendMessage("§7Your SP1D.3R is already at full health.")
         }
     }
 }
