@@ -36,8 +36,8 @@ class PetBehaviour {
             ownerLocation
         }
         
-        val distanceToOwner = ownerLocation.toVector().distance(spiderLocation)
-        val distanceToFollow = followLocation.toVector().distance(spiderLocation)
+        val distanceToOwner = ownerLocation.distance(spiderLocation)
+        val distanceToFollow = followLocation.distance(spiderLocation)
         
         // Teleport if too far from owner
         if (distanceToOwner > teleportDistance) {
