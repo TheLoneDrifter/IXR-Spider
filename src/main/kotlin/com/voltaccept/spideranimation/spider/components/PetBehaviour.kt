@@ -21,6 +21,9 @@ class PetBehaviour {
         val owner = Bukkit.getPlayer(ownerComponent.ownerUUID) ?: return
         if (!owner.isOnline) return
         
+        val ownerLocation = owner.location
+        val spiderLocation = spider.location()
+        
         val flee = entity.query<FleeComponent>()
         val followLocation = if (flee != null && flee.fleeFrom != null && flee.fleeFrom!!.isValid) {
             // Flee from the damager
@@ -33,8 +36,8 @@ class PetBehaviour {
             ownerLocation
         }
         
-        val distanceToOwner = ownerLocation.distance(spiderLocation)
-        val distanceToFollow = followLocation.distance(spiderLocation)
+        val distanceToOwner = ownerLocation.toVector().distance(spiderLocation)
+        val distanceToFollow = followLocation.toVector().distance(spiderLocation)
         
         // Teleport if too far from owner
         if (distanceToOwner > teleportDistance) {
