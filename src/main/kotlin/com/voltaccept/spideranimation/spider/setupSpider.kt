@@ -58,14 +58,24 @@ fun setupSpider(app: ECS) {
                 if (entity != null) {
                     if (damager is org.bukkit.entity.Player) {
                         // Players can damage the spider
+                        val oldHealth = spider.health
                         spider.damage(event.damage)
+                        if (spider.health < oldHealth) {
+                            // Play hurt sound
+                            spider.world.playSound(spider.location(), org.bukkit.Sound.ENTITY_SPIDER_HURT, 1.0f, 1.0f)
+                        }
                         event.isCancelled = true // prevent damaging the rendered entity
                     } else {
                         // Apply damage and make spider flee from the damager (if not the owner)
+                        val oldHealth = spider.health
                         spider.damage(event.damage)
                         val ownerUUID = entity.query<com.voltaccept.spideranimation.PetSpiderOwner>()?.ownerUUID
                         if (damager is LivingEntity && damager.uniqueId != ownerUUID) {
                             entity.addComponent(FleeComponent(damager as LivingEntity, 100)) // flee for 5 seconds
+                        }
+                        if (spider.health < oldHealth) {
+                            // Play hurt sound
+                            spider.world.playSound(spider.location(), org.bukkit.Sound.ENTITY_SPIDER_HURT, 1.0f, 1.0f)
                         }
                         event.isCancelled = true // prevent damaging the rendered entity
                     }
@@ -104,11 +114,9 @@ fun setupFeeding(app: ECS) {
         val healed = spider.health - before
 
         if (healed > 0.0) {
-            // consume one redstone (unless creative)
-            if (player.gameMode != GameMode.CREATIVE) {
-                val amt = item.amount - 1
-                if (amt <= 0) player.inventory.setItemInMainHand(null) else item.amount = amt
-            }
+            // consume one redstone
+            val amt = item.amount - 1
+            if (amt <= 0) player.inventory.setItemInMainHand(null) else item.amount = amt
             player.sendMessage("§aYou fed your spider and healed ${healed} health.")
             player.world.playSound(player.location, org.bukkit.Sound.ENTITY_GENERIC_EAT, 1.0f, 1.0f)
         } else {
