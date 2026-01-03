@@ -1,6 +1,12 @@
 ﻿package com.voltaccept.spideranimation.spider.components
 
 import com.voltaccept.spideranimation.spider.components.FleeComponent
+import com.voltaccept.spideranimation.utilities.ecs.ECS
+import com.voltaccept.spideranimation.utilities.ecs.ECSEntity
+import com.voltaccept.spideranimation.PetSpiderOwner
+import com.voltaccept.spideranimation.spider.components.body.SpiderBody
+import org.bukkit.Bukkit
+import org.bukkit.util.Vector
 
 class PetBehaviour {
     private val followDistance = 3.0

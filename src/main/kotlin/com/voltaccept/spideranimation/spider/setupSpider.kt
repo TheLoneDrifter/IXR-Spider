@@ -2,6 +2,15 @@
 
 import com.voltaccept.spideranimation.AppState
 import com.voltaccept.spideranimation.spider.components.FleeComponent
+import com.voltaccept.spideranimation.spider.components.body.setupSpiderBody
+import com.voltaccept.spideranimation.spider.components.setupBehaviours
+import com.voltaccept.spideranimation.spider.components.SpiderBehaviour
+import com.voltaccept.spideranimation.spider.components.StayStillBehaviour
+import com.voltaccept.spideranimation.spider.components.setupCloak
+import com.voltaccept.spideranimation.spider.components.setupMountable
+import com.voltaccept.spideranimation.spider.components.setupPointDetector
+import com.voltaccept.spideranimation.spider.components.setupSoundAndParticles
+import com.voltaccept.spideranimation.spider.components.setupTridentHitDetector
 import com.voltaccept.spideranimation.spider.components.body.SpiderBody
 import com.voltaccept.spideranimation.spider.components.rendering.setupRenderer
 import com.voltaccept.spideranimation.utilities.ecs.ECS
@@ -15,6 +24,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.EventHandler
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import com.voltaccept.spideranimation.utilities.events.addEventListener
+import org.bukkit.entity.LivingEntity
 
 
 fun setupSpider(app: ECS) {
@@ -55,7 +65,7 @@ fun setupSpider(app: ECS) {
                         spider.damage(event.damage)
                         val ownerUUID = entity.query<com.voltaccept.spideranimation.PetSpiderOwner>()?.ownerUUID
                         if (damager is LivingEntity && damager.uniqueId != ownerUUID) {
-                            entity.addComponent(FleeComponent(damager, 100)) // flee for 5 seconds
+                            entity.addComponent(FleeComponent(damager as LivingEntity, 100)) // flee for 5 seconds
                         }
                         event.isCancelled = true // prevent damaging the rendered entity
                     }
