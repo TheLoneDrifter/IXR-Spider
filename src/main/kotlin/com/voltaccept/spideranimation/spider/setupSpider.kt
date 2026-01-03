@@ -58,11 +58,12 @@ fun setupSpider(app: ECS) {
                 if (entity != null) {
                     if (damager is org.bukkit.entity.Player) {
                         // Players can damage the spider
+                        val damageAmount = maxOf(event.damage, 1.0) // at least 1 damage
                         val oldHealth = spider.health
-                        spider.damage(event.damage)
+                        spider.damage(damageAmount)
                         if (spider.health < oldHealth) {
                             // Play hurt sound
-                            spider.world.playSound(spider.location(), org.bukkit.Sound.ENTITY_SPIDER_HURT, 1.0f, 1.0f)
+                            spider.world.playSound(spider.location(), org.bukkit.Sound.ENTITY_IRON_GOLEM_HURT, 1.0f, 1.0f)
                         }
                         event.isCancelled = true // prevent damaging the rendered entity
                     } else {
@@ -75,7 +76,7 @@ fun setupSpider(app: ECS) {
                         }
                         if (spider.health < oldHealth) {
                             // Play hurt sound
-                            spider.world.playSound(spider.location(), org.bukkit.Sound.ENTITY_SPIDER_HURT, 1.0f, 1.0f)
+                            spider.world.playSound(spider.location(), org.bukkit.Sound.ENTITY_IRON_GOLEM_HURT, 1.0f, 1.0f)
                         }
                         event.isCancelled = true // prevent damaging the rendered entity
                     }
@@ -118,7 +119,7 @@ fun setupFeeding(app: ECS) {
             val amt = item.amount - 1
             if (amt <= 0) player.inventory.setItemInMainHand(null) else item.amount = amt
             player.sendMessage("§aYou fed your spider and healed ${healed} health.")
-            player.world.playSound(player.location, org.bukkit.Sound.ENTITY_GENERIC_EAT, 1.0f, 1.0f)
+            player.world.playSound(player.location, org.bukkit.Sound.ENTITY_ITEM_PICKUP, 1.0f, 1.0f)
         } else {
             player.sendMessage("§7Your spider is already at full health.")
         }
