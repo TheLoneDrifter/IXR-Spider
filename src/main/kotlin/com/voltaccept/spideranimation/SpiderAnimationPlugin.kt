@@ -7,7 +7,6 @@ import com.voltaccept.spideranimation.spider.components.body.SpiderBody
 import com.voltaccept.spideranimation.spider.components.rendering.SpiderRenderer
 import com.voltaccept.spideranimation.spider.setupSpider
 import com.voltaccept.spideranimation.laser.setupLaserPointer
-import com.voltaccept.spideranimation.laser.setupLaserAttacks
 import com.voltaccept.spideranimation.spider.components.PetBehaviour
 import com.voltaccept.spideranimation.spider.components.setupPetBehaviour
 import com.voltaccept.spideranimation.utilities.ecs.ECSEntity
@@ -43,7 +42,6 @@ class SpiderAnimationPlugin : JavaPlugin() {
         setupPetBehaviour(ecs)
         setupChainVisualizer(ecs)
         setupLaserPointer(ecs)
-        setupLaserAttacks(ecs)
         
         this.server.pluginManager.registerEvents(PetSpiderMenuListener(), this)
         this.server.pluginManager.registerEvents(PetSpiderPlayerListener(), this)

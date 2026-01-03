@@ -1,13 +1,6 @@
 ﻿package com.voltaccept.spideranimation.spider.components
 
-import com.voltaccept.spideranimation.PetSpiderOwner
-import com.voltaccept.spideranimation.spider.components.body.SpiderBody
-import com.voltaccept.spideranimation.utilities.ecs.ECS
-import com.voltaccept.spideranimation.utilities.ecs.ECSEntity
-import com.voltaccept.spideranimation.laser.LaserAttack
-import org.bukkit.Bukkit
-import org.bukkit.util.Vector
-import kotlin.math.min
+import com.voltaccept.spideranimation.spider.components.FleeComponent
 
 class PetBehaviour {
     private val followDistance = 3.0
@@ -22,14 +15,17 @@ class PetBehaviour {
         val owner = Bukkit.getPlayer(ownerComponent.ownerUUID) ?: return
         if (!owner.isOnline) return
         
-        val ownerLocation = owner.location
-        val spiderLocation = spider.location()
-        
-        // Check if same world
-        if (ownerLocation.world != spiderLocation.world) return
-        
-        val attack = entity.query<LaserAttack>()
-        val followLocation = if (attack != null && attack.target.isValid) attack.target.location else ownerLocation
+        val flee = entity.query<FleeComponent>()
+        val followLocation = if (flee != null && flee.fleeFrom != null && flee.fleeFrom!!.isValid) {
+            // Flee from the damager
+            flee.fleeTime--
+            if (flee.fleeTime <= 0) {
+                entity.removeComponent<FleeComponent>()
+            }
+            flee.fleeFrom!!.location
+        } else {
+            ownerLocation
+        }
         
         val distanceToOwner = ownerLocation.distance(spiderLocation)
         val distanceToFollow = followLocation.distance(spiderLocation)
@@ -44,21 +40,24 @@ class PetBehaviour {
         }
         
         val isSprinting = owner.isSprinting
-        val maxSpeed = if (attack != null || isSprinting) sprintSpeed else walkSpeed
-        // Calculate speed based on distance to follow target, capped at max speed
-        val distanceFactor = maxSpeed / 20.0 // reach max speed at 20 blocks distance
-        val moveSpeed = if (distanceToFollow > 1.0) min(maxSpeed, distanceToFollow * distanceFactor) else distanceToFollow * maxSpeed
+        val maxSpeed = if (isSprinting) sprintSpeed else walkSpeed
+        val moveSpeed = maxSpeed
         // Scale speed by spider health (keep a minimum so it can still approach)
         val healthFactor = (spider.health / spider.maxHealth).coerceIn(0.2, 1.0)
         val adjustedMoveSpeed = moveSpeed * healthFactor
         
         spider.gallop = isSprinting
         
-        // Follow if beyond follow distance
-        if (distanceToFollow > followDistance) {
-            val direction = followLocation.toVector()
-                .subtract(spiderLocation.toVector())
-                .normalize()
+        // Follow if beyond follow distance, or always if fleeing
+        val shouldMove = if (flee != null) true else distanceToFollow > followDistance
+        if (shouldMove) {
+            val direction = if (flee != null) {
+                // Move away from flee target
+                followLocation.toVector().subtract(spiderLocation.toVector()).normalize().multiply(-1.0)
+            } else {
+                // Move towards follow target
+                followLocation.toVector().subtract(spiderLocation.toVector()).normalize()
+            }
             
             // Calculate desired velocity
             val desiredVelocity = direction.multiply(adjustedMoveSpeed)

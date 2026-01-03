@@ -1,7 +1,7 @@
 ﻿package com.voltaccept.spideranimation.spider
 
-import com.voltaccept.spideranimation.spider.components.body.setupSpiderBody
-import com.voltaccept.spideranimation.spider.components.*
+import com.voltaccept.spideranimation.AppState
+import com.voltaccept.spideranimation.spider.components.FleeComponent
 import com.voltaccept.spideranimation.spider.components.body.SpiderBody
 import com.voltaccept.spideranimation.spider.components.rendering.setupRenderer
 import com.voltaccept.spideranimation.utilities.ecs.ECS
@@ -35,17 +35,30 @@ fun setupSpider(app: ECS) {
     setupRenderer(app)
     setupFeeding(app)
 
-    // Add damage listener for player attacks on spider
+    // Add damage listener for attacks on spider
     addEventListener(object : Listener {
         @EventHandler
         fun onDamage(event: EntityDamageByEntityEvent) {
             val damaged = event.entity
             val damager = event.damager
-            if (damager is org.bukkit.entity.Player) {
-                val spider = RenderEntityTracker.getSpider(damaged)
-                if (spider != null) {
-                    // Players cannot damage the spider, just cancel the event
-                    event.isCancelled = true
+            val spider = RenderEntityTracker.getSpider(damaged)
+            if (spider != null) {
+                // Find the ECS entity
+                val entity = AppState.ecs.query<ECSEntity, SpiderBody>().find { it.second === spider }?.first
+                if (entity != null) {
+                    if (damager is org.bukkit.entity.Player) {
+                        // Players can damage the spider
+                        spider.damage(event.damage)
+                        event.isCancelled = true // prevent damaging the rendered entity
+                    } else {
+                        // Apply damage and make spider flee from the damager (if not the owner)
+                        spider.damage(event.damage)
+                        val ownerUUID = entity.query<com.voltaccept.spideranimation.PetSpiderOwner>()?.ownerUUID
+                        if (damager is LivingEntity && damager.uniqueId != ownerUUID) {
+                            entity.addComponent(FleeComponent(damager, 100)) // flee for 5 seconds
+                        }
+                        event.isCancelled = true // prevent damaging the rendered entity
+                    }
                 }
             }
         }

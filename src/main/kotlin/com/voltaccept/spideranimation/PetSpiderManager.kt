@@ -1,7 +1,6 @@
 ﻿package com.voltaccept.spideranimation
 
 import com.voltaccept.spideranimation.spider.components.body.SpiderBody
-import com.voltaccept.spideranimation.laser.LaserAttack
 import com.voltaccept.spideranimation.utilities.ecs.ECSEntity
 import org.bukkit.entity.Player
 import java.util.UUID
@@ -33,13 +32,6 @@ object PetSpiderManager {
     fun removeSpider(player: Player) {
         val entity = playerSpiders.remove(player.uniqueId)
         if (entity != null) {
-            val attack = entity.query<LaserAttack>()
-            try {
-                attack?.intervalHandle?.close()
-            } catch (_: Exception) {}
-            try {
-                attack?.laserEntity?.remove()
-            } catch (_: Exception) {}
             entity.remove()
         }
     }
