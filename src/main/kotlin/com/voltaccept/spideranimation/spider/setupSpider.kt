@@ -1,4 +1,4 @@
-package com.voltaccept.spideranimation.spider
+﻿package com.voltaccept.spideranimation.spider
 
 import com.voltaccept.spideranimation.AppState
 import com.voltaccept.spideranimation.spider.components.FleeComponent
