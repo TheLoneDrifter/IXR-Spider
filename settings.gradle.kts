@@ -1,1 +1,1 @@
-rootProject.name = "robotic-pets"
+rootProject.name = "VoltaPETS"
