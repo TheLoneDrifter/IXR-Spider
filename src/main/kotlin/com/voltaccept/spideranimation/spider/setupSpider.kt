@@ -34,6 +34,9 @@ private fun raycastSpiderFromPlayer(player: org.bukkit.entity.Player, maxDistanc
     val eyeLocation = player.eyeLocation
     val direction = eyeLocation.direction.normalize()
     
+    // Get the world from the player's location (should not be null for an online player)
+    val world = eyeLocation.world ?: return null
+    
     // Check points along the ray
     val step = 0.2
     var currentDistance = 0.0
@@ -42,7 +45,7 @@ private fun raycastSpiderFromPlayer(player: org.bukkit.entity.Player, maxDistanc
         val checkLocation = eyeLocation.clone().add(direction.clone().multiply(currentDistance))
         
         // Check for armor stands (spider parts) in a small radius
-        for (entity in checkLocation.world.getNearbyEntities(checkLocation, 0.5, 0.5, 0.5)) {
+        for (entity in world.getNearbyEntities(checkLocation, 0.5, 0.5, 0.5)) {
             if (entity is ArmorStand) {
                 val spider = RenderEntityTracker.getSpider(entity)
                 if (spider != null) {
