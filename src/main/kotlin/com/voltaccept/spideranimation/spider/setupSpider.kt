@@ -23,8 +23,45 @@ import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.event.Listener
 import org.bukkit.event.EventHandler
 import org.bukkit.event.entity.EntityDamageByEntityEvent
+import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.event.block.Action
+import org.bukkit.util.Vector
+import org.bukkit.entity.ArmorStand
 import com.voltaccept.spideranimation.utilities.events.addEventListener
 import org.bukkit.entity.LivingEntity
+
+private fun raycastSpiderFromPlayer(player: org.bukkit.entity.Player, maxDistance: Double): Pair<SpiderBody, ECSEntity>? {
+    val eyeLocation = player.eyeLocation
+    val direction = eyeLocation.direction.normalize()
+    
+    // Check points along the ray
+    val step = 0.2
+    var currentDistance = 0.0
+    
+    while (currentDistance < maxDistance) {
+        val checkLocation = eyeLocation.clone().add(direction.clone().multiply(currentDistance))
+        
+        // Check for armor stands (spider parts) in a small radius
+        for (entity in checkLocation.world.getNearbyEntities(checkLocation, 0.5, 0.5, 0.5)) {
+            if (entity is ArmorStand) {
+                val spider = RenderEntityTracker.getSpider(entity)
+                if (spider != null) {
+                    // Find the ECS entity for this spider
+                    val ecsEntity = AppState.ecs.query<ECSEntity, SpiderBody>()
+                        .find { it.second === spider }?.first
+                    
+                    if (ecsEntity != null) {
+                        return Pair(spider, ecsEntity)
+                    }
+                }
+            }
+        }
+        
+        currentDistance += step
+    }
+    
+    return null
+}
 
 fun setupSpider(app: ECS) {
     setupSpiderBody(app)
@@ -56,13 +93,14 @@ fun setupSpider(app: ECS) {
     setupRenderer(app)
     setupFeeding(app)
 
-    // Add damage listener for attacks on spider
+    // Add damage listener for attacks on spider from non-players
     addEventListener(object : Listener {
         @EventHandler
         fun onDamage(event: EntityDamageByEntityEvent) {
             val damaged = event.entity
             val damager = event.damager
             val spider = RenderEntityTracker.getSpider(damaged)
+            
             if (spider != null) {
                 if (spider.isDisabled) {
                     event.isCancelled = true
@@ -72,26 +110,8 @@ fun setupSpider(app: ECS) {
                 // Find the ECS entity
                 val entity = AppState.ecs.query<ECSEntity, SpiderBody>().find { it.second === spider }?.first
                 if (entity != null) {
-                    if (damager is org.bukkit.entity.Player) {
-                        // Players deal exactly 1 damage when left-clicking
-                        val damageAmount = 1.0
-                        val oldHealth = spider.health
-                        spider.damage(damageAmount)
-                        if (spider.health < oldHealth) {
-                            // Play hurt sound
-                            spider.world.playSound(spider.location(), org.bukkit.Sound.ENTITY_IRON_GOLEM_HURT, 1.0f, 1.0f)
-                        }
-                        
-                        if (spider.health <= 0 && !spider.isDisabled) {
-                            spider.isDisabled = true
-                            spider.disabledUntil = System.currentTimeMillis() + (3 * 60 * 1000) // 3 minutes
-                            val ownerComponent = entity.query<com.voltaccept.spideranimation.PetSpiderOwner>()
-                            if (ownerComponent != null) {
-                                val owner = org.bukkit.Bukkit.getPlayer(ownerComponent.ownerUUID)
-                                owner?.sendMessage("§cYour SP1D.3R has been disabled due to internal damage")
-                            }
-                        }
-                    } else {
+                    // Only handle non-player damage here (players use raycast)
+                    if (damager !is org.bukkit.entity.Player) {
                         // Apply damage and make spider flee from the damager (if not the owner)
                         val oldHealth = spider.health
                         spider.damage(event.damage)
@@ -112,6 +132,47 @@ fun setupSpider(app: ECS) {
                                 val owner = org.bukkit.Bukkit.getPlayer(ownerComponent.ownerUUID)
                                 owner?.sendMessage("§cYour SP1D.3R has been disabled due to internal damage")
                             }
+                        }
+                    }
+                }
+            }
+        }
+    })
+
+    // Add raycast-based damage detection for player left clicks
+    addEventListener(object : Listener {
+        @EventHandler
+        fun onPlayerLeftClick(event: PlayerInteractEvent) {
+            // Only care about left clicks
+            if (event.action != Action.LEFT_CLICK_AIR && event.action != Action.LEFT_CLICK_BLOCK) {
+                return
+            }
+            
+            val player = event.player
+            val raycastResult = raycastSpiderFromPlayer(player, 4.0)
+            
+            if (raycastResult != null) {
+                val (spider, entity) = raycastResult
+                
+                if (spider.isDisabled) {
+                    return
+                }
+                
+                // Apply 1 damage
+                val oldHealth = spider.health
+                spider.damage(1.0)
+                
+                if (spider.health < oldHealth) {
+                    // Play hurt sound
+                    spider.world.playSound(spider.location(), org.bukkit.Sound.ENTITY_IRON_GOLEM_HURT, 1.0f, 1.0f)
+                    
+                    if (spider.health <= 0 && !spider.isDisabled) {
+                        spider.isDisabled = true
+                        spider.disabledUntil = System.currentTimeMillis() + (3 * 60 * 1000) // 3 minutes
+                        val ownerComponent = entity.query<com.voltaccept.spideranimation.PetSpiderOwner>()
+                        if (ownerComponent != null) {
+                            val owner = org.bukkit.Bukkit.getPlayer(ownerComponent.ownerUUID)
+                            owner?.sendMessage("§cYour SP1D.3R has been disabled due to internal damage")
                         }
                     }
                 }
