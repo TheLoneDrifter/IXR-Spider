@@ -121,7 +121,7 @@ fun setupSpider(app: ECS) {
                         }
                         if (spider.health < oldHealth) {
                             // Play hurt sound
-                            spider.world.playSound(spider.location(), org.bukkit.Sound.ENTITY_IRON_GOLEM_HURT, 1.0f, 1.0f)
+                            spider.world?.playSound(spider.location(), org.bukkit.Sound.ENTITY_IRON_GOLEM_HURT, 1.0f, 1.0f)
                         }
                         
                         if (spider.health <= 0 && !spider.isDisabled) {
@@ -164,7 +164,7 @@ fun setupSpider(app: ECS) {
                 
                 if (spider.health < oldHealth) {
                     // Play hurt sound
-                    spider.world.playSound(spider.location(), org.bukkit.Sound.ENTITY_IRON_GOLEM_HURT, 1.0f, 1.0f)
+                    spider.world?.playSound(spider.location(), org.bukkit.Sound.ENTITY_IRON_GOLEM_HURT, 1.0f, 1.0f)
                     
                     if (spider.health <= 0 && !spider.isDisabled) {
                         spider.isDisabled = true
