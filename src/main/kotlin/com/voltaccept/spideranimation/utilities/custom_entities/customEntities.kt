@@ -1,4 +1,4 @@
-﻿package com.voltaccept.spideranimation.utilities.custom_entities
+package com.voltaccept.spideranimation.utilities.custom_entities
 
 import com.voltaccept.spideranimation.utilities.events.onInteractEntity
 import org.bukkit.Bukkit
@@ -47,4 +47,3 @@ fun Entity.attach(component: CustomEntityComponent) {
 fun Entity.detach(component: CustomEntityComponent) {
     this.removeScoreboardTag(component.tag)
 }
-

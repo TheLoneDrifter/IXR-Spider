@@ -1,4 +1,4 @@
-﻿package com.voltaccept.spideranimation.spider.components.rendering
+package com.voltaccept.spideranimation.spider.components.rendering
 
 import com.voltaccept.spideranimation.utilities.rendering.interpolateTransform
 import com.voltaccept.spideranimation.utilities.rendering.renderBlock
@@ -262,4 +262,3 @@ fun renderLine(
         update(it)
     }
 )
-

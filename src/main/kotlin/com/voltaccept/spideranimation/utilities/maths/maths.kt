@@ -1,4 +1,4 @@
-﻿package com.voltaccept.spideranimation.utilities.maths
+package com.voltaccept.spideranimation.utilities.maths
 
 import org.bukkit.Location
 import org.bukkit.util.Transformation
@@ -209,4 +209,3 @@ fun List<Vector3f>.average(): Vector3f {
     for (vector in this) out.add(vector)
     return out.mul(1f / this.size)
 }
-

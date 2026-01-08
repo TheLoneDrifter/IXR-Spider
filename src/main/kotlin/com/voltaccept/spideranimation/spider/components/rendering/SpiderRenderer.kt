@@ -1,4 +1,4 @@
-﻿package com.voltaccept.spideranimation.spider.components.rendering
+package com.voltaccept.spideranimation.spider.components.rendering
 
 import com.voltaccept.spideranimation.spider.components.body.SpiderBody
 import com.voltaccept.spideranimation.spider.components.Cloak
@@ -91,4 +91,3 @@ private object SpiderParticleRenderer {
         }
     }
 }
-

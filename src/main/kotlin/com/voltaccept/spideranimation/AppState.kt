@@ -1,4 +1,4 @@
-﻿package com.voltaccept.spideranimation
+package com.voltaccept.spideranimation
 
 import com.voltaccept.spideranimation.kinematic_chain_visualizer.KinematicChainVisualizer
 import com.voltaccept.spideranimation.spider.components.body.SpiderBody
@@ -81,4 +81,3 @@ class MiscellaneousOptions {
 }
 
 data class PetSpiderOwner(val ownerUUID: java.util.UUID)
-

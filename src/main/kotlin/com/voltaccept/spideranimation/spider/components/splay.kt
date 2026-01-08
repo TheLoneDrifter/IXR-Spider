@@ -1,4 +1,4 @@
-﻿package com.voltaccept.spideranimation.spider.components
+package com.voltaccept.spideranimation.spider.components
 
 import com.voltaccept.spideranimation.AppState
 import com.voltaccept.spideranimation.spider.components.body.SpiderBody
@@ -99,4 +99,3 @@ private fun splay(entity: BlockDisplay, offset: Vector3f) {
         if (t >= 1) it.close()
     }
 }
-

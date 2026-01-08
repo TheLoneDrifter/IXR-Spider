@@ -1,4 +1,4 @@
-﻿package com.voltaccept.spideranimation.spider.configuration
+package com.voltaccept.spideranimation.spider.configuration
 
 import com.voltaccept.spideranimation.spider.presets.AnimatedPalettes
 import com.voltaccept.spideranimation.spider.presets.SpiderTorsoModels
@@ -41,4 +41,3 @@ class BodyPlan {
         }
     }
 }
-

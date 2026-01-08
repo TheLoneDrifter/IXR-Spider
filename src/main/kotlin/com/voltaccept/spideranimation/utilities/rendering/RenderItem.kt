@@ -1,4 +1,4 @@
-﻿@file:Suppress("UNCHECKED_CAST")
+@file:Suppress("UNCHECKED_CAST")
 
 package com.voltaccept.spideranimation.utilities.rendering
 
@@ -145,4 +145,3 @@ object RenderEntityTracker {
         }
     }
 }
-

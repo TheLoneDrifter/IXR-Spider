@@ -1,4 +1,4 @@
-﻿package com.voltaccept.spideranimation.spider.components
+package com.voltaccept.spideranimation.spider.components
 
 import com.voltaccept.spideranimation.spider.components.FleeComponent
 import com.voltaccept.spideranimation.utilities.ecs.ECS
@@ -17,6 +17,11 @@ class PetBehaviour {
     fun update(ecs: ECS, entity: ECSEntity) {
         val ownerComponent = entity.query<PetSpiderOwner>() ?: return
         val spider = entity.query<SpiderBody>() ?: return
+        
+        if (spider.isDisabled) {
+            spider.isWalking = false
+            return
+        }
         
         val owner = Bukkit.getPlayer(ownerComponent.ownerUUID) ?: return
         if (!owner.isOnline) return
@@ -105,4 +110,3 @@ fun setupPetBehaviour(ecs: ECS) {
         }
     }
 }
-

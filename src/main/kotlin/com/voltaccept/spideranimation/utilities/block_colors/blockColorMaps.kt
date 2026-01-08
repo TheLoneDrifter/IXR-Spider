@@ -1,4 +1,4 @@
-﻿package com.voltaccept.spideranimation.utilities.block_colors
+package com.voltaccept.spideranimation.utilities.block_colors
 
 import com.google.gson.Gson
 import com.voltaccept.spideranimation.utilities.colors.Oklab
@@ -143,4 +143,3 @@ private fun getWoodVariant(material: Material): Material? {
 private fun Material.idString(): String {
     return this.key.toString()
 }
-

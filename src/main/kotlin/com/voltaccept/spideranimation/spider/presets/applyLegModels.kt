@@ -1,4 +1,4 @@
-﻿package com.voltaccept.spideranimation.spider.presets
+package com.voltaccept.spideranimation.spider.presets
 
 import com.voltaccept.spideranimation.spider.configuration.BodyPlan
 import com.voltaccept.spideranimation.utilities.BlockDisplayModelPiece
@@ -53,4 +53,3 @@ fun applyMechanicalLegModel(bodyPlan: BodyPlan) {
         }
     }
 }
-

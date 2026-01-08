@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.voltaccept"
-version = "4.0-SNAPSHOT"
+version = "2.0.0-SERVER"
 
 repositories {
     mavenCentral()

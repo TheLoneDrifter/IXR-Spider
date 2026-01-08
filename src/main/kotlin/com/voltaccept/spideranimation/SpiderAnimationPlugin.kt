@@ -1,4 +1,4 @@
-﻿package com.voltaccept.spideranimation
+package com.voltaccept.spideranimation
 
 import com.voltaccept.spideranimation.AppState.ecs
 import com.voltaccept.spideranimation.kinematic_chain_visualizer.KinematicChainVisualizer
@@ -76,4 +76,3 @@ class SpiderAnimationPlugin : JavaPlugin() {
         }
     }
 }
-

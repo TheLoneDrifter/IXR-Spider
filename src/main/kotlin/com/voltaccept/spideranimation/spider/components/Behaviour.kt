@@ -1,4 +1,4 @@
-﻿package com.voltaccept.spideranimation.spider.components
+package com.voltaccept.spideranimation.spider.components
 
 import com.voltaccept.spideranimation.spider.components.body.SpiderBody
 import com.voltaccept.spideranimation.utilities.*
@@ -123,4 +123,3 @@ private fun SpiderBody.walkAt(targetVelocity: Vector, tridentDetector: TridentHi
 
     if (tridentDetector != null && tridentDetector.stunned && targetVelocity.isZero) isWalking = false
 }
-

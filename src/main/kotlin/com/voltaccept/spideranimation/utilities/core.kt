@@ -1,4 +1,4 @@
-﻿package com.voltaccept.spideranimation.utilities
+package com.voltaccept.spideranimation.utilities
 
 import com.voltaccept.spideranimation.utilities.events.onTick
 import com.voltaccept.spideranimation.utilities.maths.pitchRadians
@@ -65,4 +65,3 @@ fun runCommandSilently(
 
     server.dispatchCommand(commandBlockMinecart, command)
 }
-

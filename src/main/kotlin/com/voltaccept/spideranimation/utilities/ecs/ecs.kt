@@ -1,4 +1,4 @@
-﻿package com.voltaccept.spideranimation.utilities.ecs
+package com.voltaccept.spideranimation.utilities.ecs
 
 /**
  * Bevy-style Entity Component System
@@ -129,4 +129,3 @@ class Quadruple<A, B, C, D>(
     operator fun component3() = third
     operator fun component4() = forth
 }
-

@@ -1,4 +1,4 @@
-﻿package com.voltaccept.spideranimation.spider.presets
+package com.voltaccept.spideranimation.spider.presets
 
 import com.voltaccept.spideranimation.utilities.parseModelFromCommand
 import org.bukkit.Material
@@ -44,4 +44,3 @@ object SpiderLegModel {
         }
     }
 }
-

@@ -1,4 +1,4 @@
-﻿package com.voltaccept.spideranimation.kinematic_chain_visualizer
+package com.voltaccept.spideranimation.kinematic_chain_visualizer
 
 import com.voltaccept.spideranimation.spider.components.rendering.renderLine
 import com.voltaccept.spideranimation.utilities.rendering.interpolateTransform
@@ -363,4 +363,3 @@ fun setupChainVisualizer(app: ECS) {
         }
     }
 }
-

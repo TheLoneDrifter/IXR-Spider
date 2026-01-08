@@ -1,4 +1,4 @@
-﻿package com.voltaccept.spideranimation.utilities.events
+package com.voltaccept.spideranimation.utilities.events
 
 
 class SeriesScheduler {
@@ -12,4 +12,3 @@ class SeriesScheduler {
         runLater(time, task)
     }
 }
-

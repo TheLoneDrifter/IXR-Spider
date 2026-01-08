@@ -1,4 +1,4 @@
-﻿package com.voltaccept.spideranimation.utilities.colors
+package com.voltaccept.spideranimation.utilities.colors
 
 import com.voltaccept.spideranimation.utilities.maths.lerp
 import com.voltaccept.spideranimation.utilities.maths.lerpSafely
@@ -78,4 +78,3 @@ fun Color.toOklab(): Oklab {
         alpha = this.alpha,
     )
 }
-

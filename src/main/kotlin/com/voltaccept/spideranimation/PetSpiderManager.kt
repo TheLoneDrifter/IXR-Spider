@@ -1,4 +1,4 @@
-﻿package com.voltaccept.spideranimation
+package com.voltaccept.spideranimation
 
 import com.voltaccept.spideranimation.spider.components.body.SpiderBody
 import com.voltaccept.spideranimation.utilities.ecs.ECSEntity
@@ -45,4 +45,3 @@ object PetSpiderManager {
         playerSpiders.clear()
     }
 }
-

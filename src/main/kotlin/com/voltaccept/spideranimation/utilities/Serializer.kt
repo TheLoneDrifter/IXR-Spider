@@ -1,4 +1,4 @@
-﻿package com.voltaccept.spideranimation.utilities
+package com.voltaccept.spideranimation.utilities
 
 import com.google.gson.Gson
 
@@ -91,4 +91,3 @@ object Serializer {
         } catch (_: Exception) { }
     }
 }
-

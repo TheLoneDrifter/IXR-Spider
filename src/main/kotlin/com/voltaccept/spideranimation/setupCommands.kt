@@ -1,4 +1,4 @@
-﻿package com.voltaccept.spideranimation
+package com.voltaccept.spideranimation
 
 import com.voltaccept.spideranimation.spider.components.splay
 import com.voltaccept.spideranimation.spider.presets.*
@@ -28,4 +28,3 @@ fun setupCommands(plugin: SpiderAnimationPlugin) {
         }
     }
 }
-

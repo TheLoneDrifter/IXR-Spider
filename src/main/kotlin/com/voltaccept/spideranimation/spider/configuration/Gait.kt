@@ -1,4 +1,4 @@
-﻿package com.voltaccept.spideranimation.spider.configuration
+package com.voltaccept.spideranimation.spider.configuration
 
 import com.voltaccept.spideranimation.spider.components.body.GaitType
 import com.voltaccept.spideranimation.spider.components.body.SpiderBody
@@ -136,4 +136,3 @@ enum class PivotMode(val get: (spider: SpiderBody) -> Quaternionf) {
     SpiderOrientation({ spider -> spider.orientation }),
     GroundOrientation({ spider -> spider.preferredOrientation })
 }
-

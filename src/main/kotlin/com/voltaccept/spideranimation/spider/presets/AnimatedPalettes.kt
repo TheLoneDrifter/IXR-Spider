@@ -1,4 +1,4 @@
-﻿package com.voltaccept.spideranimation.spider.presets
+package com.voltaccept.spideranimation.spider.presets
 
 import org.bukkit.Material
 import org.bukkit.block.data.BlockData
@@ -41,4 +41,3 @@ enum class AnimatedPalettes(val palette: List<Pair<BlockData, Display.Brightness
         Material.FIRE_CORAL_BLOCK to Display.Brightness(15,15),
     ).map { (block, brightness) -> block.createBlockData() to brightness }),
 }
-

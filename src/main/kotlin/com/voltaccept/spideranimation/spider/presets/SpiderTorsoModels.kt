@@ -1,4 +1,4 @@
-﻿package com.voltaccept.spideranimation.spider.presets
+package com.voltaccept.spideranimation.spider.presets
 
 import com.voltaccept.spideranimation.utilities.DisplayModel
 import com.voltaccept.spideranimation.utilities.parseModelFromCommand
@@ -43,4 +43,3 @@ enum class SpiderTorsoModels(val model: DisplayModel) {
         }
     }),
 }
-

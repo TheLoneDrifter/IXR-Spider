@@ -1,4 +1,4 @@
-﻿package com.voltaccept.spideranimation.laser
+package com.voltaccept.spideranimation.laser
 
 import com.voltaccept.spideranimation.utilities.rendering.renderBlock
 import com.voltaccept.spideranimation.kinematic_chain_visualizer.KinematicChainVisualizer
@@ -74,4 +74,3 @@ private fun renderLaserPoint(
         it.transformation = centredTransform(size, size, size)
     }
 )
-

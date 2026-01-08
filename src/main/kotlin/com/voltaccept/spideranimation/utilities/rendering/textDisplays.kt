@@ -1,4 +1,4 @@
-﻿package com.voltaccept.spideranimation.utilities.rendering
+package com.voltaccept.spideranimation.utilities.rendering
 
 import com.voltaccept.spideranimation.utilities.currentPlugin
 import com.voltaccept.spideranimation.utilities.maths.normal
@@ -127,4 +127,3 @@ fun TextDisplay.interpolateTriangleTransform(matrix: Matrix4f) {
     if (oldTransformation == this.transformation) return
     this.interpolationDelay = 0
 }
-

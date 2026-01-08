@@ -1,4 +1,4 @@
-﻿package com.voltaccept.spideranimation.utilities
+package com.voltaccept.spideranimation.utilities
 
 import com.google.gson.Gson
 import org.bukkit.Material
@@ -46,4 +46,3 @@ fun parseModelFromCommand(command: String): DisplayModel {
 
     return DisplayModel(pieces)
 }
-

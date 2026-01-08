@@ -1,4 +1,4 @@
-﻿package com.voltaccept.spideranimation.utilities
+package com.voltaccept.spideranimation.utilities
 
 import org.joml.Vector2d
 
@@ -56,4 +56,3 @@ fun nearestPointOnClampedLine(point: Vector2d, a: Vector2d, b: Vector2d): Vector
 
     return Vector2d(nearestX, nearestY)
 }
-

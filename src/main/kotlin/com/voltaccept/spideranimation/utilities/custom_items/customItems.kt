@@ -1,4 +1,4 @@
-﻿package com.voltaccept.spideranimation.utilities.custom_items
+package com.voltaccept.spideranimation.utilities.custom_items
 
 import com.voltaccept.spideranimation.utilities.events.onGestureUseItem
 import com.voltaccept.spideranimation.utilities.events.onTick
@@ -88,4 +88,3 @@ fun ItemStack.attach(component: CustomItemComponent): ItemStack {
     component.attach(this)
     return this
 }
-

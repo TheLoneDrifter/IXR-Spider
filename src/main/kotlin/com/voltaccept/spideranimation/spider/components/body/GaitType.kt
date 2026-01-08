@@ -1,4 +1,4 @@
-﻿package com.voltaccept.spideranimation.spider.components.body
+package com.voltaccept.spideranimation.spider.components.body
 
 enum class GaitType(val canMoveLeg: (Leg) -> Boolean, val getLegsInUpdateOrder: (SpiderBody) -> List<Leg>) {
     WALK(WalkGaitType::canMoveLeg, WalkGaitType::getLegsInUpdateOrder),
@@ -86,4 +86,3 @@ object GallopGaitType {
 fun unIndexLeg(spider: SpiderBody, indices: List<Int>): List<Leg> {
     return indices.mapNotNull { spider.legs.getOrNull(it) }
 }
-

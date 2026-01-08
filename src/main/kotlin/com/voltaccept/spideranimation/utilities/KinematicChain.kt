@@ -1,4 +1,4 @@
-﻿package com.voltaccept.spideranimation.utilities
+package com.voltaccept.spideranimation.utilities
 
 import com.voltaccept.spideranimation.utilities.maths.rotate
 import org.bukkit.util.Vector
@@ -106,4 +106,3 @@ class ChainSegment(
         return ChainSegment(position.clone(), length, initDirection.clone())
     }
 }
-

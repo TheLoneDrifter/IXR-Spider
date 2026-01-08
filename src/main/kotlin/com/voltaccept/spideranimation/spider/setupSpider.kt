@@ -1,4 +1,4 @@
-﻿package com.voltaccept.spideranimation.spider
+package com.voltaccept.spideranimation.spider
 
 import com.voltaccept.spideranimation.AppState
 import com.voltaccept.spideranimation.spider.components.FleeComponent
@@ -25,15 +25,27 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import com.voltaccept.spideranimation.utilities.events.addEventListener
 import org.bukkit.entity.LivingEntity
-
+import kotlin.math.maxOf
 
 fun setupSpider(app: ECS) {
     setupSpiderBody(app)
     setupBehaviours(app)
 
     app.onTick {
-        for ((entity, _) in app.query<ECSEntity, SpiderBody>()) {
-            entity.replaceComponent<SpiderBehaviour>(StayStillBehaviour())
+        for ((entity, spider) in app.query<ECSEntity, SpiderBody>()) {
+            if (spider.isDisabled && System.currentTimeMillis() >= spider.disabledUntil) {
+                spider.isDisabled = false
+                spider.health = spider.maxHealth // Reset health when reactivated
+                val ownerComponent = entity.query<com.voltaccept.spideranimation.PetSpiderOwner>()
+                if (ownerComponent != null) {
+                    val owner = org.bukkit.Bukkit.getPlayer(ownerComponent.ownerUUID)
+                    owner?.sendMessage("§aYour SP1D.3R has been reactivated!")
+                }
+            }
+            
+            if (!spider.isDisabled) {
+                entity.replaceComponent<SpiderBehaviour>(StayStillBehaviour())
+            }
         }
     }
 
@@ -53,6 +65,11 @@ fun setupSpider(app: ECS) {
             val damager = event.damager
             val spider = RenderEntityTracker.getSpider(damaged)
             if (spider != null) {
+                if (spider.isDisabled) {
+                    event.isCancelled = true
+                    return
+                }
+                
                 // Find the ECS entity
                 val entity = AppState.ecs.query<ECSEntity, SpiderBody>().find { it.second === spider }?.first
                 if (entity != null) {
@@ -65,6 +82,16 @@ fun setupSpider(app: ECS) {
                             // Play hurt sound
                             spider.world.playSound(spider.location(), org.bukkit.Sound.ENTITY_IRON_GOLEM_HURT, 1.0f, 1.0f)
                         }
+                        
+                        if (spider.health <= 0 && !spider.isDisabled) {
+                            spider.isDisabled = true
+                            spider.disabledUntil = System.currentTimeMillis() + (3 * 60 * 1000) // 3 minutes
+                            val ownerComponent = entity.query<com.voltaccept.spideranimation.PetSpiderOwner>()
+                            if (ownerComponent != null) {
+                                val owner = org.bukkit.Bukkit.getPlayer(ownerComponent.ownerUUID)
+                                owner?.sendMessage("§cYour SP1D.3R has been disabled due to internal damage")
+                            }
+                        }
                     } else {
                         // Apply damage and make spider flee from the damager (if not the owner)
                         val oldHealth = spider.health
@@ -76,6 +103,16 @@ fun setupSpider(app: ECS) {
                         if (spider.health < oldHealth) {
                             // Play hurt sound
                             spider.world.playSound(spider.location(), org.bukkit.Sound.ENTITY_IRON_GOLEM_HURT, 1.0f, 1.0f)
+                        }
+                        
+                        if (spider.health <= 0 && !spider.isDisabled) {
+                            spider.isDisabled = true
+                            spider.disabledUntil = System.currentTimeMillis() + (3 * 60 * 1000) // 3 minutes
+                            val ownerComponent = entity.query<com.voltaccept.spideranimation.PetSpiderOwner>()
+                            if (ownerComponent != null) {
+                                val owner = org.bukkit.Bukkit.getPlayer(ownerComponent.ownerUUID)
+                                owner?.sendMessage("§cYour SP1D.3R has been disabled due to internal damage")
+                            }
                         }
                     }
                 }
@@ -123,4 +160,3 @@ fun setupFeeding(app: ECS) {
         }
     }
 }
-

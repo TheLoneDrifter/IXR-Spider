@@ -1,4 +1,4 @@
-﻿package com.voltaccept.spideranimation.utilities.events
+package com.voltaccept.spideranimation.utilities.events
 
 import com.voltaccept.spideranimation.utilities.currentPlugin
 import org.bukkit.scheduler.BukkitTask
@@ -49,4 +49,3 @@ private object TickSchedule {
         }
     }
 }
-

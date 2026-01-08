@@ -1,4 +1,4 @@
-﻿package com.voltaccept.spideranimation.spider.components.body
+package com.voltaccept.spideranimation.spider.components.body
 
 import com.voltaccept.spideranimation.utilities.ChainSegment
 import com.voltaccept.spideranimation.utilities.KinematicChain
@@ -323,4 +323,3 @@ class LegTarget(
     val isGrounded: Boolean,
     val id: Int,
 )
-

@@ -1,4 +1,4 @@
-﻿name: spider-animation
+name: spider-animation
 version: '5.0.0'
 main: com.voltaccept.spideranimation.SpiderAnimationPlugin
 api-version: '1.21'
@@ -7,4 +7,3 @@ commands:
   pets:
     description: Manage your pets
     usage: /pets
-

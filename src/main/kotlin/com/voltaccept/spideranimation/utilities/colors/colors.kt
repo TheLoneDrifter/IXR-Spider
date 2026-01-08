@@ -1,4 +1,4 @@
-﻿package com.voltaccept.spideranimation.utilities.colors
+package com.voltaccept.spideranimation.utilities.colors
 
 import com.voltaccept.spideranimation.utilities.maths.lerpSafely
 import net.md_5.bungee.api.ChatColor
@@ -136,4 +136,3 @@ fun hsv(h: Float, s: Float, v: Float): Color {
     }
     return Color.fromRGB(((r + m) * 255).toInt(), ((g + m) * 255).toInt(), ((b + m) * 255).toInt())
 }
-

@@ -1,4 +1,4 @@
-﻿package com.voltaccept.spideranimation.utilities
+package com.voltaccept.spideranimation.utilities
 
 import org.bukkit.block.data.BlockData
 import org.bukkit.entity.Display
@@ -41,4 +41,3 @@ class DisplayModel(var pieces: List<BlockDisplayModelPiece>) {
         fun empty() = DisplayModel(emptyList())
     }
 }
-

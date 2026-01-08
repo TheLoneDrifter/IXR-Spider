@@ -1,4 +1,4 @@
-﻿package com.voltaccept.spideranimation.spider.components
+package com.voltaccept.spideranimation.spider.components
 
 import com.voltaccept.spideranimation.spider.components.body.SpiderBody
 import com.voltaccept.spideranimation.utilities.ecs.ECS
@@ -47,4 +47,3 @@ fun setupTridentHitDetector(app: ECS) {
         }
     }
 }
-

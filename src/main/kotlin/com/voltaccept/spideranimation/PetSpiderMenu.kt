@@ -1,4 +1,4 @@
-﻿package com.voltaccept.spideranimation
+package com.voltaccept.spideranimation
 
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -131,4 +131,3 @@ class PetSpiderPlayerListener : Listener {
         PetSpiderManager.removeSpider(event.player)
     }
 }
-

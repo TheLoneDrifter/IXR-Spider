@@ -1,4 +1,4 @@
-﻿package com.voltaccept.spideranimation.spider.components
+package com.voltaccept.spideranimation.spider.components
 
 import com.voltaccept.spideranimation.spider.components.body.Leg
 import com.voltaccept.spideranimation.spider.components.body.LegStepEvent
@@ -135,4 +135,3 @@ private fun spawnLegParticles(sounds: SoundsAndParticles, world: World, leg: Leg
         }
     }
 }
-

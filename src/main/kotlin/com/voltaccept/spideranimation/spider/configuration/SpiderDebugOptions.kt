@@ -1,4 +1,4 @@
-﻿package com.voltaccept.spideranimation.spider.configuration
+package com.voltaccept.spideranimation.spider.configuration
 
 class SpiderDebugOptions {
     var scanBars = true
@@ -13,4 +13,3 @@ class SpiderDebugOptions {
 
     var disableFabrik = false
 }
-

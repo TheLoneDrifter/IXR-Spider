@@ -1,4 +1,4 @@
-﻿package com.voltaccept.spideranimation.utilities
+package com.voltaccept.spideranimation.utilities
 
 import com.voltaccept.spideranimation.utilities.maths.DOWN_VECTOR
 import com.voltaccept.spideranimation.utilities.maths.FORWARD_VECTOR
@@ -121,4 +121,3 @@ fun matrixFromTransform(transformation: Transformation): Matrix4f {
     matrix.rotate(transformation.rightRotation)
     return matrix
 }
-

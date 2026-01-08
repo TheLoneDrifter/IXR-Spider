@@ -1,4 +1,4 @@
-﻿package com.voltaccept.spideranimation.utilities.rendering
+package com.voltaccept.spideranimation.utilities.rendering
 
 import org.bukkit.Location
 import org.bukkit.World
@@ -93,4 +93,3 @@ fun renderItem(
     init = init,
     update = update
 )
-

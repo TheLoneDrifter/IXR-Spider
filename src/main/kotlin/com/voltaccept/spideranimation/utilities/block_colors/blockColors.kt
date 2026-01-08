@@ -1,4 +1,4 @@
-﻿package com.voltaccept.spideranimation.utilities.block_colors
+package com.voltaccept.spideranimation.utilities.block_colors
 
 import com.voltaccept.spideranimation.utilities.colors.Oklab
 import com.voltaccept.spideranimation.utilities.colors.distanceTo
@@ -54,4 +54,3 @@ internal fun Color.withBrightness(brightness: Int): Color {
         (blue * brightness.toDouble() / 15).toInt(),
     )
 }
-

@@ -1,4 +1,4 @@
-﻿package com.voltaccept.spideranimation.spider.configuration
+package com.voltaccept.spideranimation.spider.configuration
 
 import org.bukkit.Sound
 import org.bukkit.util.Vector
@@ -60,4 +60,3 @@ class SoundPlayer(
         world.playSound(position.toLocation(world), sound, volume, pitch)
     }
 }
-

@@ -1,4 +1,4 @@
-﻿package com.voltaccept.spideranimation.utilities.overloads
+package com.voltaccept.spideranimation.utilities.overloads
 
 import com.voltaccept.spideranimation.utilities.maths.pitchRadians
 import com.voltaccept.spideranimation.utilities.maths.yawRadians
@@ -49,4 +49,3 @@ val Entity.yaw get() = this.location.yaw
 val Entity.pitch get() = this.location.pitch
 fun Entity.yawRadians() = this.location.yawRadians()
 fun Entity.pitchRadians() = this.location.pitchRadians()
-

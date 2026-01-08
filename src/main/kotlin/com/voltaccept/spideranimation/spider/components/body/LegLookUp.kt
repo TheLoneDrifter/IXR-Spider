@@ -1,4 +1,4 @@
-﻿package com.voltaccept.spideranimation.spider.components.body
+package com.voltaccept.spideranimation.spider.components.body
 
 object LegLookUp {
     fun diagonalPairs(legs: List<Int>): List<List<Int>> {
@@ -53,4 +53,3 @@ object LegLookUp {
         return listOf(front(leg), back(leg), horizontal(leg))
     }
 }
-

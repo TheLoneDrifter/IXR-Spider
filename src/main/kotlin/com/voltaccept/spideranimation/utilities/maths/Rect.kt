@@ -1,4 +1,4 @@
-﻿package com.voltaccept.spideranimation.utilities.maths
+package com.voltaccept.spideranimation.utilities.maths
 
 import org.joml.Vector2d
 
@@ -57,4 +57,3 @@ class Rect private constructor(var minX: Double, var minY: Double, var maxX: Dou
         return this
     }
 }
-
