@@ -25,7 +25,6 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import com.voltaccept.spideranimation.utilities.events.addEventListener
 import org.bukkit.entity.LivingEntity
-import kotlin.math.maxOf
 
 fun setupSpider(app: ECS) {
     setupSpiderBody(app)
@@ -75,7 +74,7 @@ fun setupSpider(app: ECS) {
                 if (entity != null) {
                     if (damager is org.bukkit.entity.Player) {
                         // Players can damage the spider
-                        val damageAmount = maxOf(event.damage, 1.0) // at least 1 damage
+                        val damageAmount = if (event.damage > 1.0) event.damage else 1.0 // at least 1 damage
                         val oldHealth = spider.health
                         spider.damage(damageAmount)
                         if (spider.health < oldHealth) {
