@@ -73,8 +73,8 @@ fun setupSpider(app: ECS) {
                 val entity = AppState.ecs.query<ECSEntity, SpiderBody>().find { it.second === spider }?.first
                 if (entity != null) {
                     if (damager is org.bukkit.entity.Player) {
-                        // Players can damage the spider
-                        val damageAmount = if (event.damage > 1.0) event.damage else 1.0 // at least 1 damage
+                        // Players deal exactly 1 damage when left-clicking
+                        val damageAmount = 1.0
                         val oldHealth = spider.health
                         spider.damage(damageAmount)
                         if (spider.health < oldHealth) {
