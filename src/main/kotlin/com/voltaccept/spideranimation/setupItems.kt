@@ -223,7 +223,7 @@ fun setupItems() {
         if (!hasBook) {
             // Give the book and move it to the last hotbar slot
             player.inventory.addItem(petMenuBook)
-            moveBookToLastSlot(player)
+            // Note: moveBookToLastSlot will be called by the listener
         }
     }
     
@@ -320,6 +320,7 @@ object PetMenuBookListener : Listener {
     init {
         onTick {
             for (player in Bukkit.getOnlinePlayers()) {
+                val petMenuBookComponent = getPetMenuBookComponent()
                 val petMenuBook = customItemRegistry.find { petMenuBookComponent.isAttached(it) }
                 if (petMenuBook != null && player.inventory.contains(petMenuBook)) {
                     moveBookToLastSlot(player)
