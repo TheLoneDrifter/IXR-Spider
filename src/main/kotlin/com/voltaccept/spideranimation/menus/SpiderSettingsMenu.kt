@@ -1,5 +1,6 @@
 package com.voltaccept.spideranimation.menus
 
+import com.voltaccept.spideranimation.PetSpiderMenu
 import com.voltaccept.spideranimation.PetSpiderSettingsManager
 import com.voltaccept.spideranimation.spider.presets.AnimatedPalettes
 import org.bukkit.Bukkit

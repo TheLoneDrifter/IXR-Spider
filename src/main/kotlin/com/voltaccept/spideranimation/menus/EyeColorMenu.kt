@@ -63,6 +63,7 @@ object EyeColorMenu {
                     AnimatedPalettes.LIME_EYES -> lore.addAll(listOf("§7• Vibrant lime green", "§7• High visibility", "§7• Default color"))
                     AnimatedPalettes.CYAN_EYES -> lore.addAll(listOf("§7• Cool cyan blue", "§7• Calm appearance", "§7• Original color"))
                     AnimatedPalettes.RED_EYES -> lore.addAll(listOf("§7• Intense red", "§7• Menacing look", "§7• High contrast"))
+                    else -> lore.addAll(listOf("§7• Custom eye color"))
                 }
                 
                 lore.add("§7§oIncludes matching blinking light colors")
