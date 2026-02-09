@@ -12,6 +12,7 @@ import com.voltaccept.spideranimation.spider.presets.hexBot
 import com.voltaccept.spideranimation.spider.presets.biped
 import com.voltaccept.spideranimation.spider.presets.quadBot
 import com.voltaccept.spideranimation.spider.presets.octoBot
+import com.voltaccept.spideranimation.spider.presets.AnimatedPalettes
 import com.voltaccept.spideranimation.spider.components.rendering.SpiderRenderer
 import com.voltaccept.spideranimation.utilities.ecs.ECS
 import com.voltaccept.spideranimation.utilities.ecs.ECSEntity
