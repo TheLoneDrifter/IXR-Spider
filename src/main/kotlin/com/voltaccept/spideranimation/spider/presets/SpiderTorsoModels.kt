@@ -14,8 +14,16 @@ enum class SpiderTorsoModels(val model: DisplayModel) {
         scale(.8f)
         pieces.forEach {
             it.tags += "torso"
-            if (it.block.material == Material.SMOOTH_QUARTZ) it.tags += "cloak"
-            if (it.tags.contains("cloak")) it.block = org.bukkit.Material.WHITE_CONCRETE.createBlockData()
+            if (it.block.material == Material.SMOOTH_QUARTZ) {
+                it.tags += "cloak"
+                it.block = org.bukkit.Material.BLACK_CONCRETE.createBlockData()
+            }
+            if (it.block.material == Material.NETHERITE_BLOCK) {
+                it.block = org.bukkit.Material.BLACK_CONCRETE.createBlockData()
+            }
+            if (it.block.material == Material.ANVIL) {
+                it.block = org.bukkit.Material.BLACK_CONCRETE.createBlockData()
+            }
         }
     }),
 
@@ -26,8 +34,13 @@ enum class SpiderTorsoModels(val model: DisplayModel) {
         scale(.75f)
         pieces.forEach {
             it.tags += "torso"
-            if (it.block.material == Material.SMOOTH_QUARTZ) it.tags += "cloak"
-            if (it.tags.contains("cloak")) it.block = org.bukkit.Material.WHITE_CONCRETE.createBlockData()
+            if (it.block.material == Material.SMOOTH_QUARTZ) {
+                it.tags += "cloak"
+                it.block = org.bukkit.Material.BLACK_CONCRETE.createBlockData()
+            }
+            if (it.block.material == Material.GRAY_CONCRETE) {
+                it.block = org.bukkit.Material.BLACK_CONCRETE.createBlockData()
+            }
         }
     }),
 
@@ -39,7 +52,13 @@ enum class SpiderTorsoModels(val model: DisplayModel) {
         this.pieces.forEach {
             it.tags += "torso"
             if (it.block.material == Material.BLACK_CONCRETE) it.tags += "cloak"
-            if (it.block.material == Material.BLACK_CONCRETE) it.block = org.bukkit.Material.WHITE_CONCRETE.createBlockData()
+            if (it.block.material == Material.NETHERITE_BLOCK) {
+                it.block = org.bukkit.Material.BLACK_CONCRETE.createBlockData()
+            }
+            if (it.block.material == Material.GRAY_SHULKER_BOX) {
+                it.block = org.bukkit.Material.BLACK_CONCRETE.createBlockData()
+            }
+            if (it.tags.contains("cloak")) it.block = org.bukkit.Material.BLACK_CONCRETE.createBlockData()
         }
     }),
 }

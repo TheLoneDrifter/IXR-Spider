@@ -40,4 +40,22 @@ enum class AnimatedPalettes(val palette: List<Pair<BlockData, Display.Brightness
         Material.REDSTONE_BLOCK to Display.Brightness(15,15),
         Material.FIRE_CORAL_BLOCK to Display.Brightness(15,15),
     ).map { (block, brightness) -> block.createBlockData() to brightness }),
+
+    LIME_EYES(arrayOf(
+        * Array(3) { Material.LIME_SHULKER_BOX },
+        Material.LIME_CONCRETE,
+        Material.LIME_CONCRETE_POWDER,
+
+        Material.GREEN_SHULKER_BOX,
+        Material.GREEN_CONCRETE,
+        Material.GREEN_CONCRETE_POWDER,
+    ).map { it.createBlockData() to Display.Brightness(15,15)}),
+
+    LIME_BLINKING_LIGHTS(arrayOf(
+        * Array(3) { Material.BLACK_SHULKER_BOX to Display.Brightness(0,15) },
+        * Array(3) { Material.LIME_SHULKER_BOX to Display.Brightness(15,15) },
+        Material.GREEN_SHULKER_BOX to Display.Brightness(15,15),
+        Material.LIME_CONCRETE to Display.Brightness(15,15),
+        Material.LIME_CONCRETE_POWDER to Display.Brightness(15,15),
+    ).map { (block, brightness) -> block.createBlockData() to brightness }),
 }

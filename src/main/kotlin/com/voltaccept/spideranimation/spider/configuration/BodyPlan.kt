@@ -25,8 +25,8 @@ class BodyPlan {
 
     var bodyModel = SpiderTorsoModels.EMPTY.model.clone()
 
-    var eyePalette = AnimatedPalettes.CYAN_EYES.palette
-    var blinkingPalette = AnimatedPalettes.CYAN_BLINKING_LIGHTS.palette
+    var eyePalette = AnimatedPalettes.LIME_EYES.palette
+    var blinkingPalette = AnimatedPalettes.LIME_BLINKING_LIGHTS.palette
 
     fun scale(scale: Double) {
         this.scale *= scale
