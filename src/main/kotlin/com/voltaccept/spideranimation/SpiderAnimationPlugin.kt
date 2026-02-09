@@ -50,6 +50,7 @@ class SpiderAnimationPlugin : JavaPlugin() {
         this.server.pluginManager.registerEvents(com.voltaccept.spideranimation.menus.SpiderSettingsMenuListener(), this)
         this.server.pluginManager.registerEvents(com.voltaccept.spideranimation.menus.LegCountMenuListener(), this)
         this.server.pluginManager.registerEvents(com.voltaccept.spideranimation.menus.EyeColorMenuListener(), this)
+        this.server.pluginManager.registerEvents(PetMenuBookListener, this)
 
         ecs.start()
         onTick {
