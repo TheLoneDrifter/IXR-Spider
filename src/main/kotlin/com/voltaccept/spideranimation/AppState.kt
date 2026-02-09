@@ -45,8 +45,73 @@ object AppState {
             baseOptions.apply { 
                 setAbsoluteScale(0.5)
                 // Apply eye color settings
-                bodyPlan.eyePalette = settings.eyeColor.palette
-                bodyPlan.blinkingPalette = settings.blinkingColor.palette
+                when (settings.eyeColor) {
+                    AnimatedPalettes.WHITE_EYES -> {
+                        bodyPlan.eyePalette = AnimatedPalettes.WHITE_EYES
+                        bodyPlan.blinkingPalette = AnimatedPalettes.WHITE_BLINKING_LIGHTS
+                    }
+                    AnimatedPalettes.ORANGE_EYES -> {
+                        bodyPlan.eyePalette = AnimatedPalettes.ORANGE_EYES
+                        bodyPlan.blinkingPalette = AnimatedPalettes.ORANGE_BLINKING_LIGHTS
+                    }
+                    AnimatedPalettes.MAGENTA_EYES -> {
+                        bodyPlan.eyePalette = AnimatedPalettes.MAGENTA_EYES
+                        bodyPlan.blinkingPalette = AnimatedPalettes.MAGENTA_BLINKING_LIGHTS
+                    }
+                    AnimatedPalettes.LIGHT_BLUE_EYES -> {
+                        bodyPlan.eyePalette = AnimatedPalettes.LIGHT_BLUE_EYES
+                        bodyPlan.blinkingPalette = AnimatedPalettes.LIGHT_BLUE_BLINKING_LIGHTS
+                    }
+                    AnimatedPalettes.YELLOW_EYES -> {
+                        bodyPlan.eyePalette = AnimatedPalettes.YELLOW_EYES
+                        bodyPlan.blinkingPalette = AnimatedPalettes.YELLOW_BLINKING_LIGHTS
+                    }
+                    AnimatedPalettes.LIME_EYES -> {
+                        bodyPlan.eyePalette = AnimatedPalettes.LIME_EYES
+                        bodyPlan.blinkingPalette = AnimatedPalettes.LIME_BLINKING_LIGHTS
+                    }
+                    AnimatedPalettes.PINK_EYES -> {
+                        bodyPlan.eyePalette = AnimatedPalettes.PINK_EYES
+                        bodyPlan.blinkingPalette = AnimatedPalettes.PINK_BLINKING_LIGHTS
+                    }
+                    AnimatedPalettes.GRAY_EYES -> {
+                        bodyPlan.eyePalette = AnimatedPalettes.GRAY_EYES
+                        bodyPlan.blinkingPalette = AnimatedPalettes.GRAY_BLINKING_LIGHTS
+                    }
+                    AnimatedPalettes.LIGHT_GRAY_EYES -> {
+                        bodyPlan.eyePalette = AnimatedPalettes.LIGHT_GRAY_EYES
+                        bodyPlan.blinkingPalette = AnimatedPalettes.LIGHT_GRAY_BLINKING_LIGHTS
+                    }
+                    AnimatedPalettes.CYAN_EYES -> {
+                        bodyPlan.eyePalette = AnimatedPalettes.CYAN_EYES
+                        bodyPlan.blinkingPalette = AnimatedPalettes.CYAN_BLINKING_LIGHTS
+                    }
+                    AnimatedPalettes.PURPLE_EYES -> {
+                        bodyPlan.eyePalette = AnimatedPalettes.PURPLE_EYES
+                        bodyPlan.blinkingPalette = AnimatedPalettes.PURPLE_BLINKING_LIGHTS
+                    }
+                    AnimatedPalettes.BLUE_EYES -> {
+                        bodyPlan.eyePalette = AnimatedPalettes.BLUE_EYES
+                        bodyPlan.blinkingPalette = AnimatedPalettes.BLUE_BLINKING_LIGHTS
+                    }
+                    AnimatedPalettes.BROWN_EYES -> {
+                        bodyPlan.eyePalette = AnimatedPalettes.BROWN_EYES
+                        bodyPlan.blinkingPalette = AnimatedPalettes.BROWN_BLINKING_LIGHTS
+                    }
+                    AnimatedPalettes.GREEN_EYES -> {
+                        bodyPlan.eyePalette = AnimatedPalettes.GREEN_EYES
+                        bodyPlan.blinkingPalette = AnimatedPalettes.GREEN_BLINKING_LIGHTS
+                    }
+                    AnimatedPalettes.RED_EYES -> {
+                        bodyPlan.eyePalette = AnimatedPalettes.RED_EYES
+                        bodyPlan.blinkingPalette = AnimatedPalettes.RED_BLINKING_LIGHTS
+                    }
+                    else -> {
+                        // Default to lime green for any unknown colors
+                        bodyPlan.eyePalette = AnimatedPalettes.LIME_EYES
+                        bodyPlan.blinkingPalette = AnimatedPalettes.LIME_BLINKING_LIGHTS
+                    }
+                }
             }
         } else {
             options

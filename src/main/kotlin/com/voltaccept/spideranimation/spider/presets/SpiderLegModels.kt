@@ -29,7 +29,7 @@ object SpiderLegModel {
             it.tags += "tibia"
             it.tags += "leg"
             if (it.block.material == Material.SMOOTH_QUARTZ) it.tags += "cloak"
-            if (it.tags.contains("cloak")) it.block = Material.WHITE_CONCRETE.createBlockData()
+            if (it.tags.contains("cloak")) it.block = Material.BLACK_CONCRETE.createBlockData()
         }
     }
 
@@ -40,7 +40,7 @@ object SpiderLegModel {
             it.tags += "tip"
             it.tags += "leg"
             if (it.block.material == Material.SMOOTH_QUARTZ) it.tags += "cloak"
-            if (it.tags.contains("cloak")) it.block = Material.WHITE_CONCRETE.createBlockData()
+            if (it.tags.contains("cloak")) it.block = Material.BLACK_CONCRETE.createBlockData()
         }
     }
 }
