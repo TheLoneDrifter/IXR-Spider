@@ -28,6 +28,7 @@ class SpiderAnimationPlugin : JavaPlugin() {
     override fun onDisable() {
         this.logger.info("Disabling Spider Animation plugin")
         PetSpiderManager.cleanup()
+        PetSpiderSettingsManager.cleanup()
         this.shutdownCoreUtils()
     }
 
@@ -46,6 +47,9 @@ class SpiderAnimationPlugin : JavaPlugin() {
         this.server.pluginManager.registerEvents(PetSpiderMenuListener(), this)
         this.server.pluginManager.registerEvents(PetSpiderPlayerListener(), this)
         this.server.pluginManager.registerEvents(PetMainMenuListener(), this)
+        this.server.pluginManager.registerEvents(com.voltaccept.spideranimation.menus.SpiderSettingsMenuListener(), this)
+        this.server.pluginManager.registerEvents(com.voltaccept.spideranimation.menus.LegCountMenuListener(), this)
+        this.server.pluginManager.registerEvents(com.voltaccept.spideranimation.menus.EyeColorMenuListener(), this)
 
         ecs.start()
         onTick {

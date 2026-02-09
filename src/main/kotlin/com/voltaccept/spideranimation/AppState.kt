@@ -9,6 +9,9 @@ import com.voltaccept.spideranimation.spider.components.SoundsAndParticles
 import com.voltaccept.spideranimation.spider.components.TridentHitDetector
 import com.voltaccept.spideranimation.spider.components.PetBehaviour
 import com.voltaccept.spideranimation.spider.presets.hexBot
+import com.voltaccept.spideranimation.spider.presets.biped
+import com.voltaccept.spideranimation.spider.presets.quadBot
+import com.voltaccept.spideranimation.spider.presets.octoBot
 import com.voltaccept.spideranimation.spider.components.rendering.SpiderRenderer
 import com.voltaccept.spideranimation.utilities.ecs.ECS
 import com.voltaccept.spideranimation.utilities.ecs.ECSEntity
@@ -28,8 +31,22 @@ object AppState {
 
     fun createSpider(location: Location, owner: Player? = null): ECSEntity {
         val spiderOptions = if (owner != null) {
-            hexBot(4, 1.0).apply { 
-                setAbsoluteScale(0.5) 
+            val settings = PetSpiderSettingsManager.getSettings(owner)
+            
+            // Create spider based on leg count setting
+            val baseOptions = when (settings.legCount) {
+                2 -> biped(4, 1.0)
+                4 -> quadBot(4, 1.0)
+                6 -> hexBot(4, 1.0)
+                8 -> octoBot(4, 1.0)
+                else -> hexBot(4, 1.0) // Default to 6 legs
+            }
+            
+            baseOptions.apply { 
+                setAbsoluteScale(0.5)
+                // Apply eye color settings
+                bodyPlan.eyePalette = settings.eyeColor.palette
+                bodyPlan.blinkingPalette = settings.blinkingColor.palette
             }
         } else {
             options

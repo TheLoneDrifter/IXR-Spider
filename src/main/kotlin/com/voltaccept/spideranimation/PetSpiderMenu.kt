@@ -1,5 +1,6 @@
 package com.voltaccept.spideranimation
 
+import com.voltaccept.spideranimation.menus.SpiderSettingsMenu
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -11,12 +12,13 @@ import org.bukkit.inventory.ItemStack
 
 object PetSpiderMenu {
     private const val MENU_TITLE = "§6§lPets Menu - SP1D.3R"
-    private const val SPAWN_SLOT = 3
-    private const val DESPAWN_SLOT = 5
-    private const val BACK_SLOT = 8
+    private const val SPAWN_SLOT = 11
+    private const val DESPAWN_SLOT = 13
+    private const val SETTINGS_SLOT = 15
+    private const val BACK_SLOT = 26
     
     fun openMenu(player: Player) {
-        val inventory = Bukkit.createInventory(null, 9, MENU_TITLE)
+        val inventory = Bukkit.createInventory(null, 27, MENU_TITLE)
         
         val hasSpider = PetSpiderManager.hasSpider(player)
         
@@ -65,14 +67,38 @@ object PetSpiderMenu {
             }
         }
         
+        // Settings button
+        val settingsItem = ItemStack(Material.WRITABLE_BOOK).apply {
+            val meta = itemMeta!!
+            meta.setDisplayName("§6§lSP1D.3R Settings")
+            meta.lore = listOf(
+                "§7Configure your SP1D.3R appearance",
+                "§7• Leg count",
+                "§7• Eye color"
+            )
+            itemMeta = meta
+        }
+        
         inventory.setItem(SPAWN_SLOT, spawnItem)
         inventory.setItem(DESPAWN_SLOT, despawnItem)
+        inventory.setItem(SETTINGS_SLOT, settingsItem)
         inventory.setItem(BACK_SLOT, ItemStack(Material.ARROW).apply {
             val meta = itemMeta!!
             meta.setDisplayName("§e§lBack")
             meta.lore = listOf("§7Return to pets list")
             itemMeta = meta
         })
+        
+        // Fill empty slots with glass panes
+        for (i in 0 until 27) {
+            if (inventory.getItem(i) == null) {
+                inventory.setItem(i, ItemStack(Material.GRAY_STAINED_GLASS_PANE).apply {
+                    val meta = itemMeta!!
+                    meta.setDisplayName("§f")
+                    itemMeta = meta
+                })
+            }
+        }
         
         player.openInventory(inventory)
     }
@@ -105,6 +131,9 @@ object PetSpiderMenu {
                 } else {
                     player.sendMessage("§7You don't have an active SP1D.3R.")
                 }
+            }
+            SETTINGS_SLOT -> {
+                SpiderSettingsMenu.openMenu(player)
             }
             BACK_SLOT -> {
                 PetMainMenu.openMenu(player)
