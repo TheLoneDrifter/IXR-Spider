@@ -48,69 +48,69 @@ object AppState {
                 // Apply eye color settings
                 when (settings.eyeColor) {
                     AnimatedPalettes.WHITE_EYES -> {
-                        bodyPlan.eyePalette = AnimatedPalettes.WHITE_EYES
-                        bodyPlan.blinkingPalette = AnimatedPalettes.WHITE_BLINKING_LIGHTS
+                        bodyPlan.eyePalette = AnimatedPalettes.WHITE_EYES.palette
+                        bodyPlan.blinkingPalette = AnimatedPalettes.WHITE_BLINKING_LIGHTS.palette
                     }
                     AnimatedPalettes.ORANGE_EYES -> {
-                        bodyPlan.eyePalette = AnimatedPalettes.ORANGE_EYES
-                        bodyPlan.blinkingPalette = AnimatedPalettes.ORANGE_BLINKING_LIGHTS
+                        bodyPlan.eyePalette = AnimatedPalettes.ORANGE_EYES.palette
+                        bodyPlan.blinkingPalette = AnimatedPalettes.ORANGE_BLINKING_LIGHTS.palette
                     }
                     AnimatedPalettes.MAGENTA_EYES -> {
-                        bodyPlan.eyePalette = AnimatedPalettes.MAGENTA_EYES
-                        bodyPlan.blinkingPalette = AnimatedPalettes.MAGENTA_BLINKING_LIGHTS
+                        bodyPlan.eyePalette = AnimatedPalettes.MAGENTA_EYES.palette
+                        bodyPlan.blinkingPalette = AnimatedPalettes.MAGENTA_BLINKING_LIGHTS.palette
                     }
                     AnimatedPalettes.LIGHT_BLUE_EYES -> {
-                        bodyPlan.eyePalette = AnimatedPalettes.LIGHT_BLUE_EYES
-                        bodyPlan.blinkingPalette = AnimatedPalettes.LIGHT_BLUE_BLINKING_LIGHTS
+                        bodyPlan.eyePalette = AnimatedPalettes.LIGHT_BLUE_EYES.palette
+                        bodyPlan.blinkingPalette = AnimatedPalettes.LIGHT_BLUE_BLINKING_LIGHTS.palette
                     }
                     AnimatedPalettes.YELLOW_EYES -> {
-                        bodyPlan.eyePalette = AnimatedPalettes.YELLOW_EYES
-                        bodyPlan.blinkingPalette = AnimatedPalettes.YELLOW_BLINKING_LIGHTS
+                        bodyPlan.eyePalette = AnimatedPalettes.YELLOW_EYES.palette
+                        bodyPlan.blinkingPalette = AnimatedPalettes.YELLOW_BLINKING_LIGHTS.palette
                     }
                     AnimatedPalettes.LIME_EYES -> {
-                        bodyPlan.eyePalette = AnimatedPalettes.LIME_EYES
-                        bodyPlan.blinkingPalette = AnimatedPalettes.LIME_BLINKING_LIGHTS
+                        bodyPlan.eyePalette = AnimatedPalettes.LIME_EYES.palette
+                        bodyPlan.blinkingPalette = AnimatedPalettes.LIME_BLINKING_LIGHTS.palette
                     }
                     AnimatedPalettes.PINK_EYES -> {
-                        bodyPlan.eyePalette = AnimatedPalettes.PINK_EYES
-                        bodyPlan.blinkingPalette = AnimatedPalettes.PINK_BLINKING_LIGHTS
+                        bodyPlan.eyePalette = AnimatedPalettes.PINK_EYES.palette
+                        bodyPlan.blinkingPalette = AnimatedPalettes.PINK_BLINKING_LIGHTS.palette
                     }
                     AnimatedPalettes.GRAY_EYES -> {
-                        bodyPlan.eyePalette = AnimatedPalettes.GRAY_EYES
-                        bodyPlan.blinkingPalette = AnimatedPalettes.GRAY_BLINKING_LIGHTS
+                        bodyPlan.eyePalette = AnimatedPalettes.GRAY_EYES.palette
+                        bodyPlan.blinkingPalette = AnimatedPalettes.GRAY_BLINKING_LIGHTS.palette
                     }
                     AnimatedPalettes.LIGHT_GRAY_EYES -> {
-                        bodyPlan.eyePalette = AnimatedPalettes.LIGHT_GRAY_EYES
-                        bodyPlan.blinkingPalette = AnimatedPalettes.LIGHT_GRAY_BLINKING_LIGHTS
+                        bodyPlan.eyePalette = AnimatedPalettes.LIGHT_GRAY_EYES.palette
+                        bodyPlan.blinkingPalette = AnimatedPalettes.LIGHT_GRAY_BLINKING_LIGHTS.palette
                     }
                     AnimatedPalettes.CYAN_EYES -> {
-                        bodyPlan.eyePalette = AnimatedPalettes.CYAN_EYES
-                        bodyPlan.blinkingPalette = AnimatedPalettes.CYAN_BLINKING_LIGHTS
+                        bodyPlan.eyePalette = AnimatedPalettes.CYAN_EYES.palette
+                        bodyPlan.blinkingPalette = AnimatedPalettes.CYAN_BLINKING_LIGHTS.palette
                     }
                     AnimatedPalettes.PURPLE_EYES -> {
-                        bodyPlan.eyePalette = AnimatedPalettes.PURPLE_EYES
-                        bodyPlan.blinkingPalette = AnimatedPalettes.PURPLE_BLINKING_LIGHTS
+                        bodyPlan.eyePalette = AnimatedPalettes.PURPLE_EYES.palette
+                        bodyPlan.blinkingPalette = AnimatedPalettes.PURPLE_BLINKING_LIGHTS.palette
                     }
                     AnimatedPalettes.BLUE_EYES -> {
-                        bodyPlan.eyePalette = AnimatedPalettes.BLUE_EYES
-                        bodyPlan.blinkingPalette = AnimatedPalettes.BLUE_BLINKING_LIGHTS
+                        bodyPlan.eyePalette = AnimatedPalettes.BLUE_EYES.palette
+                        bodyPlan.blinkingPalette = AnimatedPalettes.BLUE_BLINKING_LIGHTS.palette
                     }
                     AnimatedPalettes.BROWN_EYES -> {
-                        bodyPlan.eyePalette = AnimatedPalettes.BROWN_EYES
-                        bodyPlan.blinkingPalette = AnimatedPalettes.BROWN_BLINKING_LIGHTS
+                        bodyPlan.eyePalette = AnimatedPalettes.BROWN_EYES.palette
+                        bodyPlan.blinkingPalette = AnimatedPalettes.BROWN_BLINKING_LIGHTS.palette
                     }
                     AnimatedPalettes.GREEN_EYES -> {
-                        bodyPlan.eyePalette = AnimatedPalettes.GREEN_EYES
-                        bodyPlan.blinkingPalette = AnimatedPalettes.GREEN_BLINKING_LIGHTS
+                        bodyPlan.eyePalette = AnimatedPalettes.GREEN_EYES.palette
+                        bodyPlan.blinkingPalette = AnimatedPalettes.GREEN_BLINKING_LIGHTS.palette
                     }
                     AnimatedPalettes.RED_EYES -> {
-                        bodyPlan.eyePalette = AnimatedPalettes.RED_EYES
-                        bodyPlan.blinkingPalette = AnimatedPalettes.RED_BLINKING_LIGHTS
+                        bodyPlan.eyePalette = AnimatedPalettes.RED_EYES.palette
+                        bodyPlan.blinkingPalette = AnimatedPalettes.RED_BLINKING_LIGHTS.palette
                     }
                     else -> {
                         // Default to lime green for any unknown colors
-                        bodyPlan.eyePalette = AnimatedPalettes.LIME_EYES
-                        bodyPlan.blinkingPalette = AnimatedPalettes.LIME_BLINKING_LIGHTS
+                        bodyPlan.eyePalette = AnimatedPalettes.LIME_EYES.palette
+                        bodyPlan.blinkingPalette = AnimatedPalettes.LIME_BLINKING_LIGHTS.palette
                     }
                 }
             }
