@@ -13,7 +13,7 @@ import org.bukkit.inventory.ItemStack
 object PetMainMenu {
     private const val MENU_TITLE = "§6§lPets Menu - Main"
     private const val SPIDER_SLOT = 4
-    private const val SPIDER_HEALTH_SLOT = 1
+    private const val SPIDER_FOOD_SLOT = 1
 
     fun openMenu(player: Player) {
         val inventory = Bukkit.createInventory(null, 9, MENU_TITLE)
@@ -25,22 +25,29 @@ object PetMainMenu {
             itemMeta = meta
         }
 
-        // Health display for player's currently spawned spider (or placeholder)
-        val healthItem = if (PetSpiderManager.hasSpider(player)) {
+        // Fuel display for player's currently spawned spider (or placeholder)
+        val fuelItem = if (PetSpiderManager.hasSpider(player)) {
             val ecsEntity = PetSpiderManager.getSpider(player)!!
             val body = ecsEntity.query<SpiderBody>()
             if (body != null) {
-                ItemStack(Material.REDSTONE).apply {
+                val fuelPercentage = (body.fuel.toDouble() / body.maxFuel * 100).toInt()
+                val fuelMaterial = when {
+                    fuelPercentage > 66 -> Material.REDSTONE_BLOCK
+                    fuelPercentage > 33 -> Material.REDSTONE
+                    fuelPercentage > 0 -> Material.COAL
+                    else -> Material.GUNPOWDER
+                }
+                ItemStack(fuelMaterial).apply {
                     val meta = itemMeta!!
-                    meta.setDisplayName("§c§lSP1D.3R's Health")
-                    meta.lore = listOf("§7${body.health.toInt()} / ${body.maxHealth.toInt()} HP")
+                    meta.setDisplayName("§b§lSP1D.3R's Fuel")
+                    meta.lore = listOf("§7${body.fuel} / ${body.maxFuel} Fuel", "§7${fuelPercentage}% Charged")
                     itemMeta = meta
                 }
             } else {
                 // spider registered but no body component yet
                 ItemStack(Material.GRAY_DYE).apply {
                     val meta = itemMeta!!
-                    meta.setDisplayName("§7§lSP1D.3R's Health")
+                    meta.setDisplayName("§7§lSP1D.3R's Fuel")
                     meta.lore = listOf("§7Activated but not initialized")
                     itemMeta = meta
                 }
@@ -54,7 +61,7 @@ object PetMainMenu {
             }
         }
 
-        inventory.setItem(SPIDER_HEALTH_SLOT, healthItem)
+        inventory.setItem(SPIDER_FOOD_SLOT, fuelItem)
         inventory.setItem(SPIDER_SLOT, spiderItem)
 
         player.openInventory(inventory)
@@ -66,7 +73,7 @@ object PetMainMenu {
         event.isCancelled = true
 
         when (event.slot) {
-            SPIDER_SLOT, SPIDER_HEALTH_SLOT -> {
+            SPIDER_SLOT, SPIDER_FOOD_SLOT -> {
                 PetSpiderMenu.openMenu(player)
             }
         }

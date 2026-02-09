@@ -54,21 +54,21 @@ class SpiderBody(
     // state
     var isWalking = false
     var isRotatingYaw = false
-    // health
-    var maxHealth: Double = 20.0
-    var health: Double = maxHealth
+    // fuel/energy system
+    var maxFuel: Int = 100
+    var fuel: Int = maxFuel
+    var lastFuelDecreaseTime: Long = System.currentTimeMillis()
     var deathTime: Long = 0L
     // disabled state tracking
     var isDisabled: Boolean = false
     var disabledUntil: Long = 0L
 
-    fun heal(amount: Double) {
-        health = (health + amount).coerceAtMost(maxHealth)
+    fun refuel(amount: Int) {
+        fuel = (fuel + amount).coerceAtMost(maxFuel)
     }
 
-    // modified damage calculation to divide by 5
-    fun damage(amount: Double) {
-        health = (health - (amount / 5.0)).coerceAtLeast(0.0)
+    fun consumeFuel(amount: Int) {
+        fuel = (fuel - amount).coerceAtLeast(0)
     }
 
     fun lerpedGait(): LerpGait {
@@ -245,12 +245,6 @@ class SpiderBody(
             val didHit = collision.offset.length() > (gait.gravityAcceleration * 2) * (1 - gait.airDragCoefficient)
             if (didHit) {
                 ecs.emit(SpiderBodyHitGroundEvent(spider = this))
-                // Apply fall damage
-                val fallSpeed = -velocity.y
-                if (fallSpeed > 5.0) {
-                    val damageAmount = (fallSpeed - 5.0) * 0.5
-                    damage(damageAmount)
-                }
             }
 
             position.y = collision.position.y
@@ -266,12 +260,19 @@ class SpiderBody(
 
         updatePreferredAngles()
 
-        // Death check
-        if (health <= 0) {
+        // Fuel/death check
+        if (fuel <= 0) {
             if (deathTime == 0L) {
                 deathTime = System.currentTimeMillis()
             }
             preferredPitch = (Math.PI / 2).toFloat() // flip over like a dead spider
+        }
+        
+        // Decrease fuel every minute (60,000 ms)
+        val currentTime = System.currentTimeMillis()
+        if (currentTime - lastFuelDecreaseTime >= 60000) {
+            consumeFuel(1)
+            lastFuelDecreaseTime = currentTime
         }
     }
 
@@ -385,9 +386,8 @@ fun setupSpiderBody(app: ECS) {
             }
             
             spider.update(app, entity)
-            // Remove dead spider after 2 seconds (legacy death system - now using disabled state)
-            if (spider.health <= 0 && spider.deathTime > 0 && System.currentTimeMillis() - spider.deathTime > 2000) {
-                // Don't remove, just disable instead
+            // Remove dead spider after 2 seconds (now based on fuel)
+            if (spider.fuel <= 0 && spider.deathTime > 0 && System.currentTimeMillis() - spider.deathTime > 2000) {
                 if (!spider.isDisabled) {
                     spider.isDisabled = true
                     spider.disabledUntil = System.currentTimeMillis() + (3 * 60 * 1000)

@@ -214,6 +214,35 @@ fun setupItems() {
         PetMainMenu.openMenu(player)
     }
 
+    // Fuel item
+    val spiderFuelComponent = CustomItemComponent("spiderFuel")
+    val spiderFuel = createNamedItem(Material.REDSTONE, "§b§lSpider Fuel").attach(spiderFuelComponent)
+    customItemRegistry += spiderFuel
+    spiderFuelComponent.onGestureUse { player, _ ->
+        val spiderEntity = PetSpiderManager.getSpider(player)
+        if (spiderEntity != null) {
+            val body = spiderEntity.query<SpiderBody>()
+            if (body != null) {
+                val fuelAmount = 25 // Add 25 fuel points
+                body.refuel(fuelAmount)
+                player.world.playSound(player.position, Sound.BLOCK_REDSTONE_TORCH_PLACE, 1.0f, 1.0f)
+                player.sendActionBar("§bRefueled SP1D.3R +${fuelAmount} fuel!")
+                
+                // Remove one fuel item from hand
+                val itemInHand = player.inventory.itemInMainHand
+                if (itemInHand.amount > 1) {
+                    itemInHand.amount = itemInHand.amount - 1
+                } else {
+                    player.inventory.setItemInMainHand(null)
+                }
+            } else {
+                player.sendActionBar("§cNo spider found to refuel!")
+            }
+        } else {
+            player.sendActionBar("§cYou don't have an active spider!")
+        }
+    }
+
     // Hotbar locking functionality
     val HOTBAR_SLOT = 8 // Last slot in hotbar (0-indexed)
     
