@@ -225,7 +225,7 @@ fun setupItems() {
             if (body != null) {
                 val fuelAmount = 25 // Add 25 fuel points
                 body.refuel(fuelAmount)
-                player.world.playSound(player.position, Sound.BLOCK_REDSTONE_TORCH_PLACE, 1.0f, 1.0f)
+                player.world.playSound(player.position, Sound.ENTITY_ITEM_PICKUP, 1.0f, 1.0f)
                 player.sendActionBar("§bRefueled SP1D.3R +${fuelAmount} fuel!")
                 
                 // Remove one fuel item from hand

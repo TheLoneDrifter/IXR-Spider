@@ -59,6 +59,9 @@ class SpiderBody(
     var fuel: Int = maxFuel
     var lastFuelDecreaseTime: Long = System.currentTimeMillis()
     var deathTime: Long = 0L
+    // health system
+    var maxHealth: Double = 20.0
+    var health: Double = maxHealth
     // disabled state tracking
     var isDisabled: Boolean = false
     var disabledUntil: Long = 0L
@@ -69,6 +72,14 @@ class SpiderBody(
 
     fun consumeFuel(amount: Int) {
         fuel = (fuel - amount).coerceAtLeast(0)
+    }
+
+    fun damage(amount: Double) {
+        health = (health - amount).coerceAtLeast(0.0)
+    }
+
+    fun heal(amount: Double) {
+        health = (health + amount).coerceAtMost(maxHealth)
     }
 
     fun lerpedGait(): LerpGait {

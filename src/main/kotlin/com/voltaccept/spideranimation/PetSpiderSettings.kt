@@ -10,8 +10,14 @@ import java.util.UUID
 data class SpiderSettings(
     var legCount: Int = 6,
     var eyeColor: AnimatedPalettes = AnimatedPalettes.LIME_EYES,
-    var blinkingColor: AnimatedPalettes = AnimatedPalettes.LIME_BLINKING_LIGHTS
+    var blinkingColor: AnimatedPalettes = AnimatedPalettes.LIME_BLINKING_LIGHTS,
+    var concreteColor: ConcreteColor = ConcreteColor.BLACK
 )
+
+enum class ConcreteColor {
+    BLACK,
+    WHITE
+}
 
 /**
  * Manages player-specific spider settings
@@ -37,6 +43,11 @@ object PetSpiderSettingsManager {
             AnimatedPalettes.LIME_EYES -> AnimatedPalettes.LIME_BLINKING_LIGHTS
             else -> AnimatedPalettes.LIME_BLINKING_LIGHTS
         }
+    }
+    
+    fun setConcreteColor(player: Player, concreteColor: ConcreteColor) {
+        val settings = getSettings(player)
+        settings.concreteColor = concreteColor
     }
     
     fun clearSettings(player: Player) {

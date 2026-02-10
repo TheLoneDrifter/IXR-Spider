@@ -2,6 +2,7 @@ package com.voltaccept.spideranimation.menus
 
 import com.voltaccept.spideranimation.PetSpiderMenu
 import com.voltaccept.spideranimation.PetSpiderSettingsManager
+import com.voltaccept.spideranimation.ConcreteColor
 import com.voltaccept.spideranimation.spider.presets.AnimatedPalettes
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -16,6 +17,7 @@ object SpiderSettingsMenu {
     private const val BACK_SLOT = 0
     private const val LEG_COUNT_SLOT = 11
     private const val EYE_COLOR_SLOT = 15
+    private const val CONCRETE_COLOR_SLOT = 20
     
     fun openMenu(player: Player) {
         val inventory = Bukkit.createInventory(null, 27, MENU_TITLE)
@@ -77,6 +79,30 @@ object SpiderSettingsMenu {
             itemMeta = meta
         }
         
+        // Concrete color setting
+        val concreteColorItem = when (settings.concreteColor) {
+            ConcreteColor.BLACK -> Material.BLACK_CONCRETE
+            ConcreteColor.WHITE -> Material.WHITE_CONCRETE
+        }
+        
+        val concreteColorItemStack = ItemStack(concreteColorItem).apply {
+            val meta = itemMeta!!
+            val colorName = when (settings.concreteColor) {
+                ConcreteColor.BLACK -> "Black"
+                ConcreteColor.WHITE -> "White"
+            }
+            meta.setDisplayName("§f§lBody Color")
+            meta.lore = listOf(
+                "§7Current: §f$colorName Concrete",
+                "§7Click to configure body and legs color",
+                "",
+                "§7Available options:",
+                "§7• Black (default)",
+                "§7• White"
+            )
+            itemMeta = meta
+        }
+        
         // Reset settings button
         val resetItem = ItemStack(Material.BARRIER).apply {
             val meta = itemMeta!!
@@ -91,6 +117,7 @@ object SpiderSettingsMenu {
         
         inventory.setItem(LEG_COUNT_SLOT, legCountItem)
         inventory.setItem(EYE_COLOR_SLOT, eyeColorItemStack)
+        inventory.setItem(CONCRETE_COLOR_SLOT, concreteColorItemStack)
         inventory.setItem(22, resetItem)
         
         // Fill empty slots with glass panes
@@ -122,6 +149,9 @@ object SpiderSettingsMenu {
             }
             EYE_COLOR_SLOT -> {
                 EyeColorMenu.openMenu(player)
+            }
+            CONCRETE_COLOR_SLOT -> {
+                ConcreteColorMenu.openMenu(player)
             }
             22 -> { // Reset button
                 PetSpiderSettingsManager.clearSettings(player)

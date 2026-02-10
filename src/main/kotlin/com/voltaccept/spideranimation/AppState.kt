@@ -113,6 +113,52 @@ object AppState {
                         bodyPlan.blinkingPalette = AnimatedPalettes.LIME_BLINKING_LIGHTS.palette
                     }
                 }
+                
+                // Apply concrete color settings to body and legs
+                val concreteColor = when (settings.concreteColor) {
+                    ConcreteColor.BLACK -> org.bukkit.Material.BLACK_CONCRETE
+                    ConcreteColor.WHITE -> org.bukkit.Material.WHITE_CONCRETE
+                }
+                
+                // Update body model pieces
+                bodyPlan.bodyModel.pieces.forEach { piece ->
+                    if (piece.block.material == org.bukkit.Material.BLACK_CONCRETE ||
+                        piece.block.material == org.bukkit.Material.NETHERITE_BLOCK ||
+                        piece.block.material == org.bukkit.Material.ANVIL ||
+                        piece.block.material == org.bukkit.Material.GRAY_CONCRETE) {
+                        if (!piece.tags.contains("eye")) {
+                            piece.block = concreteColor.createBlockData()
+                        }
+                    }
+                }
+                
+                // Update legs color
+                bodyPlan.legs.forEach { leg ->
+                    leg.baseModel.pieces.forEach { piece ->
+                        if (piece.block.material == org.bukkit.Material.BLACK_CONCRETE ||
+                            piece.block.material == org.bukkit.Material.ANVIL) {
+                            piece.block = concreteColor.createBlockData()
+                        }
+                    }
+                    leg.femurModel.pieces.forEach { piece ->
+                        if (piece.block.material == org.bukkit.Material.BLACK_CONCRETE ||
+                            piece.block.material == org.bukkit.Material.ANVIL) {
+                            piece.block = concreteColor.createBlockData()
+                        }
+                    }
+                    leg.tibiaModel.pieces.forEach { piece ->
+                        if (piece.block.material == org.bukkit.Material.BLACK_CONCRETE ||
+                            piece.block.material == org.bukkit.Material.SMOOTH_QUARTZ) {
+                            piece.block = concreteColor.createBlockData()
+                        }
+                    }
+                    leg.tipModel.pieces.forEach { piece ->
+                        if (piece.block.material == org.bukkit.Material.BLACK_CONCRETE ||
+                            piece.block.material == org.bukkit.Material.SMOOTH_QUARTZ) {
+                            piece.block = concreteColor.createBlockData()
+                        }
+                    }
+                }
             }
         } else {
             options
