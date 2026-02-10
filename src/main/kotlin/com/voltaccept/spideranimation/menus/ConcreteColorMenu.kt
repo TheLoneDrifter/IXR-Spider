@@ -11,7 +11,7 @@ import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.inventory.ItemStack
 
 object ConcreteColorMenu {
-    private const val MENU_TITLE = "§6§lSP1D.3R Settings - Body Color"
+    private const val MENU_TITLE = "§6§lSettings - Body Color"
     private const val BACK_SLOT = 10
     
     // Concrete color options
@@ -27,7 +27,7 @@ object ConcreteColorMenu {
         inventory.setItem(BACK_SLOT, ItemStack(Material.ARROW).apply {
             val meta = itemMeta!!
             meta.setDisplayName("§e§lBack")
-            meta.lore = listOf("§7Return to SP1D.3R settings")
+            meta.lore = listOf("§7Return to Settings")
             itemMeta = meta
         })
         

@@ -13,11 +13,11 @@ import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.inventory.ItemStack
 
 object SpiderSettingsMenu {
-    private const val MENU_TITLE = "§6§lSP1D.3R Settings"
+    private const val MENU_TITLE = "§6§lSettings"
     private const val BACK_SLOT = 0
     private const val LEG_COUNT_SLOT = 11
+    private const val BODY_COLOR_SLOT = 13
     private const val EYE_COLOR_SLOT = 15
-    private const val CONCRETE_COLOR_SLOT = 20
     
     fun openMenu(player: Player) {
         val inventory = Bukkit.createInventory(null, 27, MENU_TITLE)
@@ -52,8 +52,20 @@ object SpiderSettingsMenu {
         
         // Eye color setting
         val eyeColorItem = when (settings.eyeColor) {
+            AnimatedPalettes.WHITE_EYES -> Material.WHITE_CONCRETE
+            AnimatedPalettes.ORANGE_EYES -> Material.ORANGE_CONCRETE
+            AnimatedPalettes.MAGENTA_EYES -> Material.MAGENTA_CONCRETE
+            AnimatedPalettes.LIGHT_BLUE_EYES -> Material.LIGHT_BLUE_CONCRETE
+            AnimatedPalettes.YELLOW_EYES -> Material.YELLOW_CONCRETE
             AnimatedPalettes.LIME_EYES -> Material.LIME_CONCRETE
+            AnimatedPalettes.PINK_EYES -> Material.PINK_CONCRETE
+            AnimatedPalettes.GRAY_EYES -> Material.GRAY_CONCRETE
+            AnimatedPalettes.LIGHT_GRAY_EYES -> Material.LIGHT_GRAY_CONCRETE
             AnimatedPalettes.CYAN_EYES -> Material.CYAN_CONCRETE
+            AnimatedPalettes.PURPLE_EYES -> Material.PURPLE_CONCRETE
+            AnimatedPalettes.BLUE_EYES -> Material.BLUE_CONCRETE
+            AnimatedPalettes.BROWN_EYES -> Material.BROWN_CONCRETE
+            AnimatedPalettes.GREEN_EYES -> Material.GREEN_CONCRETE
             AnimatedPalettes.RED_EYES -> Material.RED_CONCRETE
             else -> Material.WHITE_CONCRETE
         }
@@ -61,8 +73,20 @@ object SpiderSettingsMenu {
         val eyeColorItemStack = ItemStack(eyeColorItem).apply {
             val meta = itemMeta!!
             val colorName = when (settings.eyeColor) {
+                AnimatedPalettes.WHITE_EYES -> "White"
+                AnimatedPalettes.ORANGE_EYES -> "Orange"
+                AnimatedPalettes.MAGENTA_EYES -> "Magenta"
+                AnimatedPalettes.LIGHT_BLUE_EYES -> "Light Blue"
+                AnimatedPalettes.YELLOW_EYES -> "Yellow"
                 AnimatedPalettes.LIME_EYES -> "Lime Green"
+                AnimatedPalettes.PINK_EYES -> "Pink"
+                AnimatedPalettes.GRAY_EYES -> "Gray"
+                AnimatedPalettes.LIGHT_GRAY_EYES -> "Light Gray"
                 AnimatedPalettes.CYAN_EYES -> "Cyan"
+                AnimatedPalettes.PURPLE_EYES -> "Purple"
+                AnimatedPalettes.BLUE_EYES -> "Blue"
+                AnimatedPalettes.BROWN_EYES -> "Brown"
+                AnimatedPalettes.GREEN_EYES -> "Green"
                 AnimatedPalettes.RED_EYES -> "Red"
                 else -> "Custom"
             }
@@ -71,10 +95,7 @@ object SpiderSettingsMenu {
                 "§7Current: §f$colorName",
                 "§7Click to configure eye color",
                 "",
-                "§7Available options:",
-                "§7• Lime Green (default)",
-                "§7• Cyan",
-                "§7• Red"
+                "§7Includes 15+ eye color options"
             )
             itemMeta = meta
         }
@@ -117,7 +138,7 @@ object SpiderSettingsMenu {
         
         inventory.setItem(LEG_COUNT_SLOT, legCountItem)
         inventory.setItem(EYE_COLOR_SLOT, eyeColorItemStack)
-        inventory.setItem(CONCRETE_COLOR_SLOT, concreteColorItemStack)
+        inventory.setItem(BODY_COLOR_SLOT, concreteColorItemStack)
         inventory.setItem(22, resetItem)
         
         // Fill empty slots with glass panes
@@ -150,7 +171,7 @@ object SpiderSettingsMenu {
             EYE_COLOR_SLOT -> {
                 EyeColorMenu.openMenu(player)
             }
-            CONCRETE_COLOR_SLOT -> {
+            BODY_COLOR_SLOT -> {
                 ConcreteColorMenu.openMenu(player)
             }
             22 -> { // Reset button

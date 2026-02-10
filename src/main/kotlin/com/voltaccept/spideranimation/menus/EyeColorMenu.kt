@@ -10,7 +10,7 @@ import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.inventory.ItemStack
 
 object EyeColorMenu {
-    private const val MENU_TITLE = "§6§lSP1D.3R Settings - Eye Color"
+    private const val MENU_TITLE = "§6§lSettings - Eye Color"
     private const val BACK_SLOT = 45
     
     // Eye color options organized in a grid (excluding black)
@@ -29,7 +29,7 @@ object EyeColorMenu {
         AnimatedPalettes.BLUE_EYES to 23,
         AnimatedPalettes.BROWN_EYES to 24,
         AnimatedPalettes.GREEN_EYES to 25,
-        AnimatedPalettes.RED_EYES to 26
+        AnimatedPalettes.RED_EYES to 31
     )
     
     fun openMenu(player: Player) {
@@ -39,7 +39,7 @@ object EyeColorMenu {
         inventory.setItem(BACK_SLOT, ItemStack(Material.ARROW).apply {
             val meta = itemMeta!!
             meta.setDisplayName("§e§lBack")
-            meta.lore = listOf("§7Return to SP1D.3R settings")
+            meta.lore = listOf("§7Return to Settings")
             itemMeta = meta
         })
         

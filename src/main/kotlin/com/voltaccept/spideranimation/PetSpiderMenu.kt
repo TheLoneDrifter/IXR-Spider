@@ -70,10 +70,11 @@ object PetSpiderMenu {
         // Settings button
         val settingsItem = ItemStack(Material.WRITABLE_BOOK).apply {
             val meta = itemMeta!!
-            meta.setDisplayName("§6§lSP1D.3R Settings")
+            meta.setDisplayName("§6§lSettings")
             meta.lore = listOf(
                 "§7Configure your SP1D.3R appearance",
                 "§7• Leg count",
+                "§7• Body color",
                 "§7• Eye color"
             )
             itemMeta = meta
@@ -125,6 +126,14 @@ object PetSpiderMenu {
             }
             DESPAWN_SLOT -> {
                 if (PetSpiderManager.hasSpider(player)) {
+                    // Save spider fuel before despawning
+                    val spider = PetSpiderManager.getSpider(player)
+                    if (spider != null) {
+                        val spiderBody = spider.query<com.voltaccept.spideranimation.spider.components.body.SpiderBody>()
+                        if (spiderBody != null) {
+                            PetSpiderSettingsManager.saveSpiderFuel(player, spiderBody.fuel)
+                        }
+                    }
                     PetSpiderManager.removeSpider(player)
                     player.sendMessage("§c§lSP1D.3R deactivated!")
                     player.closeInventory()
@@ -152,11 +161,35 @@ class PetSpiderMenuListener : Listener {
 class PetSpiderPlayerListener : Listener {
     @EventHandler
     fun onPlayerQuit(event: org.bukkit.event.player.PlayerQuitEvent) {
+        // Save spider fuel before removing
+        if (PetSpiderManager.hasSpider(event.player)) {
+            val spider = PetSpiderManager.getSpider(event.player)
+            if (spider != null) {
+                val spiderBody = spider.query<com.voltaccept.spideranimation.spider.components.body.SpiderBody>()
+                if (spiderBody != null) {
+                    PetSpiderSettingsManager.saveSpiderFuel(event.player, spiderBody.fuel)
+                }
+            }
+        }
         PetSpiderManager.removeSpider(event.player)
+        // Track the time when the player goes offline
+        PetSpiderSettingsManager.updateLastOfflineTime(event.player)
     }
 
     @EventHandler
     fun onPlayerKick(event: org.bukkit.event.player.PlayerKickEvent) {
+        // Save spider fuel before removing
+        if (PetSpiderManager.hasSpider(event.player)) {
+            val spider = PetSpiderManager.getSpider(event.player)
+            if (spider != null) {
+                val spiderBody = spider.query<com.voltaccept.spideranimation.spider.components.body.SpiderBody>()
+                if (spiderBody != null) {
+                    PetSpiderSettingsManager.saveSpiderFuel(event.player, spiderBody.fuel)
+                }
+            }
+        }
         PetSpiderManager.removeSpider(event.player)
+        // Track the time when the player is kicked
+        PetSpiderSettingsManager.updateLastOfflineTime(event.player)
     }
 }

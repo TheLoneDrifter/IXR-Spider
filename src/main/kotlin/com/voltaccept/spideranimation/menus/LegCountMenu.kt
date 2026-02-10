@@ -9,7 +9,7 @@ import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.inventory.ItemStack
 
 object LegCountMenu {
-    private const val MENU_TITLE = "§6§lSP1D.3R Settings - Leg Count"
+    private const val MENU_TITLE = "§6§lSettings - Leg Count"
     private const val BACK_SLOT = 0
     
     // Leg count options and their slots
@@ -27,7 +27,7 @@ object LegCountMenu {
         inventory.setItem(BACK_SLOT, ItemStack(Material.ARROW).apply {
             val meta = itemMeta!!
             meta.setDisplayName("§e§lBack")
-            meta.lore = listOf("§7Return to SP1D.3R settings")
+            meta.lore = listOf("§7Return to Settings")
             itemMeta = meta
         })
         

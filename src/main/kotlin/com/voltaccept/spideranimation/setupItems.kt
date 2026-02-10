@@ -313,6 +313,24 @@ object PetMenuBookListener : Listener {
     @EventHandler
     fun onPlayerJoin(event: PlayerJoinEvent) {
         givePetMenuBook(event.player)
+        
+        // Handle offline fuel consumption
+        val offlineHours = PetSpiderSettingsManager.getOfflineHours(event.player)
+        val currentFuel = PetSpiderSettingsManager.getSpiderFuel(event.player)
+        
+        if (offlineHours > 0 && currentFuel > 0) {
+            val fuelConsumed = offlineHours.toInt().coerceAtMost(currentFuel)
+            val newFuel = currentFuel - fuelConsumed
+            PetSpiderSettingsManager.saveSpiderFuel(event.player, newFuel)
+            
+            event.player.sendMessage("§7Your SP1D.3R consumed §c$fuelConsumed§7 fuel while you were offline (§c${offlineHours}h§7).")
+            if (newFuel <= 0) {
+                event.player.sendMessage("§c§lWarning: Your SP1D.3R is out of fuel!")
+            }
+        }
+        
+        // Update last online time for next offline calculation
+        PetSpiderSettingsManager.updateLastOfflineTime(event.player)
     }
     
     @EventHandler

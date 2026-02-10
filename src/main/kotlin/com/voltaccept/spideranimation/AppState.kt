@@ -167,6 +167,8 @@ object AppState {
             entity.addComponent(PetBehaviour())
             val spider = entity.query<SpiderBody>()
             spider?.gallop = true
+            // Load saved fuel for the spider
+            spider?.fuel = PetSpiderSettingsManager.getSpiderFuel(owner)
             PetSpiderManager.setSpider(owner, entity)
         }
         

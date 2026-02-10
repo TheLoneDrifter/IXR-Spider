@@ -11,7 +11,9 @@ data class SpiderSettings(
     var legCount: Int = 6,
     var eyeColor: AnimatedPalettes = AnimatedPalettes.LIME_EYES,
     var blinkingColor: AnimatedPalettes = AnimatedPalettes.LIME_BLINKING_LIGHTS,
-    var concreteColor: ConcreteColor = ConcreteColor.BLACK
+    var concreteColor: ConcreteColor = ConcreteColor.BLACK,
+    var lastOfflineTime: Long = System.currentTimeMillis(),
+    var currentFuel: Int = 100  // Store spider fuel persistently
 )
 
 enum class ConcreteColor {
@@ -48,6 +50,37 @@ object PetSpiderSettingsManager {
     fun setConcreteColor(player: Player, concreteColor: ConcreteColor) {
         val settings = getSettings(player)
         settings.concreteColor = concreteColor
+    }
+    
+    fun updateLastOfflineTime(player: Player) {
+        val settings = getSettings(player)
+        settings.lastOfflineTime = System.currentTimeMillis()
+    }
+    
+    fun getOfflineHours(player: Player): Long {
+        val settings = getSettings(player)
+        val offlineMs = System.currentTimeMillis() - settings.lastOfflineTime
+        return offlineMs / (60 * 60 * 1000) // Convert milliseconds to hours
+    }
+    
+    fun saveSpiderFuel(player: Player, fuel: Int) {
+        val settings = getSettings(player)
+        settings.currentFuel = fuel.coerceIn(0, 100)
+    }
+    
+    fun getSpiderFuel(player: Player): Int {
+        val settings = getSettings(player)
+        return settings.currentFuel
+    }
+    
+    fun consumeOfflineFuel(player: Player) {
+        val offlineHours = getOfflineHours(player)
+        if (offlineHours > 0) {
+            val fuelConsumed = offlineHours.toInt()
+            val currentFuel = getSpiderFuel(player)
+            val newFuel = (currentFuel - fuelConsumed).coerceAtLeast(0)
+            saveSpiderFuel(player, newFuel)
+        }
     }
     
     fun clearSettings(player: Player) {
