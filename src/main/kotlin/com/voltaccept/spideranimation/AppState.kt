@@ -132,30 +132,17 @@ object AppState {
                     }
                 }
                 
-                // Update legs color
-                bodyPlan.legs.forEach { leg ->
-                    leg.baseModel.pieces.forEach { piece ->
-                        if (piece.block.material == org.bukkit.Material.BLACK_CONCRETE ||
-                            piece.block.material == org.bukkit.Material.ANVIL) {
-                            piece.block = concreteColor.createBlockData()
-                        }
-                    }
-                    leg.femurModel.pieces.forEach { piece ->
-                        if (piece.block.material == org.bukkit.Material.BLACK_CONCRETE ||
-                            piece.block.material == org.bukkit.Material.ANVIL) {
-                            piece.block = concreteColor.createBlockData()
-                        }
-                    }
-                    leg.tibiaModel.pieces.forEach { piece ->
-                        if (piece.block.material == org.bukkit.Material.BLACK_CONCRETE ||
-                            piece.block.material == org.bukkit.Material.SMOOTH_QUARTZ) {
-                            piece.block = concreteColor.createBlockData()
-                        }
-                    }
-                    leg.tipModel.pieces.forEach { piece ->
-                        if (piece.block.material == org.bukkit.Material.BLACK_CONCRETE ||
-                            piece.block.material == org.bukkit.Material.SMOOTH_QUARTZ) {
-                            piece.block = concreteColor.createBlockData()
+                // Update leg segments color
+                bodyPlan.legs.forEach { legPlan ->
+                    legPlan.segments.forEach { segment ->
+                        segment.model.pieces.forEach { piece ->
+                            if (piece.block.material == org.bukkit.Material.BLACK_CONCRETE ||
+                                piece.block.material == org.bukkit.Material.ANVIL ||
+                                piece.block.material == org.bukkit.Material.SMOOTH_QUARTZ) {
+                                if (!piece.tags.contains("eye")) {
+                                    piece.block = concreteColor.createBlockData()
+                                }
+                            }
                         }
                     }
                 }
