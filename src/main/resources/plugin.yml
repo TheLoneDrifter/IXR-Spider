@@ -7,3 +7,7 @@ commands:
   pets:
     description: Manage your pets
     usage: /pets
+  robofuel:
+    description: Buy fuel for your spider with coins
+    usage: /robofuel <amount>
+
