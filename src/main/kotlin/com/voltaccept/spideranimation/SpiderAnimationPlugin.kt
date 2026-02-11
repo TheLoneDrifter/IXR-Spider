@@ -27,6 +27,18 @@ class SpiderAnimationPlugin : JavaPlugin() {
 
     override fun onDisable() {
         this.logger.info("Disabling Spider Animation plugin")
+        
+        // Save all online players' fuel before shutdown
+        this.server.onlinePlayers.forEach { player ->
+            val spider = PetSpiderManager.getSpider(player)
+            if (spider != null) {
+                val body = spider.query<SpiderBody>()
+                if (body != null) {
+                    com.voltaccept.spideranimation.utilities.FuelDataManager.savePlayerFuel(player, body.fuel)
+                }
+            }
+        }
+        
         PetSpiderManager.cleanup()
         PetSpiderSettingsManager.cleanup()
         this.shutdownCoreUtils()
@@ -65,6 +77,18 @@ class SpiderAnimationPlugin : JavaPlugin() {
             ecs.render()
         }
 
+        // Periodic task to save player fuel every 5 minutes (6000 ticks)
+        this.server.scheduler.scheduleSyncRepeatingTask(this, {
+            this.server.onlinePlayers.forEach { player ->
+                val spider = PetSpiderManager.getSpider(player)
+                if (spider != null) {
+                    val body = spider.query<SpiderBody>()
+                    if (body != null) {
+                        com.voltaccept.spideranimation.utilities.FuelDataManager.savePlayerFuel(player, body.fuel)
+                    }
+                }
+            }
+        }, 6000L, 6000L) // Run every 5 minutes
 
         onSpawnEntity { entity ->
             // Use this command to spawn a chain visualizer

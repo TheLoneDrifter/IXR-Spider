@@ -31,7 +31,7 @@ fun setupCommands(plugin: SpiderAnimationPlugin) {
         }
     }
 
-    // RoboFuel command - buy fuel with coins
+    // RoboFuel command - buy fuel with coins (5 fuel per purchase)
     getCommand("robofuel").apply {
         setExecutor { sender, _, _, args ->
             val player = sender as? Player
@@ -41,12 +41,12 @@ fun setupCommands(plugin: SpiderAnimationPlugin) {
             }
 
             if (args.isEmpty()) {
-                player.sendMessage("§c/robofuel <amount> - Costs 10 coins per fuel")
+                player.sendMessage("§c/robofuel <amount> - Buy robo fuel (5 fuel per purchase for 10 coins)")
                 return@setExecutor true
             }
 
-            val fuelAmount = args[0].toIntOrNull()
-            if (fuelAmount == null || fuelAmount <= 0) {
+            val purchaseCount = args[0].toIntOrNull()
+            if (purchaseCount == null || purchaseCount <= 0) {
                 player.sendMessage("§cPlease enter a valid positive number!")
                 return@setExecutor true
             }
@@ -58,15 +58,36 @@ fun setupCommands(plugin: SpiderAnimationPlugin) {
                 return@setExecutor true
             }
 
-            // Calculate the cost
-            val costPerFuel = 10.0
-            val totalCost = fuelAmount * costPerFuel
+            // Check if player has a spider first
+            val spider = PetSpiderManager.getSpider(player)
+            val body = spider?.query<SpiderBody>()
+            
+            if (spider == null || body == null) {
+                player.sendMessage("§cYou don't have an active spider! Use /pets to create one.")
+                return@setExecutor true
+            }
+
+            // Check if fuel is full
+            if (body.fuel >= body.maxFuel) {
+                player.sendMessage("§c§lYour spider's fuel is already full! (${body.fuel}/${body.maxFuel})")
+                return@setExecutor true
+            }
+
+            // Calculate fuel and cost (5 fuel per purchase, costs 10 coins)
+            val fuelPerPurchase = 5
+            val costPerPurchase = 10.0
+            val totalFuel = fuelPerPurchase * purchaseCount
+            val totalCost = costPerPurchase * purchaseCount
+            
+            // Limit to max fuel
+            val actualFuel = (body.fuel + totalFuel).coerceAtMost(body.maxFuel) - body.fuel
 
             // Check if player has enough money
             if (!economy.has(player, totalCost)) {
                 val balance = economy.getBalance(player)
-                player.sendMessage("§cInsufficient funds! You need §b§l${totalCost - balance} more coins§c to complete this purchase.")
-                player.sendMessage("§7Current balance: §b§l${balance}§7 coins")
+                val needed = totalCost - balance
+                player.sendMessage("§cInsufficient funds! You need §b§l$needed more coins§c to complete this purchase.")
+                player.sendMessage("§7Current balance: §b§l${balance.toInt()}§7 coins")
                 return@setExecutor true
             }
 
@@ -77,33 +98,23 @@ fun setupCommands(plugin: SpiderAnimationPlugin) {
                 return@setExecutor true
             }
 
-            // Check if player has a spider and add fuel
-            val spider = PetSpiderManager.getSpider(player)
-            if (spider != null) {
-                val body = spider.query<SpiderBody>()
-                if (body != null) {
-                    body.refuel(fuelAmount)
-                    player.world.playSound(player.location, org.bukkit.Sound.ENTITY_ITEM_PICKUP, 1.0f, 1.0f)
-                    player.sendMessage("§b§lRobo Fuel Purchase Successful!")
-                    player.sendMessage("§7Purchased: §b§l+$fuelAmount§7 fuel for §b§l${totalCost.toInt()}§7 coins")
-                    player.sendMessage("§7New balance: §b§l${economy.getBalance(player).toInt()}§7 coins")
-                } else {
-                    // Refund if spider has no body
-                    economy.depositPlayer(player, totalCost)
-                    player.sendMessage("§cYour spider is missing its body component! Purchase refunded.")
-                }
-            } else {
-                // Refund if player has no active spider
-                economy.depositPlayer(player, totalCost)
-                player.sendMessage("§cYou don't have an active spider! Purchase refunded. Use /pets to create one.")
-            }
+            // Add fuel to spider
+            body.refuel(actualFuel)
+            
+            // Save fuel to YAML file
+            com.voltaccept.spideranimation.utilities.FuelDataManager.savePlayerFuel(player, body.fuel)
+
+            player.world.playSound(player.location, org.bukkit.Sound.ENTITY_ITEM_PICKUP, 1.0f, 1.0f)
+            player.sendMessage("§b§l⚡ Robo Fuel Purchase Successful!")
+            player.sendMessage("§7Purchased: §b§l+$actualFuel§7 fuel (${body.fuel}/${body.maxFuel}) for §b§l${totalCost.toInt()}§7 coins")
+            player.sendMessage("§7New balance: §b§l${economy.getBalance(player).toInt()}§7 coins")
 
             return@setExecutor true
         }
 
         setTabCompleter { _, _, _, args ->
             if (args.size == 1) {
-                listOf("10", "25", "50", "100")
+                listOf("1", "2", "5", "10")
             } else {
                 emptyList<String>()
             }
