@@ -31,7 +31,7 @@ fun setupCommands(plugin: SpiderAnimationPlugin) {
         }
     }
 
-    // RoboFuel command - buy fuel with coins (5 fuel per purchase)
+    // RoboFuel command - buy fuel with coins (1 fuel for 1 coin)
     getCommand("robofuel").apply {
         setExecutor { sender, _, _, args ->
             val player = sender as? Player
@@ -41,12 +41,12 @@ fun setupCommands(plugin: SpiderAnimationPlugin) {
             }
 
             if (args.isEmpty()) {
-                player.sendMessage("§c/robofuel <amount> - Buy robo fuel (5 fuel per purchase for 10 coins)")
+                player.sendMessage("§c/robofuel <amount> - Buy robo fuel (2.55 coins per fuel)")
                 return@setExecutor true
             }
 
-            val purchaseCount = args[0].toIntOrNull()
-            if (purchaseCount == null || purchaseCount <= 0) {
+            val fuelAmount = args[0].toIntOrNull()
+            if (fuelAmount == null || fuelAmount <= 0) {
                 player.sendMessage("§cPlease enter a valid positive number!")
                 return@setExecutor true
             }
@@ -73,20 +73,25 @@ fun setupCommands(plugin: SpiderAnimationPlugin) {
                 return@setExecutor true
             }
 
-            // Calculate fuel and cost (5 fuel per purchase, costs 10 coins)
-            val fuelPerPurchase = 5
-            val costPerPurchase = 10.0
-            val totalFuel = fuelPerPurchase * purchaseCount
-            val totalCost = costPerPurchase * purchaseCount
+            // Calculate missing fuel
+            val missingFuel = body.maxFuel - body.fuel
             
-            // Limit to max fuel
-            val actualFuel = (body.fuel + totalFuel).coerceAtMost(body.maxFuel) - body.fuel
+            // Limit to missing fuel
+            val actualFuel = fuelAmount.coerceAtMost(missingFuel)
+            
+            // If requested more than missing fuel, tell them
+            if (fuelAmount > missingFuel) {
+                player.sendMessage("§c§lYou can only buy up to §b${missingFuel}§c fuel to fill your tank!")
+            }
+            
+            // Cost is 2.55 coins per fuel
+            val totalCost = actualFuel * 2.55
 
             // Check if player has enough money
             if (!economy.has(player, totalCost)) {
                 val balance = economy.getBalance(player)
                 val needed = totalCost - balance
-                player.sendMessage("§cInsufficient funds! You need §b§l$needed more coins§c to complete this purchase.")
+                player.sendMessage("§cInsufficient funds! You need §b§l${needed.toInt()} more coins§c to complete this purchase.")
                 player.sendMessage("§7Current balance: §b§l${balance.toInt()}§7 coins")
                 return@setExecutor true
             }
@@ -112,9 +117,21 @@ fun setupCommands(plugin: SpiderAnimationPlugin) {
             return@setExecutor true
         }
 
-        setTabCompleter { _, _, _, args ->
+        setTabCompleter { sender, _, _, args ->
             if (args.size == 1) {
-                listOf("1", "2", "5", "10")
+                val player = sender as? Player
+                if (player != null) {
+                    val spider = PetSpiderManager.getSpider(player)
+                    val body = spider?.query<SpiderBody>()
+                    if (body != null) {
+                        val missingFuel = (body.maxFuel - body.fuel).coerceAtLeast(0)
+                        (1..missingFuel).map { it.toString() }
+                    } else {
+                        emptyList<String>()
+                    }
+                } else {
+                    emptyList<String>()
+                }
             } else {
                 emptyList<String>()
             }
