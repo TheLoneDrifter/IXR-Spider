@@ -1,6 +1,7 @@
 package com.voltaccept.spideranimation
 
 import com.voltaccept.spideranimation.spider.presets.AnimatedPalettes
+import com.voltaccept.spideranimation.utilities.FuelDataManager
 import org.bukkit.entity.Player
 import java.util.UUID
 
@@ -28,12 +29,22 @@ object PetSpiderSettingsManager {
     private val playerSettings = mutableMapOf<UUID, SpiderSettings>()
     
     fun getSettings(player: Player): SpiderSettings {
+        // Try to load from YAML first
+        val savedSettings = FuelDataManager.loadPlayerSettings(player)
+        if (savedSettings != null) {
+            // Cache the loaded settings
+            playerSettings[player.uniqueId] = savedSettings
+            return savedSettings
+        }
+        
+        // Fall back to in-memory defaults
         return playerSettings.getOrPut(player.uniqueId) { SpiderSettings() }
     }
     
     fun setLegCount(player: Player, legCount: Int) {
         val settings = getSettings(player)
         settings.legCount = legCount
+        saveSettings(player, settings)
     }
     
     fun setEyeColor(player: Player, eyeColor: AnimatedPalettes) {
@@ -45,16 +56,19 @@ object PetSpiderSettingsManager {
             AnimatedPalettes.LIME_EYES -> AnimatedPalettes.LIME_BLINKING_LIGHTS
             else -> AnimatedPalettes.LIME_BLINKING_LIGHTS
         }
+        saveSettings(player, settings)
     }
     
     fun setConcreteColor(player: Player, concreteColor: ConcreteColor) {
         val settings = getSettings(player)
         settings.concreteColor = concreteColor
+        saveSettings(player, settings)
     }
     
     fun updateLastOfflineTime(player: Player) {
         val settings = getSettings(player)
         settings.lastOfflineTime = System.currentTimeMillis()
+        saveSettings(player, settings)
     }
     
     fun getOfflineHours(player: Player): Long {
@@ -66,6 +80,7 @@ object PetSpiderSettingsManager {
     fun saveSpiderFuel(player: Player, fuel: Int) {
         val settings = getSettings(player)
         settings.currentFuel = fuel.coerceIn(0, 100)
+        saveSettings(player, settings)
     }
     
     fun getSpiderFuel(player: Player): Int {
@@ -83,8 +98,21 @@ object PetSpiderSettingsManager {
         }
     }
     
-    fun clearSettings(player: Player) {
-        playerSettings.remove(player.uniqueId)
+    fun resetSettings(player: Player) {
+        val settings = getSettings(player)
+        settings.legCount = 6
+        settings.eyeColor = AnimatedPalettes.LIME_EYES
+        settings.blinkingColor = AnimatedPalettes.LIME_BLINKING_LIGHTS
+        settings.concreteColor = ConcreteColor.BLACK
+        // Note: We don't reset fuel and lastOfflineTime as they should persist
+        saveSettings(player, settings)
+    }
+    
+    private fun saveSettings(player: Player, settings: SpiderSettings) {
+        // Update cache
+        playerSettings[player.uniqueId] = settings
+        // Save to YAML
+        FuelDataManager.savePlayerSettings(player, settings)
     }
     
     fun cleanup() {

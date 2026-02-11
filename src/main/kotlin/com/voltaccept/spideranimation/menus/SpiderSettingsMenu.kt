@@ -42,7 +42,6 @@ object SpiderSettingsMenu {
                 "§7Click to configure leg count",
                 "",
                 "§7Available options:",
-                "§7• 2 legs (Biped)",
                 "§7• 4 legs (Quadruped)",
                 "§7• 6 legs (Hexapod)",
                 "§7• 8 legs (Octopod)"
@@ -175,7 +174,7 @@ object SpiderSettingsMenu {
                 ConcreteColorMenu.openMenu(player)
             }
             22 -> { // Reset button
-                PetSpiderSettingsManager.clearSettings(player)
+                PetSpiderSettingsManager.resetSettings(player)
                 player.sendMessage("§a§lSettings reset! §7All settings have been reset to defaults.")
                 openMenu(player) // Refresh menu
             }
