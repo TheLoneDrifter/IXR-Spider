@@ -7,12 +7,13 @@ import java.io.File
 import java.util.UUID
 
 object FuelDataManager {
-    private val dataFolder = File(Bukkit.getPluginManager().getPlugin("SpiderAnimation")?.dataFolder ?: return, "player-fuel")
-    
-    init {
-        if (!dataFolder.exists()) {
-            dataFolder.mkdirs()
+    private val dataFolder: File by lazy {
+        val pluginFolder = Bukkit.getPluginManager().getPlugin("SpiderAnimation")?.dataFolder
+        val folder = if (pluginFolder != null) File(pluginFolder, "player-fuel") else File("player-fuel")
+        if (!folder.exists()) {
+            folder.mkdirs()
         }
+        folder
     }
     
     /**
