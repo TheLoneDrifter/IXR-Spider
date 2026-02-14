@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm") version "2.3.0-Beta2"
+    kotlin("plugin.serialization") version "2.3.0-Beta2"
     id("com.gradleup.shadow") version "8.3.0"
     id("xyz.jpenilla.run-paper") version "2.3.1"
 }
@@ -19,6 +20,14 @@ dependencies {
     compileOnly("org.spigotmc:spigot-api:1.21.8-R0.1-SNAPSHOT")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
+    
+    // Web server dependencies
+    implementation("io.ktor:ktor-server-core:2.3.10")
+    implementation("io.ktor:ktor-server-netty:2.3.10")
+    implementation("io.ktor:ktor-server-content-negotiation:2.3.10")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.10")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+    implementation("ch.qos.logback:logback-classic:1.4.14")
 }
 
 tasks {

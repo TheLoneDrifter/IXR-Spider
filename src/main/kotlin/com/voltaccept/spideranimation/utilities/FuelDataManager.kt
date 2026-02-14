@@ -93,6 +93,48 @@ object FuelDataManager {
     }
     
     /**
+     * Load settings from a specific file (for offline players)
+     */
+    fun loadPlayerSettingsFromFile(settingsFile: File): SpiderSettings? {
+        if (!settingsFile.exists()) {
+            return null
+        }
+        
+        return try {
+            val config = YamlConfiguration.loadConfiguration(settingsFile)
+            val settings = SpiderSettings()
+            
+            // Load fuel
+            settings.currentFuel = config.getInt("fuel", 100).coerceIn(0, 100)
+            
+            // Load spider settings if they exist
+            settings.legCount = config.getInt("spider_settings.leg_count", 6)
+            settings.concreteColor = try {
+                ConcreteColor.valueOf(config.getString("spider_settings.concrete_color", "BLACK") ?: "BLACK")
+            } catch (e: IllegalArgumentException) {
+                ConcreteColor.BLACK
+            }
+            settings.eyeColor = try {
+                AnimatedPalettes.valueOf(config.getString("spider_settings.eye_color", "LIME_EYES") ?: "LIME_EYES")
+            } catch (e: IllegalArgumentException) {
+                AnimatedPalettes.LIME_EYES
+            }
+            settings.blinkingColor = try {
+                AnimatedPalettes.valueOf(config.getString("spider_settings.blinking_color", "LIME_BLINKING_LIGHTS") ?: "LIME_BLINKING_LIGHTS")
+            } catch (e: IllegalArgumentException) {
+                AnimatedPalettes.LIME_BLINKING_LIGHTS
+            }
+            
+            settings.lastOfflineTime = config.getLong("spider_settings.last_offline_time", System.currentTimeMillis())
+            
+            settings
+        } catch (e: Exception) {
+            Bukkit.getLogger().warning("Failed to load settings from file ${settingsFile.name}: ${e.message}")
+            null
+        }
+    }
+    
+    /**
      * Get the settings file path for a player (for debugging)
      */
     fun getSettingsFilePath(player: Player): String {
