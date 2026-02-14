@@ -147,7 +147,7 @@ object PetMainMenu {
         inventory.setItem(DESPAWN_SLOT, despawnItem)
         inventory.setItem(SETTINGS_SLOT, settingsItem)
         inventory.setItem(FUEL_SLOT, fuelItem)
-        inventory.setItem(BACK_SLOT, ItemStack(Material.ARROW).apply {
+        inventory.setItem(BACK_SLOT, ItemStack(Material.BARRIER).apply {
             val meta = itemMeta!!
             meta.setDisplayName("§e§lClose")
             meta.lore = listOf("§7Close this menu")

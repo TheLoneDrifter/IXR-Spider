@@ -15,9 +15,9 @@ object LegCountMenu {
     // Leg count options and their slots
     private val legOptions = mapOf(
         4 to 11,  // Quadruped  
-        6 to 13,  // Hexapod
-        8 to 15,  // Octopod (default)
-        10 to 17   // Decapod
+        6 to 12,  // Hexapod
+        8 to 13,  // Octopod (default)
+        10 to 14   // Decapod
     )
     
     fun openMenu(player: Player) {
