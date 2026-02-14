@@ -221,3 +221,48 @@ class PetMainMenuListener : Listener {
         PetMainMenu.handleClick(event)
     }
 }
+
+class PetSpiderPlayerListener : Listener {
+    @EventHandler
+    fun onPlayerJoin(event: org.bukkit.event.player.PlayerJoinEvent) {
+        // Load fuel data from YAML file when player joins
+        val loadedFuel = com.voltaccept.spideranimation.utilities.FuelDataManager.loadPlayerFuel(event.player)
+        PetSpiderSettingsManager.saveSpiderFuel(event.player, loadedFuel)
+    }
+
+    @EventHandler
+    fun onPlayerQuit(event: org.bukkit.event.player.PlayerQuitEvent) {
+        // Save spider fuel to YAML file before removing
+        if (PetSpiderManager.hasSpider(event.player)) {
+            val spider = PetSpiderManager.getSpider(event.player)
+            if (spider != null) {
+                val spiderBody = spider.query<com.voltaccept.spideranimation.spider.components.body.SpiderBody>()
+                if (spiderBody != null) {
+                    PetSpiderSettingsManager.saveSpiderFuel(event.player, spiderBody.fuel)
+                    com.voltaccept.spideranimation.utilities.FuelDataManager.savePlayerFuel(event.player, spiderBody.fuel)
+                }
+            }
+        }
+        PetSpiderManager.removeSpider(event.player)
+        // Track the time when the player goes offline
+        PetSpiderSettingsManager.updateLastOfflineTime(event.player)
+    }
+
+    @EventHandler
+    fun onPlayerKick(event: org.bukkit.event.player.PlayerKickEvent) {
+        // Save spider fuel to YAML file before removing
+        if (PetSpiderManager.hasSpider(event.player)) {
+            val spider = PetSpiderManager.getSpider(event.player)
+            if (spider != null) {
+                val spiderBody = spider.query<com.voltaccept.spideranimation.spider.components.body.SpiderBody>()
+                if (spiderBody != null) {
+                    PetSpiderSettingsManager.saveSpiderFuel(event.player, spiderBody.fuel)
+                    com.voltaccept.spideranimation.utilities.FuelDataManager.savePlayerFuel(event.player, spiderBody.fuel)
+                }
+            }
+        }
+        PetSpiderManager.removeSpider(event.player)
+        // Track the time when the player is kicked
+        PetSpiderSettingsManager.updateLastOfflineTime(event.player)
+    }
+}
