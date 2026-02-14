@@ -68,7 +68,7 @@ class PetBehaviour {
         }
         
         // Scale speed by fuel level (keep a minimum so it can still move)
-        val fuelFactor = (spider.fuel / spider.maxFuel).coerceIn(0.1, 1.0)
+        val fuelFactor = (spider.fuel.toDouble() / spider.maxFuel.toDouble()).coerceIn(0.1, 1.0)
         val adjustedMoveSpeed = moveSpeed * fuelFactor * legSpeedMultiplier
         
         spider.gallop = isSprinting
