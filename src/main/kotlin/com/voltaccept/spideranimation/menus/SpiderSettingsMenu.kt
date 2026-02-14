@@ -104,6 +104,8 @@ object SpiderSettingsMenu {
         val concreteColorItem = when (settings.concreteColor) {
             ConcreteColor.BLACK -> Material.BLACK_CONCRETE
             ConcreteColor.WHITE -> Material.WHITE_CONCRETE
+            ConcreteColor.HONEYCOMB -> Material.HONEYCOMB_BLOCK
+            ConcreteColor.DIAMOND -> Material.DIAMOND_BLOCK
         }
         
         val concreteColorItemStack = ItemStack(concreteColorItem).apply {
@@ -111,15 +113,19 @@ object SpiderSettingsMenu {
             val colorName = when (settings.concreteColor) {
                 ConcreteColor.BLACK -> "Black"
                 ConcreteColor.WHITE -> "White"
+                ConcreteColor.HONEYCOMB -> "Honeycomb"
+                ConcreteColor.DIAMOND -> "Diamond"
             }
             meta.setDisplayName("§f§lBody Color")
             meta.lore = listOf(
-                "§7Current: §f$colorName Concrete",
+                "§7Current: §f$colorName",
                 "§7Click to configure body and legs color",
                 "",
                 "§7Available options:",
                 "§7• Black (default)",
-                "§7• White"
+                "§7• White",
+                "§7• Honeycomb (64 honeycomb blocks)",
+                "§7• Diamond (64 diamond blocks)"
             )
             itemMeta = meta
         }
