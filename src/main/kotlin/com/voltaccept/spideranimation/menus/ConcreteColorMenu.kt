@@ -42,7 +42,7 @@ object ConcreteColorMenu {
             val material = when (concreteColor) {
                 ConcreteColor.BLACK -> Material.BLACK_CONCRETE
                 ConcreteColor.WHITE -> Material.WHITE_CONCRETE
-                ConcreteColor.GALACTIQ -> Material.PAPER
+                ConcreteColor.GALACTIQ -> Material.BEDROCK
                 ConcreteColor.HONEYCOMB -> Material.HONEYCOMB_BLOCK
                 ConcreteColor.DIAMOND -> Material.DIAMOND_BLOCK
             }
