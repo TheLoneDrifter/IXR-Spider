@@ -12,7 +12,7 @@ import org.bukkit.entity.Player
 fun setupCommands(plugin: SpiderAnimationPlugin) {
     fun getCommand(name: String) = plugin.getCommand(name) ?: throw Exception("Command $name not found")
 
-    getCommand("pets").apply {
+    getCommand("ixr").apply {
         setExecutor { sender, _, _, _ ->
             val player = sender as? Player
             if (player == null) {
@@ -20,7 +20,7 @@ fun setupCommands(plugin: SpiderAnimationPlugin) {
                 return@setExecutor true
             }
 
-            // Always open the main pets menu for `/pets`
+            // Always open main pets menu for `/ixr`
             PetMainMenu.openMenu(player)
             return@setExecutor true
         }
@@ -63,7 +63,7 @@ fun setupCommands(plugin: SpiderAnimationPlugin) {
             val body = spider?.query<SpiderBody>()
             
             if (spider == null || body == null) {
-                player.sendMessage("§cYou don't have an active spider! Use /pets to create one.")
+                player.sendMessage("§cYou don't have an active spider! Use /ixr to create one.")
                 return@setExecutor true
             }
 

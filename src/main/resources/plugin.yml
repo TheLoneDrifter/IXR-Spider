@@ -4,10 +4,10 @@ main: com.voltaccept.spideranimation.SpiderAnimationPlugin
 api-version: '1.21'
 
 commands:
-  pets:
-    description: Manage your pets
-    usage: /pets
+  ixr:
+    description: Manage your SP1D.3R
+    usage: /ixr
   robofuel:
-    description: Buy fuel for your spider with coins
+    description: Buy SP1D.3R fuel with coins
     usage: /robofuel <amount>
 

@@ -1,6 +1,6 @@
 package com.voltaccept.spideranimation.menus
 
-import com.voltaccept.spideranimation.PetSpiderMenu
+import com.voltaccept.spideranimation.PetMainMenu
 import com.voltaccept.spideranimation.PetSpiderSettingsManager
 import com.voltaccept.spideranimation.ConcreteColor
 import com.voltaccept.spideranimation.spider.presets.AnimatedPalettes
@@ -162,7 +162,7 @@ object SpiderSettingsMenu {
         
         when (event.slot) {
             BACK_SLOT -> {
-                PetSpiderMenu.openMenu(player)
+                PetMainMenu.openMenu(player)
             }
             LEG_COUNT_SLOT -> {
                 LegCountMenu.openMenu(player)

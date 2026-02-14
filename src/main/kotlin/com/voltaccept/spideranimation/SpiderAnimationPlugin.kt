@@ -56,7 +56,6 @@ class SpiderAnimationPlugin : JavaPlugin() {
         setupChainVisualizer(ecs)
         setupLaserPointer(ecs)
         
-        this.server.pluginManager.registerEvents(PetSpiderMenuListener(), this)
         this.server.pluginManager.registerEvents(PetSpiderPlayerListener(), this)
         this.server.pluginManager.registerEvents(PetMainMenuListener(), this)
         this.server.pluginManager.registerEvents(com.voltaccept.spideranimation.menus.SpiderSettingsMenuListener(), this)
