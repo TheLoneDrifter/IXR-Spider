@@ -14,7 +14,6 @@ import com.voltaccept.spideranimation.utilities.events.onSpawnEntity
 import com.voltaccept.spideranimation.utilities.events.onTick
 import com.voltaccept.spideranimation.utilities.setupCoreUtils
 import com.voltaccept.spideranimation.utilities.shutdownCoreUtils
-import com.voltaccept.spideranimation.web.SpiderWebServer
 import org.bukkit.plugin.java.JavaPlugin
 
 @Suppress("unused")
@@ -28,9 +27,6 @@ class SpiderAnimationPlugin : JavaPlugin() {
 
     override fun onDisable() {
         this.logger.info("Disabling Spider Animation plugin")
-        
-        // Stop web server
-        SpiderWebServer.stop()
         
         // Save all online players' fuel before shutdown
         this.server.onlinePlayers.forEach { player ->
@@ -59,12 +55,6 @@ class SpiderAnimationPlugin : JavaPlugin() {
         setupPetBehaviour(ecs)
         setupChainVisualizer(ecs)
         setupLaserPointer(ecs)
-        
-        // Start web server
-        val serverPort = this.server.port
-        SpiderWebServer.start(serverPort)
-        this.logger.info("Spider web viewer started on port $serverPort")
-        this.logger.info("Access the spider viewer at: http://localhost:$serverPort/spider")
         
         this.server.pluginManager.registerEvents(PetSpiderPlayerListener(), this)
         this.server.pluginManager.registerEvents(PetMainMenuListener(), this)
