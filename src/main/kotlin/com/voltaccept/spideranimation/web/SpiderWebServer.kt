@@ -10,7 +10,7 @@ import io.ktor.server.netty.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import io.ktor.server.static.*
+import io.ktor.server.resources.*
 import kotlinx.serialization.Serializable
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
@@ -53,8 +53,22 @@ object SpiderWebServer {
                     )
                 }
                 
-                static("/spider/static") {
-                    resources("web")
+                get("/spider/static/{...}") {
+                    val resourcePath = call.parameters.getAll("...")?.joinToString("/") ?: return@get
+                    val resource = this::class.java.classLoader.getResource("web/$resourcePath")
+                    if (resource != null) {
+                        val content = resource.readText()
+                        val contentType = when {
+                            resourcePath.endsWith(".js") -> io.ktor.http.ContentType.Application.JavaScript
+                            resourcePath.endsWith(".css") -> io.ktor.http.ContentType.Text.CSS
+                            resourcePath.endsWith(".png") -> io.ktor.http.ContentType.Image.PNG
+                            resourcePath.endsWith(".jpg") || resourcePath.endsWith(".jpeg") -> io.ktor.http.ContentType.Image.JPEG
+                            else -> io.ktor.http.ContentType.Text.Plain
+                        }
+                        call.respondText(content, contentType)
+                    } else {
+                        call.respond(io.ktor.http.HttpStatusCode.NotFound)
+                    }
                 }
                 
                 get("/api/spider/player/{ign}") {
@@ -128,8 +142,22 @@ object SpiderWebServer {
                                 contentType = io.ktor.http.ContentType.Text.Html
                             )
                         }
-                        static("/spider/static") {
-                            resources("web")
+                        get("/spider/static/{...}") {
+                            val resourcePath = call.parameters.getAll("...")?.joinToString("/") ?: return@get
+                            val resource = this::class.java.classLoader.getResource("web/$resourcePath")
+                            if (resource != null) {
+                                val content = resource.readText()
+                                val contentType = when {
+                                    resourcePath.endsWith(".js") -> io.ktor.http.ContentType.Application.JavaScript
+                                    resourcePath.endsWith(".css") -> io.ktor.http.ContentType.Text.CSS
+                                    resourcePath.endsWith(".png") -> io.ktor.http.ContentType.Image.PNG
+                                    resourcePath.endsWith(".jpg") || resourcePath.endsWith(".jpeg") -> io.ktor.http.ContentType.Image.JPEG
+                                    else -> io.ktor.http.ContentType.Text.Plain
+                                }
+                                call.respondText(content, contentType)
+                            } else {
+                                call.respond(io.ktor.http.HttpStatusCode.NotFound)
+                            }
                         }
                         get("/api/spider/player/{ign}") {
                             val ign = call.parameters["ign"] ?: return@get call.respond(
