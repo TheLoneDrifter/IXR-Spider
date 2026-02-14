@@ -71,8 +71,8 @@ private fun createRobotSegments(segmentCount: Int, lengthScale: Double) = List(s
 fun bibot(segmentCount: Int, segmentLength: Double): SpiderOptions {
     val options = SpiderOptions()
     options.bodyPlan.bodyModel = SpiderTorsoModels.FLAT.model.clone()
-    options.bodyPlan.legs += LegPlan(attachmentPosition = Vector(0.35, -0.1, 0.0), restPosition = Vector(0.6, 0.0, 0.0), segments = createRobotSegments(segmentCount, 1.0 * segmentLength))
-    options.bodyPlan.legs += LegPlan(attachmentPosition = Vector(-0.35, -0.1, 0.0), restPosition = Vector(-0.6, 0.0, 0.0), segments = createRobotSegments(segmentCount, 1.0 * segmentLength))
+    options.bodyPlan.legs += LegPlan(attachmentPosition = Vector(0.35, 0.0, 0.0), restPosition = Vector(0.8, 0.0, 0.0), segments = createRobotSegments(segmentCount, 1.0 * segmentLength))
+    options.bodyPlan.legs += LegPlan(attachmentPosition = Vector(-0.35, 0.0, 0.0), restPosition = Vector(-0.8, 0.0, 0.0), segments = createRobotSegments(segmentCount, 1.0 * segmentLength))
     applyMechanicalLegModel(options.bodyPlan)
     return options
 }
