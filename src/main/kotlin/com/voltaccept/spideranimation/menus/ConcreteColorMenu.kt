@@ -18,12 +18,13 @@ object ConcreteColorMenu {
     private val colorOptions = mapOf(
         ConcreteColor.BLACK to 12,
         ConcreteColor.WHITE to 14,
-        ConcreteColor.HONEYCOMB to 16,
-        ConcreteColor.DIAMOND to 20
+        ConcreteColor.GALACTIQ to 16,
+        ConcreteColor.HONEYCOMB to 20,
+        ConcreteColor.DIAMOND to 24
     )
     
     fun openMenu(player: Player) {
-        val inventory = Bukkit.createInventory(null, 27, MENU_TITLE)
+        val inventory = Bukkit.createInventory(null, 36, MENU_TITLE)
         
         // Back button
         inventory.setItem(BACK_SLOT, ItemStack(Material.ARROW).apply {
@@ -41,6 +42,7 @@ object ConcreteColorMenu {
             val material = when (concreteColor) {
                 ConcreteColor.BLACK -> Material.BLACK_CONCRETE
                 ConcreteColor.WHITE -> Material.WHITE_CONCRETE
+                ConcreteColor.GALACTIQ -> Material.PAPER
                 ConcreteColor.HONEYCOMB -> Material.HONEYCOMB_BLOCK
                 ConcreteColor.DIAMOND -> Material.DIAMOND_BLOCK
             }
@@ -53,6 +55,7 @@ object ConcreteColorMenu {
                 val colorName = when (concreteColor) {
                     ConcreteColor.BLACK -> "§f§lBlack"
                     ConcreteColor.WHITE -> "§f§lWhite"
+                    ConcreteColor.GALACTIQ -> "§d§lGalactiq Green"
                     ConcreteColor.HONEYCOMB -> "§6§lHoneycomb"
                     ConcreteColor.DIAMOND -> "§b§lDiamond"
                 }
@@ -87,7 +90,7 @@ object ConcreteColorMenu {
         }
         
         // Fill empty slots with glass panes
-        for (i in 0 until 27) {
+        for (i in 0 until 36) {
             if (inventory.getItem(i) == null) {
                 inventory.setItem(i, ItemStack(Material.GRAY_STAINED_GLASS_PANE).apply {
                     val meta = itemMeta!!
@@ -120,7 +123,12 @@ object ConcreteColorMenu {
                 player.sendMessage("§a§lBody color set to §fWhite Concrete")
                 openMenu(player) // Refresh menu
             }
-            16 -> { // Honeycomb
+            16 -> { // Galactiq
+                PetSpiderSettingsManager.setConcreteColor(player, ConcreteColor.GALACTIQ)
+                player.sendMessage("§a§lBody color set to §dGalactiq Green")
+                openMenu(player) // Refresh menu
+            }
+            20 -> { // Honeycomb
                 if (PetSpiderSettingsManager.isSkinUnlocked(player, ConcreteColor.HONEYCOMB)) {
                     PetSpiderSettingsManager.setConcreteColor(player, ConcreteColor.HONEYCOMB)
                     player.sendMessage("§a§lBody color set to §6Honeycomb")
@@ -154,7 +162,7 @@ object ConcreteColorMenu {
                     }
                 }
             }
-            20 -> { // Diamond
+            24 -> { // Diamond
                 if (PetSpiderSettingsManager.isSkinUnlocked(player, ConcreteColor.DIAMOND)) {
                     PetSpiderSettingsManager.setConcreteColor(player, ConcreteColor.DIAMOND)
                     player.sendMessage("§a§lBody color set to §bDiamond")

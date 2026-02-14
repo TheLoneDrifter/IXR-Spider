@@ -120,6 +120,7 @@ object AppState {
                 val concreteColor = when (settings.concreteColor) {
                     ConcreteColor.BLACK -> org.bukkit.Material.BLACK_CONCRETE
                     ConcreteColor.WHITE -> org.bukkit.Material.WHITE_CONCRETE
+                    ConcreteColor.GALACTIQ -> org.bukkit.Material.PAPER
                     ConcreteColor.HONEYCOMB -> org.bukkit.Material.HONEYCOMB_BLOCK
                     ConcreteColor.DIAMOND -> org.bukkit.Material.DIAMOND_BLOCK
                 }
@@ -131,7 +132,19 @@ object AppState {
                         piece.block.material == org.bukkit.Material.ANVIL ||
                         piece.block.material == org.bukkit.Material.GRAY_CONCRETE) {
                         if (!piece.tags.contains("eye")) {
-                            piece.block = concreteColor.createBlockData()
+                            val blockData = concreteColor.createBlockData()
+                            // Apply custom_model_data for GALACTIQ skin
+                            if (settings.concreteColor == ConcreteColor.GALACTIQ && blockData is org.bukkit.block.data.BlockData) {
+                                try {
+                                    // Use reflection to set custom_model_data since it's not directly accessible
+                                    val craftBlockData = blockData::class.java.getMethod("getCraftBlockData").invoke(blockData)
+                                    val nbt = craftBlockData::class.java.getMethod("getOrCreateNbt").invoke(craftBlockData) as net.minecraft.nbt.CompoundTag
+                                    nbt.putInt("custom_model_data", 1)
+                                } catch (e: Exception) {
+                                    // Fallback if reflection fails
+                                }
+                            }
+                            piece.block = blockData
                         }
                     }
                 }
@@ -144,7 +157,19 @@ object AppState {
                                 piece.block.material == org.bukkit.Material.ANVIL ||
                                 piece.block.material == org.bukkit.Material.SMOOTH_QUARTZ) {
                                 if (!piece.tags.contains("eye")) {
-                                    piece.block = concreteColor.createBlockData()
+                                    val blockData = concreteColor.createBlockData()
+                                    // Apply custom_model_data for GALACTIQ skin
+                                    if (settings.concreteColor == ConcreteColor.GALACTIQ && blockData is org.bukkit.block.data.BlockData) {
+                                        try {
+                                            // Use reflection to set custom_model_data since it's not directly accessible
+                                            val craftBlockData = blockData::class.java.getMethod("getCraftBlockData").invoke(blockData)
+                                            val nbt = craftBlockData::class.java.getMethod("getOrCreateNbt").invoke(craftBlockData) as net.minecraft.nbt.CompoundTag
+                                            nbt.putInt("custom_model_data", 1)
+                                        } catch (e: Exception) {
+                                            // Fallback if reflection fails
+                                        }
+                                    }
+                                    piece.block = blockData
                                 }
                             }
                         }

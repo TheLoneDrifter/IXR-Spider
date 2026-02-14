@@ -21,6 +21,7 @@ data class SpiderSettings(
 enum class ConcreteColor {
     BLACK,
     WHITE,
+    GALACTIQ,
     HONEYCOMB,
     DIAMOND
 }
@@ -123,13 +124,13 @@ object PetSpiderSettingsManager {
     
     fun isSkinUnlocked(player: Player, skin: ConcreteColor): Boolean {
         val settings = getSettings(player)
-        // Default skins (BLACK, WHITE) are always unlocked
-        return skin == ConcreteColor.BLACK || skin == ConcreteColor.WHITE || settings.unlockedSkins.contains(skin)
+        // Default skins (BLACK, WHITE, GALACTIQ) are always unlocked
+        return skin == ConcreteColor.BLACK || skin == ConcreteColor.WHITE || skin == ConcreteColor.GALACTIQ || settings.unlockedSkins.contains(skin)
     }
     
     fun getUnlockedSkins(player: Player): Set<ConcreteColor> {
         val settings = getSettings(player)
-        return setOf(ConcreteColor.BLACK, ConcreteColor.WHITE) + settings.unlockedSkins
+        return setOf(ConcreteColor.BLACK, ConcreteColor.WHITE, ConcreteColor.GALACTIQ) + settings.unlockedSkins
     }
     
     private fun saveSettings(player: Player, settings: SpiderSettings) {

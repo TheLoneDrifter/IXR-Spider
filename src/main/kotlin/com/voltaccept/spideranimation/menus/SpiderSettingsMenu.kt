@@ -104,6 +104,7 @@ object SpiderSettingsMenu {
         val concreteColorItem = when (settings.concreteColor) {
             ConcreteColor.BLACK -> Material.BLACK_CONCRETE
             ConcreteColor.WHITE -> Material.WHITE_CONCRETE
+            ConcreteColor.GALACTIQ -> Material.PAPER
             ConcreteColor.HONEYCOMB -> Material.HONEYCOMB_BLOCK
             ConcreteColor.DIAMOND -> Material.DIAMOND_BLOCK
         }
@@ -113,6 +114,7 @@ object SpiderSettingsMenu {
             val colorName = when (settings.concreteColor) {
                 ConcreteColor.BLACK -> "Black"
                 ConcreteColor.WHITE -> "White"
+                ConcreteColor.GALACTIQ -> "Galactiq Green"
                 ConcreteColor.HONEYCOMB -> "Honeycomb"
                 ConcreteColor.DIAMOND -> "Diamond"
             }
@@ -124,6 +126,7 @@ object SpiderSettingsMenu {
                 "§7Available options:",
                 "§7• Black (default)",
                 "§7• White",
+                "§7• Galactiq Green (default)",
                 "§7• Honeycomb (64 honeycomb blocks)",
                 "§7• Diamond (64 diamond blocks)"
             )
