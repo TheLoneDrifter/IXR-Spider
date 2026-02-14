@@ -10,6 +10,7 @@ import io.ktor.server.netty.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import io.ktor.server.static.*
 import kotlinx.serialization.Serializable
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
@@ -30,7 +31,7 @@ data class SpiderData(
 @Serializable
 data class PlayerSearchResponse(
     val found: Boolean,
-    data: SpiderData? = null,
+    val data: SpiderData? = null,
     val error: String? = null
 )
 
@@ -52,7 +53,9 @@ object SpiderWebServer {
                     )
                 }
                 
-                staticResources("/spider/static", "web")
+                static("/spider/static") {
+                    resources("web")
+                }
                 
                 get("/api/spider/player/{ign}") {
                     val ign = call.parameters["ign"] ?: return@get call.respond(
@@ -125,7 +128,9 @@ object SpiderWebServer {
                                 contentType = io.ktor.http.ContentType.Text.Html
                             )
                         }
-                        staticResources("/spider/static", "web")
+                        static("/spider/static") {
+                            resources("web")
+                        }
                         get("/api/spider/player/{ign}") {
                             val ign = call.parameters["ign"] ?: return@get call.respond(
                                 PlayerSearchResponse(found = false, error = "IGN parameter required")
