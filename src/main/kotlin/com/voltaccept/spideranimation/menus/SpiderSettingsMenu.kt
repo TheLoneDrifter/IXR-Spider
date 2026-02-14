@@ -44,7 +44,8 @@ object SpiderSettingsMenu {
                 "§7Available options:",
                 "§7• 4 legs (Quadruped)",
                 "§7• 6 legs (Hexapod)",
-                "§7• 8 legs (Octopod)"
+                "§7• 8 legs (Octopod)",
+                "§7• 10 legs (Decapod)"
             )
             itemMeta = meta
         }
@@ -129,7 +130,7 @@ object SpiderSettingsMenu {
             meta.setDisplayName("§c§lReset to Defaults")
             meta.lore = listOf(
                 "§7Reset all settings to default values",
-                "§7• 6 legs",
+                "§7• 8 legs",
                 "§7• Lime green eyes"
             )
             itemMeta = meta

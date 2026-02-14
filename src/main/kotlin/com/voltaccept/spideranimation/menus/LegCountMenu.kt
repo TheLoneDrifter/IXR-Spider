@@ -15,8 +15,9 @@ object LegCountMenu {
     // Leg count options and their slots
     private val legOptions = mapOf(
         4 to 11,  // Quadruped  
-        6 to 13,  // Hexapod (default)
-        8 to 15   // Octopod
+        6 to 13,  // Hexapod
+        8 to 15,  // Octopod (default)
+        10 to 17   // Decapod
     )
     
     fun openMenu(player: Player) {
@@ -39,6 +40,7 @@ object LegCountMenu {
                 4 -> Material.LEATHER_BOOTS
                 6 -> Material.CHAINMAIL_BOOTS
                 8 -> Material.DIAMOND_BOOTS
+                10 -> Material.NETHERITE_BOOTS
                 else -> Material.LEATHER_BOOTS
             }
             
@@ -50,6 +52,7 @@ object LegCountMenu {
                     4 -> "§a§lQuadruped (4 Legs)"
                     6 -> "§b§lHexapod (6 Legs)"
                     8 -> "§d§lOctopod (8 Legs)"
+                    10 -> "§e§lDecapod (10 Legs)"
                     else -> "§f§l$legCount Legs"
                 }
                 
@@ -62,6 +65,7 @@ object LegCountMenu {
                     4 -> lore.addAll(listOf("§7• Balanced design", "§7• Good stability and speed"))
                     6 -> lore.addAll(listOf("§7• Classic spider look", "§7• Excellent stability"))
                     8 -> lore.addAll(listOf("§7• Maximum stability", "§7• Complex movement patterns"))
+                    10 -> lore.addAll(listOf("§7• Ultimate stability", "§7• Advanced movement system"))
                 }
                 
                 if (isSelected) {

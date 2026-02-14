@@ -97,3 +97,15 @@ fun octoBot(segmentCount: Int, segmentLength: Double): SpiderOptions {
     applyMechanicalLegModel(options.bodyPlan)
     return options
 }
+
+fun decaBot(segmentCount: Int, segmentLength: Double): SpiderOptions {
+    val options = SpiderOptions()
+    options.bodyPlan.bodyModel = SpiderTorsoModels.FLAT.model.clone()
+    options.bodyPlan.addLegPair(root = Vector(.2,-.2 - .15, .4), rest = Vector(1.3 * 1.0,.0, 1.4), createRobotSegments(segmentCount, 1.1 * .7 * segmentLength))
+    options.bodyPlan.addLegPair(root = Vector(.2,-.2 - .15, .2), rest = Vector(1.3 * 1.2,.0, 0.6), createRobotSegments(segmentCount, 1.0 * .7 * segmentLength))
+    options.bodyPlan.addLegPair(root = Vector(.2,-.2 - .15, .0), rest = Vector(1.3 * 1.2,.0,-0.2), createRobotSegments(segmentCount, 1.1 * .7 * segmentLength))
+    options.bodyPlan.addLegPair(root = Vector(.2,-.2 - .15,-.2), rest = Vector(1.3 * 1.1,.0,-1.0), createRobotSegments(segmentCount, 1.2 * .7 * segmentLength))
+    options.bodyPlan.addLegPair(root = Vector(.2,-.2 - .15,-.4), rest = Vector(1.3 * 1.0,.0,-2.0), createRobotSegments(segmentCount, 1.4 * .7 * segmentLength))
+    applyMechanicalLegModel(options.bodyPlan)
+    return options
+}

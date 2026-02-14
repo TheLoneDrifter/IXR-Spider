@@ -9,7 +9,7 @@ import java.util.UUID
  * Stores player-specific spider settings
  */
 data class SpiderSettings(
-    var legCount: Int = 6,
+    var legCount: Int = 8,
     var eyeColor: AnimatedPalettes = AnimatedPalettes.LIME_EYES,
     var blinkingColor: AnimatedPalettes = AnimatedPalettes.LIME_BLINKING_LIGHTS,
     var concreteColor: ConcreteColor = ConcreteColor.BLACK,
@@ -100,7 +100,7 @@ object PetSpiderSettingsManager {
     
     fun resetSettings(player: Player) {
         val settings = getSettings(player)
-        settings.legCount = 6
+        settings.legCount = 8
         settings.eyeColor = AnimatedPalettes.LIME_EYES
         settings.blinkingColor = AnimatedPalettes.LIME_BLINKING_LIGHTS
         settings.concreteColor = ConcreteColor.BLACK

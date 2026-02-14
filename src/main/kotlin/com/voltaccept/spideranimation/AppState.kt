@@ -12,6 +12,7 @@ import com.voltaccept.spideranimation.spider.presets.hexBot
 import com.voltaccept.spideranimation.spider.presets.biped
 import com.voltaccept.spideranimation.spider.presets.quadBot
 import com.voltaccept.spideranimation.spider.presets.octoBot
+import com.voltaccept.spideranimation.spider.presets.decaBot
 import com.voltaccept.spideranimation.spider.presets.AnimatedPalettes
 import com.voltaccept.spideranimation.spider.components.rendering.SpiderRenderer
 import com.voltaccept.spideranimation.utilities.ecs.ECS
@@ -40,6 +41,7 @@ object AppState {
                 4 -> quadBot(4, 1.0)
                 6 -> hexBot(4, 1.0)
                 8 -> octoBot(4, 1.0)
+                10 -> decaBot(4, 1.0)
                 else -> hexBot(4, 1.0) // Default to 6 legs
             }
             
