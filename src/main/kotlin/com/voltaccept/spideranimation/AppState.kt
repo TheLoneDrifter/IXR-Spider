@@ -3,13 +3,12 @@ package com.voltaccept.spideranimation
 import com.voltaccept.spideranimation.kinematic_chain_visualizer.KinematicChainVisualizer
 import com.voltaccept.spideranimation.spider.components.body.SpiderBody
 import com.voltaccept.spideranimation.spider.components.Cloak
-import com.voltaccept.spideranimation.spider.components.Mountable
 import com.voltaccept.spideranimation.spider.components.PointDetector
 import com.voltaccept.spideranimation.spider.components.SoundsAndParticles
 import com.voltaccept.spideranimation.spider.components.TridentHitDetector
 import com.voltaccept.spideranimation.spider.components.PetBehaviour
 import com.voltaccept.spideranimation.spider.presets.hexBot
-import com.voltaccept.spideranimation.spider.presets.biped
+import com.voltaccept.spideranimation.spider.presets.bibot
 import com.voltaccept.spideranimation.spider.presets.quadBot
 import com.voltaccept.spideranimation.spider.presets.octoBot
 import com.voltaccept.spideranimation.spider.presets.decaBot
@@ -37,7 +36,7 @@ object AppState {
             
             // Create spider based on leg count setting
             val baseOptions = when (settings.legCount) {
-                2 -> biped(4, 1.0)
+                2 -> bibot(4, 1.0)
                 4 -> quadBot(4, 1.0)
                 6 -> hexBot(4, 1.0)
                 8 -> octoBot(4, 1.0)
@@ -162,7 +161,6 @@ object AppState {
             TridentHitDetector(),
             Cloak(spiderOptions.cloak),
             SoundsAndParticles(spiderOptions.sound),
-            Mountable(),
             PointDetector(),
             SpiderRenderer(),
         )

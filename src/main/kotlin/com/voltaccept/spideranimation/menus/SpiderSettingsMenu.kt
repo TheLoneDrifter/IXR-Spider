@@ -42,6 +42,7 @@ object SpiderSettingsMenu {
                 "§7Click to configure leg count",
                 "",
                 "§7Available options:",
+                "§7• 2 legs (Biped)",
                 "§7• 4 legs (Quadruped)",
                 "§7• 6 legs (Hexapod)",
                 "§7• 8 legs (Octopod)",

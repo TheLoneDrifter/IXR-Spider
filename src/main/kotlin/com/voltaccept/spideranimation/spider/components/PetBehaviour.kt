@@ -56,9 +56,20 @@ class PetBehaviour {
         val isSprinting = owner.isSprinting
         val maxSpeed = if (isSprinting) sprintSpeed else walkSpeed
         val moveSpeed = maxSpeed
-        // Scale speed by spider health (keep a minimum so it can still approach)
-        val healthFactor = (spider.health / spider.maxHealth).coerceIn(0.2, 1.0)
-        val adjustedMoveSpeed = moveSpeed * healthFactor
+        
+        // Scale speed by leg count (more legs = faster)
+        val legCount = spider.bodyPlan.legs.size
+        val legSpeedMultiplier = when {
+            legCount >= 10 -> 1.4  // 10 legs: 40% faster
+            legCount >= 8 -> 1.25  // 8 legs: 25% faster
+            legCount >= 6 -> 1.1   // 6 legs: 10% faster
+            legCount >= 4 -> 1.0   // 4 legs: base speed
+            else -> 0.9            // 2 legs: 10% slower
+        }
+        
+        // Scale speed by fuel level (keep a minimum so it can still move)
+        val fuelFactor = (spider.fuel / spider.maxFuel).coerceIn(0.1, 1.0)
+        val adjustedMoveSpeed = moveSpeed * fuelFactor * legSpeedMultiplier
         
         spider.gallop = isSprinting
         

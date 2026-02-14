@@ -14,6 +14,7 @@ object LegCountMenu {
     
     // Leg count options and their slots
     private val legOptions = mapOf(
+        2 to 10,  // Biped
         4 to 11,  // Quadruped  
         6 to 12,  // Hexapod
         8 to 14,  // Octopod (default)
@@ -37,6 +38,7 @@ object LegCountMenu {
         // Leg count options
         legOptions.forEach { (legCount, slot) ->
             val material = when (legCount) {
+                2 -> Material.IRON_BOOTS
                 4 -> Material.LEATHER_BOOTS
                 6 -> Material.CHAINMAIL_BOOTS
                 8 -> Material.DIAMOND_BOOTS
@@ -49,6 +51,7 @@ object LegCountMenu {
             val item = ItemStack(material).apply {
                 val meta = itemMeta!!
                 val displayName = when (legCount) {
+                    2 -> "§7§lBiped (2 Legs)"
                     4 -> "§a§lQuadruped (4 Legs)"
                     6 -> "§b§lHexapod (6 Legs)"
                     8 -> "§d§lOctopod (8 Legs)"
@@ -62,10 +65,11 @@ object LegCountMenu {
                 lore.add("§7Configure your SP1D.3R to have $legCount legs")
                 
                 when (legCount) {
-                    4 -> lore.addAll(listOf("§7• Balanced design", "§7• Good stability and speed"))
-                    6 -> lore.addAll(listOf("§7• Classic spider look", "§7• Excellent stability"))
-                    8 -> lore.addAll(listOf("§7• Maximum stability", "§7• Complex movement patterns"))
-                    10 -> lore.addAll(listOf("§7• Ultimate stability", "§7• Advanced movement system"))
+                    2 -> lore.addAll(listOf("§7• Minimalist design", "§7• §c10% slower movement", "§7• Basic stability"))
+                    4 -> lore.addAll(listOf("§7• Balanced design", "§7• Base movement speed", "§7• Good stability"))
+                    6 -> lore.addAll(listOf("§7• Classic spider look", "§7• §a10% faster movement", "§7• Excellent stability"))
+                    8 -> lore.addAll(listOf("§7• Maximum stability", "§7• §a25% faster movement", "§7• Complex movement patterns"))
+                    10 -> lore.addAll(listOf("§7• Ultimate stability", "§7• §a40% faster movement", "§7• Advanced movement system"))
                 }
                 
                 if (isSelected) {
