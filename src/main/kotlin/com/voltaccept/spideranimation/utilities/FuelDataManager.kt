@@ -56,6 +56,16 @@ object FuelDataManager {
             
             settings.lastOfflineTime = config.getLong("spider_settings.last_offline_time", System.currentTimeMillis())
             
+            // Load unlocked skins
+            val unlockedSkinsList = config.getStringList("spider_settings.unlocked_skins")
+            settings.unlockedSkins = unlockedSkinsList.mapNotNull { skinName ->
+                try {
+                    ConcreteColor.valueOf(skinName)
+                } catch (e: IllegalArgumentException) {
+                    null
+                }
+            }.toMutableSet()
+            
             settings
         } catch (e: Exception) {
             Bukkit.getLogger().warning("Failed to load settings data for ${player.name}: ${e.message}")
@@ -85,6 +95,9 @@ object FuelDataManager {
             config.set("spider_settings.eye_color", settings.eyeColor.name)
             config.set("spider_settings.blinking_color", settings.blinkingColor.name)
             config.set("spider_settings.last_offline_time", settings.lastOfflineTime)
+            
+            // Save unlocked skins
+            config.set("spider_settings.unlocked_skins", settings.unlockedSkins.map { it.name })
             
             config.save(settingsFile)
         } catch (e: Exception) {

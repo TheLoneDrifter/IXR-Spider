@@ -120,6 +120,8 @@ object AppState {
                 val concreteColor = when (settings.concreteColor) {
                     ConcreteColor.BLACK -> org.bukkit.Material.BLACK_CONCRETE
                     ConcreteColor.WHITE -> org.bukkit.Material.WHITE_CONCRETE
+                    ConcreteColor.HONEYCOMB -> org.bukkit.Material.HONEYCOMB_BLOCK
+                    ConcreteColor.DIAMOND -> org.bukkit.Material.DIAMOND_BLOCK
                 }
                 
                 // Update body model pieces

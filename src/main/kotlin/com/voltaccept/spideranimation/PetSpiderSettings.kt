@@ -14,12 +14,15 @@ data class SpiderSettings(
     var blinkingColor: AnimatedPalettes = AnimatedPalettes.LIME_BLINKING_LIGHTS,
     var concreteColor: ConcreteColor = ConcreteColor.BLACK,
     var lastOfflineTime: Long = System.currentTimeMillis(),
-    var currentFuel: Int = 100  // Store spider fuel persistently
+    var currentFuel: Int = 100,  // Store spider fuel persistently
+    var unlockedSkins: MutableSet<ConcreteColor> = mutableSetOf() // Track unlocked skins
 )
 
 enum class ConcreteColor {
     BLACK,
-    WHITE
+    WHITE,
+    HONEYCOMB,
+    DIAMOND
 }
 
 /**
@@ -104,8 +107,29 @@ object PetSpiderSettingsManager {
         settings.eyeColor = AnimatedPalettes.LIME_EYES
         settings.blinkingColor = AnimatedPalettes.LIME_BLINKING_LIGHTS
         settings.concreteColor = ConcreteColor.BLACK
-        // Note: We don't reset fuel and lastOfflineTime as they should persist
+        // Note: We don't reset fuel, lastOfflineTime, and unlockedSkins as they should persist
         saveSettings(player, settings)
+    }
+    
+    fun unlockSkin(player: Player, skin: ConcreteColor): Boolean {
+        val settings = getSettings(player)
+        return if (settings.unlockedSkins.add(skin)) {
+            saveSettings(player, settings)
+            true
+        } else {
+            false
+        }
+    }
+    
+    fun isSkinUnlocked(player: Player, skin: ConcreteColor): Boolean {
+        val settings = getSettings(player)
+        // Default skins (BLACK, WHITE) are always unlocked
+        return skin == ConcreteColor.BLACK || skin == ConcreteColor.WHITE || settings.unlockedSkins.contains(skin)
+    }
+    
+    fun getUnlockedSkins(player: Player): Set<ConcreteColor> {
+        val settings = getSettings(player)
+        return setOf(ConcreteColor.BLACK, ConcreteColor.WHITE) + settings.unlockedSkins
     }
     
     private fun saveSettings(player: Player, settings: SpiderSettings) {
