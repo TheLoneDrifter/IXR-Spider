@@ -10,4 +10,7 @@ commands:
   robofuel:
     description: Buy SP1D.3R fuel with coins
     usage: /robofuel <amount>
+  warframe:
+    description: Get the Voice of the First Blade book
+    usage: /warframe
 

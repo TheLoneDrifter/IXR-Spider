@@ -7,7 +7,10 @@ import com.voltaccept.spideranimation.utilities.custom_items.setupCustomItemComm
 import com.voltaccept.spideranimation.utilities.events.runLater
 import net.milkbowl.vault.economy.Economy
 import org.bukkit.Bukkit
+import org.bukkit.Material
+import org.bukkit.Sound
 import org.bukkit.entity.Player
+import org.bukkit.inventory.meta.BookMeta
 
 fun setupCommands(plugin: SpiderAnimationPlugin) {
     fun getCommand(name: String) = plugin.getCommand(name) ?: throw Exception("Command $name not found")
@@ -135,6 +138,52 @@ fun setupCommands(plugin: SpiderAnimationPlugin) {
             } else {
                 emptyList<String>()
             }
+        }
+    }
+
+    // Warframe command - gives Voice of the First Blade book
+    getCommand("warframe").apply {
+        setExecutor { sender, _, _, _ ->
+            val player = sender as? Player
+            if (player == null) {
+                sender.sendMessage("§cThis command can only be used by players!")
+                return@setExecutor true
+            }
+
+            // Check if player already has the book
+            val voiceBookTitle = "Voice of the First Blade"
+            val hasBook = player.inventory.any { item ->
+                item != null && item.type == Material.WRITTEN_BOOK && 
+                item.itemMeta is BookMeta && 
+                (item.itemMeta as BookMeta).title == voiceBookTitle
+            }
+
+            if (hasBook) {
+                player.sendMessage("§cYou already have the §6Voice of the First Blade§c book! You can only have one copy.")
+                return@setExecutor true
+            }
+
+            // Create and give the book
+            val book = createVoiceOfFirstBladeBook()
+            
+            // Try to add book to inventory
+            val leftoverItems = player.inventory.addItem(book)
+            
+            if (leftoverItems.isNotEmpty()) {
+                // Inventory was full, drop the book at player's location
+                player.world.dropItem(player.location, book)
+                player.sendMessage("§cYour inventory was full! The book was dropped at your feet.")
+            } else {
+                player.sendMessage("§6§lVoice of the First Blade§r§a has been added to your inventory!")
+                player.world.playSound(player.location, Sound.ENTITY_ITEM_PICKUP, 1.0f, 1.0f)
+            }
+
+            return@setExecutor true
+        }
+
+        setTabCompleter { _, _, _, _ ->
+            // No subcommands to suggest
+            return@setTabCompleter emptyList<String>()
         }
     }
 }
