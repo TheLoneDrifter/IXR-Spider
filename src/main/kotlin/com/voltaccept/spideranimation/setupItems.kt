@@ -29,10 +29,9 @@ import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.player.PlayerRespawnEvent
-import org.bukkit.inventory.ItemStack
-import org.bukkit.inventory.meta.BookMeta
 import org.bukkit.util.Vector
 import kotlin.math.roundToInt
+
 
 fun setupItems() {
     val spiderComponent = CustomItemComponent("spider")
@@ -40,13 +39,21 @@ fun setupItems() {
     spiderComponent.onGestureUse { player, _ ->
         val spiderEntity = AppState.ecs.query<ECSEntity, SpiderBody>().firstOrNull()?.first
         if (spiderEntity == null) {
+            // Check fuel before allowing spider creation
+            val currentFuel = PetSpiderSettingsManager.getSpiderFuel(player)
+            if (currentFuel <= 0) {
+                player.world.playSound(player.position, Sound.BLOCK_DISPENSER_FAIL, 1.0f, 2.0f)
+                player.sendActionBar("§cCannot spawn spider: No fuel! Use Spider Fuel to refuel.")
+                return@onGestureUse
+            }
+            
             val yawIncrements = 45.0f
             val yaw = (player.yaw / yawIncrements).roundToInt() * yawIncrements
 
             val hitPosition = player.world.raycastGround(player.eyePosition, player.direction, 100.0)?.hitPosition ?: return@onGestureUse
 
             player.world.playSound(hitPosition, Sound.BLOCK_NETHERITE_BLOCK_PLACE, 1.0f, 1.0f)
-            AppState.createSpider(hitPosition.toLocation(player.world).apply { this.yaw = yaw })
+            AppState.createSpider(hitPosition.toLocation(player.world).apply { this.yaw = yaw }, player)
             player.sendActionBar("Spider created")
         } else {
             player.world.playSound(player.position, Sound.ENTITY_ITEM_FRAME_REMOVE_ITEM, 1.0f, 0.0f)
