@@ -27,7 +27,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
-import org.bukkit.event.player.PlayerDropEvent
+import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerRespawnEvent
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
@@ -279,7 +279,7 @@ fun setupItems() {
             val book = player.inventory.getItem(bookSlot)
             if (book != null) {
                 // Move book to offhand
-                player.inventory.itemInOffHand = book
+                player.inventory.setItemInOffHand(book)
                 // Move whatever was in offhand to the book's previous position
                 player.inventory.setItem(bookSlot, itemInOffhand)
             }
@@ -318,7 +318,7 @@ object PetMenuBookListener : Listener {
             val book = player.inventory.getItem(bookSlot)
             if (book != null) {
                 // Move book to offhand
-                player.inventory.itemInOffHand = book
+                player.inventory.setItemInOffHand(book)
                 // Move whatever was in offhand to the book's previous position
                 player.inventory.setItem(bookSlot, itemInOffhand)
             }
@@ -354,7 +354,7 @@ object PetMenuBookListener : Listener {
     }
     
     @EventHandler
-    fun onPlayerDrop(event: PlayerDropEvent) {
+    fun onPlayerDrop(event: org.bukkit.event.player.PlayerDropItemEvent) {
         val petMenuBookComponent = getPetMenuBookComponent()
         
         // Prevent dropping the pet menu book
