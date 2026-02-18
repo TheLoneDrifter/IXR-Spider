@@ -31,6 +31,7 @@ import org.bukkit.event.player.PlayerDropEvent
 import org.bukkit.event.player.PlayerRespawnEvent
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
+import org.bukkit.entity.Item
 import org.bukkit.util.Vector
 import kotlin.math.roundToInt
 
@@ -276,10 +277,12 @@ fun setupItems() {
         
         if (bookSlot != null) {
             val book = player.inventory.getItem(bookSlot)
-            // Move book to offhand
-            player.inventory.itemInOffHand = book
-            // Move whatever was in offhand to the book's previous position
-            player.inventory.setItem(bookSlot, itemInOffhand)
+            if (book != null) {
+                // Move book to offhand
+                player.inventory.itemInOffHand = book
+                // Move whatever was in offhand to the book's previous position
+                player.inventory.setItem(bookSlot, itemInOffhand)
+            }
         }
     }
 }
@@ -313,10 +316,12 @@ object PetMenuBookListener : Listener {
         
         if (bookSlot != null) {
             val book = player.inventory.getItem(bookSlot)
-            // Move book to offhand
-            player.inventory.itemInOffHand = book
-            // Move whatever was in offhand to the book's previous position
-            player.inventory.setItem(bookSlot, itemInOffhand)
+            if (book != null) {
+                // Move book to offhand
+                player.inventory.itemInOffHand = book
+                // Move whatever was in offhand to the book's previous position
+                player.inventory.setItem(bookSlot, itemInOffhand)
+            }
         }
     }
     
@@ -350,13 +355,12 @@ object PetMenuBookListener : Listener {
     
     @EventHandler
     fun onPlayerDrop(event: PlayerDropEvent) {
-        val player = event.player
         val petMenuBookComponent = getPetMenuBookComponent()
         
         // Prevent dropping the pet menu book
         if (petMenuBookComponent.isAttached(event.itemDrop.itemStack)) {
             event.isCancelled = true
-            player.sendActionBar("§cPet Menu book cannot be dropped!")
+            event.player.sendActionBar("§cPet Menu book cannot be dropped!")
         }
     }
     
@@ -366,7 +370,7 @@ object PetMenuBookListener : Listener {
         val petMenuBookComponent = getPetMenuBookComponent()
         
         // Prevent swapping the pet menu book from offhand
-        if (petMenuBookComponent.isAttached(event.offHandItem)) {
+        if (event.offHandItem != null && petMenuBookComponent.isAttached(event.offHandItem!!)) {
             event.isCancelled = true
             player.sendActionBar("§cPet Menu book is locked to offhand!")
         }
