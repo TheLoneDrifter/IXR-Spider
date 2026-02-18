@@ -27,8 +27,10 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
-import org.bukkit.event.inventory.InventoryClickEvent
+import org.bukkit.event.player.PlayerDropEvent
 import org.bukkit.event.player.PlayerRespawnEvent
+import org.bukkit.event.inventory.InventoryClickEvent
+import org.bukkit.event.player.PlayerSwapHandItemsEvent
 import org.bukkit.util.Vector
 import kotlin.math.roundToInt
 
@@ -253,39 +255,37 @@ fun setupItems() {
         }
     }
 
-    // Hotbar locking functionality
-    val HOTBAR_SLOT = 8 // Last slot in hotbar (0-indexed)
+    // Offhand locking functionality
     
     fun givePetMenuBook(player: Player) {
         // Check if player already has the book
         val hasBook = player.inventory.contains(petMenuBook)
         if (!hasBook) {
-            // Give the book and move it to the last hotbar slot
+            // Give the book and move it to offhand
             player.inventory.addItem(petMenuBook)
-            // Note: moveBookToLastSlot will be called by the listener
+            // Note: moveBookToOffhand will be called by the listener
         }
     }
     
-    fun moveBookToLastSlot(player: Player) {
-        val itemInSlot = player.inventory.getItem(HOTBAR_SLOT)
+    fun moveBookToOffhand(player: Player) {
+        val itemInOffhand = player.inventory.itemInOffHand
         val bookSlot = (0..35).find { slot -> 
             val item = player.inventory.getItem(slot)
             item != null && petMenuBookComponent.isAttached(item)
         }
         
-        if (bookSlot != null && bookSlot != HOTBAR_SLOT) {
+        if (bookSlot != null) {
             val book = player.inventory.getItem(bookSlot)
-            // Move book to last hotbar slot
-            player.inventory.setItem(HOTBAR_SLOT, book)
-            // Move whatever was in the last slot to the book's previous position
-            player.inventory.setItem(bookSlot, itemInSlot)
+            // Move book to offhand
+            player.inventory.itemInOffHand = book
+            // Move whatever was in offhand to the book's previous position
+            player.inventory.setItem(bookSlot, itemInOffhand)
         }
     }
 }
 
-// Event listener to give book on join and lock it to slot
+// Event listener to give book on join and lock it to offhand
 object PetMenuBookListener : Listener {
-    private val HOTBAR_SLOT = 8 // Last slot in hotbar (0-indexed)
     
     private fun getPetMenuBookComponent() = CustomItemComponent("petMenuBook")
     
@@ -295,28 +295,28 @@ object PetMenuBookListener : Listener {
         if (petMenuBook == null) return
         
         // Check if player already has the book
-        val hasBook = player.inventory.contains(petMenuBook)
+        val hasBook = player.inventory.contains(petMenuBook) || getPetMenuBookComponent().isAttached(player.inventory.itemInOffHand)
         if (!hasBook) {
-            // Give the book and move it to the last hotbar slot
+            // Give the book and move it to offhand
             player.inventory.addItem(petMenuBook)
-            moveBookToLastSlot(player)
+            moveBookToOffhand(player)
         }
     }
     
-    private fun moveBookToLastSlot(player: Player) {
+    private fun moveBookToOffhand(player: Player) {
         val petMenuBookComponent = getPetMenuBookComponent()
-        val itemInSlot = player.inventory.getItem(HOTBAR_SLOT)
+        val itemInOffhand = player.inventory.itemInOffHand
         val bookSlot = (0..35).find { slot -> 
             val item = player.inventory.getItem(slot)
             item != null && petMenuBookComponent.isAttached(item)
         }
         
-        if (bookSlot != null && bookSlot != HOTBAR_SLOT) {
+        if (bookSlot != null) {
             val book = player.inventory.getItem(bookSlot)
-            // Move book to last hotbar slot
-            player.inventory.setItem(HOTBAR_SLOT, book)
-            // Move whatever was in the last slot to the book's previous position
-            player.inventory.setItem(bookSlot, itemInSlot)
+            // Move book to offhand
+            player.inventory.itemInOffHand = book
+            // Move whatever was in offhand to the book's previous position
+            player.inventory.setItem(bookSlot, itemInOffhand)
         }
     }
     
@@ -349,38 +349,61 @@ object PetMenuBookListener : Listener {
     }
     
     @EventHandler
-    fun onInventoryClick(event: InventoryClickEvent) {
-        val player = event.whoClicked as? Player ?: return
-        val clickedSlot = event.slot
+    fun onPlayerDrop(event: PlayerDropEvent) {
+        val player = event.player
         val petMenuBookComponent = getPetMenuBookComponent()
-        val petMenuBook = customItemRegistry.find { petMenuBookComponent.isAttached(it) } ?: return
         
-        // Prevent moving the book from the last hotbar slot
-        if (clickedSlot == HOTBAR_SLOT && event.currentItem != null && petMenuBookComponent.isAttached(event.currentItem!!)) {
+        // Prevent dropping the pet menu book
+        if (petMenuBookComponent.isAttached(event.itemDrop.itemStack)) {
             event.isCancelled = true
-            player.sendActionBar("§cPet Menu book is locked to this slot!")
-            return
-        }
-        
-        // Prevent moving other items into the last hotbar slot if player has the book
-        if (clickedSlot == HOTBAR_SLOT && event.cursor != null && event.cursor!!.type != Material.AIR) {
-            val hasBook = player.inventory.contains(petMenuBook)
-            if (hasBook) {
-                event.isCancelled = true
-                player.sendActionBar("§cThis slot is reserved for the Pet Menu book!")
-                return
-            }
+            player.sendActionBar("§cPet Menu book cannot be dropped!")
         }
     }
     
-    // Periodic check to ensure book stays in correct slot
+    @EventHandler
+    fun onPlayerSwapHandItems(event: PlayerSwapHandItemsEvent) {
+        val player = event.player
+        val petMenuBookComponent = getPetMenuBookComponent()
+        
+        // Prevent swapping the pet menu book from offhand
+        if (petMenuBookComponent.isAttached(event.offHandItem)) {
+            event.isCancelled = true
+            player.sendActionBar("§cPet Menu book is locked to offhand!")
+        }
+    }
+    
+    @EventHandler
+    fun onInventoryClick(event: InventoryClickEvent) {
+        val player = event.whoClicked as? Player ?: return
+        val petMenuBookComponent = getPetMenuBookComponent()
+        val petMenuBook = customItemRegistry.find { petMenuBookComponent.isAttached(it) } ?: return
+        
+        // Prevent moving the book from inventory slots (including hotbar)
+        if (event.currentItem != null && petMenuBookComponent.isAttached(event.currentItem!!)) {
+            event.isCancelled = true
+            player.sendActionBar("§cPet Menu book is locked to offhand!")
+            return
+        }
+        
+        // Prevent cursor-clicking the book into other slots
+        if (event.cursor != null && petMenuBookComponent.isAttached(event.cursor!!)) {
+            event.isCancelled = true
+            player.sendActionBar("§cPet Menu book is locked to offhand!")
+            return
+        }
+    }
+    
+    // Periodic check to ensure book stays in offhand
     init {
         onTick {
             for (player in Bukkit.getOnlinePlayers()) {
                 val petMenuBookComponent = getPetMenuBookComponent()
                 val petMenuBook = customItemRegistry.find { petMenuBookComponent.isAttached(it) }
-                if (petMenuBook != null && player.inventory.contains(petMenuBook)) {
-                    moveBookToLastSlot(player)
+                if (petMenuBook != null) {
+                    // Check if book is in offhand, if not, move it there
+                    if (!petMenuBookComponent.isAttached(player.inventory.itemInOffHand)) {
+                        moveBookToOffhand(player)
+                    }
                 }
             }
         }
